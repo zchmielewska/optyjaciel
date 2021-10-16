@@ -1,0 +1,46 @@
+div.round-info {
+    background-color: #ccc;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 16px;
+}
+
+h2.question {
+    text-align: center;
+}
+
+div.options-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.lbl {
+    display: block;
+    width: 48%;
+}
+
+/* Hide radio */
+.lbl > input {
+    visibility: hidden;
+    position: absolute;
+}
+
+.lbl > input + div {
+    text-align: center;
+    margin-bottom: 12px;
+    padding: 12px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+}
+
+.lbl > input + div:hover {
+    background-color: rgba(34, 129, 34, 0.5);
+}
+
+.lbl > input:checked + div {
+    background-color: rgba(34, 129, 34, 0.3);
+    border: 1px solid #228b22;
+}
+

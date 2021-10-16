@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cookie" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+    <title>optyjaciel | optymalny przyjaciel</title>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="top-bar-container">zaloguj się</div>
+    </div>
+
+    <h1 class="logo">optyjaciel</h1>
+    <div class="container">
+        <div class="menu">
+            <ul>
+                <li><a href="">aktualna runda</a></li>
+                <li><a href="">Twoi optyjaciele</a></li>
+                <li><a href="">zasady gry</a></li>
+                <li><a href="">zaproponuj pytanie</a></li>
+            </ul>
+        </div>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>
