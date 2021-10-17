@@ -1,15 +1,29 @@
-div.round-info {
-    background-color: #ccc;
-    height: 36px;
-    line-height: 36px;
-    padding-left: 16px;
+div.question-set {
+    border: 1px dashed #d9d9d9;
+    margin: 24px;
+    /*display: flex;*/
+    /*flex-wrap: wrap;*/
+    /*justify-content: space-between;*/
 }
 
-h2.question {
+div.question-container {
+    display: flex;
+    padding: 12px;
+}
+
+div.question-number {
+    color: #a5a3a8;
+}
+
+div.question {
+    display: block;
     text-align: center;
+    font-size: 1.2em;
+    flex-grow: 2;
 }
 
 div.options-container {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
@@ -28,19 +42,19 @@ div.options-container {
 
 .lbl > input + div {
     text-align: center;
-    margin-bottom: 12px;
-    padding: 12px;
+    margin-bottom: 16px;
+    padding: 16px;
     cursor: pointer;
-    border: 1px solid #ccc;
+    border: 1px solid #d9d9d9;
     border-radius: 2px;
 }
 
 .lbl > input + div:hover {
-    background-color: rgba(34, 129, 34, 0.5);
+    background-color: rgba(245, 180,76, 0.5);
 }
 
 .lbl > input:checked + div {
-    background-color: rgba(34, 129, 34, 0.3);
-    border: 1px solid #228b22;
+    background-color: rgba(245, 180,76, 0.3);
+    border: 1px solid rgba(245, 180,76, 1);
 }
 

@@ -8,7 +8,7 @@ body {
 }
 
 .top-bar {
-    background-color: #552583;
+    background-color: #003c61;
     color: #fff;
     line-height: 36px;
 }
@@ -58,7 +58,8 @@ body {
 }
 
 .menu > ul > li > a:hover {
-    background-color: #552583;
+    /*background-color: #552583;*/
+    background-color: rgba(245, 180,76, 1);
     color: #fff;
 }
 
@@ -67,4 +68,12 @@ body {
     background-color: #fff;
     border-radius: 2px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+div.gray-belt {
+    background-color: #343e40;
+    color: #fff;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 16px;
 }
