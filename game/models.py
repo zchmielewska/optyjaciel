@@ -12,14 +12,33 @@ class QuestionSet(models.Model):
 class Quiz(models.Model):
     year = models.PositiveIntegerField()
     week = models.PositiveIntegerField()
-    QuestionSet0 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet0")
-    QuestionSet1 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet1")
-    QuestionSet2 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet2")
-    QuestionSet3 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet3")
-    QuestionSet4 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet4")
-    QuestionSet5 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet5")
-    QuestionSet6 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet6")
-    QuestionSet7 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet7")
-    QuestionSet8 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet8")
-    QuestionSet9 = models.ForeignKey(QuestionSet, on_delete=models.PROTECT, related_name="QuestionSet9")
+    question_set0 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set0")
+    question_set1 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set1")
+    question_set2 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set2")
+    question_set3 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set3")
+    question_set4 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set4")
+    question_set5 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set5")
+    question_set6 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set6")
+    question_set7 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set7")
+    question_set8 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set8")
+    question_set9 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set9")
+
+
+class User(models.Model):
+    username = models.CharField(max_length=256)
+
+
+class AnswerSet(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    answer0 = models.PositiveIntegerField()
+    answer1 = models.PositiveIntegerField()
+    answer2 = models.PositiveIntegerField()
+    answer3 = models.PositiveIntegerField()
+    answer4 = models.PositiveIntegerField()
+    answer5 = models.PositiveIntegerField()
+    answer6 = models.PositiveIntegerField()
+    answer7 = models.PositiveIntegerField()
+    answer8 = models.PositiveIntegerField()
+    answer9 = models.PositiveIntegerField()
 

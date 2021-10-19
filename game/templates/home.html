@@ -1,286 +1,310 @@
 {%  extends "base.html" %}
 
 {%  block content %}
-
     <div class="gray-belt">runda 2021_41</div>
 
-    {#  Question 0  #}
-    <div class="question-set">
-        <div class="question-container">
-            <div class="question-number">[1/10]</div>
-            <div class="question">{{ quiz.QuestionSet0.question }}</div>
-        </div>
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set0" value="0">
-                <div>{{ quiz.QuestionSet0.option0 }}</div>
-            </label>
+    <form method="post">
+    {% csrf_token %}
+        {#  Question 0  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[1/10]</div>
+                <div class="question">{{ quiz.question_set0.question }}</div>
+            </div>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set0" value="0">
+                    <div>{{ quiz.question_set0.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set0" value="1">
-                <div>{{ quiz.QuestionSet0.option1 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set0" value="1">
+                    <div>{{ quiz.question_set0.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set0" value="2">
-                <div>{{ quiz.QuestionSet0.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set0" value="2">
+                    <div>{{ quiz.question_set0.option2 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set0" value="3">
-                <div>{{ quiz.QuestionSet0.option3 }}</div>
-            </label>
-        </div>
-    </div>
-
-
-    {#  Question 1  #}
-    <div class="question-set">
-        <div class="question-container">
-            <div class="question-number">[2/10]</div>
-            <div class="question">{{ quiz.QuestionSet1.question }}</div>
+                <label class="lbl">
+                    <input type="radio" name="question-set0" value="3">
+                    <div>{{ quiz.question_set0.option3 }}</div>
+                </label>
+            </div>
         </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set1" value="0">
-                <div>{{ quiz.QuestionSet1.option0 }}</div>
-            </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set1" value="1">
-                <div>{{ quiz.QuestionSet1.option1 }}</div>
-            </label>
+        {#  Question 1  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[2/10]</div>
+                <div class="question">{{ quiz.question_set1.question }}</div>
+            </div>
 
-            <label class="lbl">
-                <input type="radio" name="question-set1" value="2">
-                <div>{{ quiz.QuestionSet1.option2 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set1" value="0">
+                    <div>{{ quiz.question_set1.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set1" value="3">
-                <div>{{ quiz.QuestionSet1.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set1" value="1">
+                    <div>{{ quiz.question_set1.option1 }}</div>
+                </label>
+
+                <label class="lbl">
+                    <input type="radio" name="question-set1" value="2">
+                    <div>{{ quiz.question_set1.option2 }}</div>
+                </label>
+
+                <label class="lbl">
+                    <input type="radio" name="question-set1" value="3">
+                    <div>{{ quiz.question_set1.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
 
-    {#  Question 2  #}
-    <div class="question-set">
-        <div class="question-container">
-            <div class="question-number">[3/10]</div>
-            <div class="question">{{ quiz.QuestionSet2.question }}</div>
+        {#  Question 2  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[3/10]</div>
+                <div class="question">{{ quiz.question_set2.question }}</div>
+            </div>
+
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set2" value="0">
+                    <div>{{ quiz.question_set2.option0 }}</div>
+                </label>
+
+                <label class="lbl">
+                    <input type="radio" name="question-set2" value="1">
+                    <div>{{ quiz.question_set2.option1 }}</div>
+                </label>
+
+                <label class="lbl">
+                    <input type="radio" name="question-set2" value="2">
+                    <div>{{ quiz.question_set2.option2 }}</div>
+                </label>
+
+                <label class="lbl">
+                    <input type="radio" name="question-set2" value="3">
+                    <div>{{ quiz.question_set2.option3 }}</div>
+                </label>
+            </div>
         </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set2" value="0">
-                <div>{{ quiz.QuestionSet2.option0 }}</div>
-            </label>
+        {#  Question 3  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[4/10]</div>
+                <div class="question">{{ quiz.question_set3.question }}</div>
+            </div>
 
-            <label class="lbl">
-                <input type="radio" name="question-set2" value="1">
-                <div>{{ quiz.QuestionSet2.option1 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set3" value="0">
+                    <div>{{ quiz.question_set3.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set2" value="2">
-                <div>{{ quiz.QuestionSet2.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set3" value="1">
+                    <div>{{ quiz.question_set3.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set2" value="3">
-                <div>{{ quiz.QuestionSet2.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set3" value="2">
+                    <div>{{ quiz.question_set3.option2 }}</div>
+                </label>
+
+                <label class="lbl">
+                    <input type="radio" name="question-set3" value="3">
+                    <div>{{ quiz.question_set3.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
 
-    {#  Question 3  #}
-    <div class="question-set">
-        <h2 class="question">{{ quiz.QuestionSet3.question }}</h2>
+        {#  Question 4  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[5/10]</div>
+                <div class="question">{{ quiz.question_set4.question }}</div>
+            </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set3" value="0">
-                <div>{{ quiz.QuestionSet3.option0 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set4" value="0">
+                    <div>{{ quiz.question_set4.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set3" value="1">
-                <div>{{ quiz.QuestionSet3.option1 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set4" value="1">
+                    <div>{{ quiz.question_set4.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set3" value="2">
-                <div>{{ quiz.QuestionSet3.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set4" value="2">
+                    <div>{{ quiz.question_set4.option2 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set3" value="3">
-                <div>{{ quiz.QuestionSet3.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set4" value="3">
+                    <div>{{ quiz.question_set4.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
 
-    {#  Question 4  #}
-    <div class="question-set">
-        <h2 class="question">{{ quiz.QuestionSet4.question }}</h2>
+        {#  Question 5  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[6/10]</div>
+                <div class="question">{{ quiz.question_set5.question }}</div>
+            </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set4" value="0">
-                <div>{{ quiz.QuestionSet4.option0 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set5" value="0">
+                    <div>{{ quiz.question_set5.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set4" value="1">
-                <div>{{ quiz.QuestionSet4.option1 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set5" value="1">
+                    <div>{{ quiz.question_set5.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set4" value="2">
-                <div>{{ quiz.QuestionSet4.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set5" value="2">
+                    <div>{{ quiz.question_set5.option2 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set4" value="3">
-                <div>{{ quiz.QuestionSet4.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set5" value="3">
+                    <div>{{ quiz.question_set5.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
 
-    {#  Question 5  #}
-    <div class="question-set">
-        <h2 class="question">{{ quiz.QuestionSet5.question }}</h2>
+        {#  Question 6  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[7/10]</div>
+                <div class="question">{{ quiz.question_set6.question }}</div>
+            </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set5" value="0">
-                <div>{{ quiz.QuestionSet5.option0 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set6" value="0">
+                    <div>{{ quiz.question_set6.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set5" value="1">
-                <div>{{ quiz.QuestionSet5.option1 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set6" value="1">
+                    <div>{{ quiz.question_set6.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set5" value="2">
-                <div>{{ quiz.QuestionSet5.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set6" value="2">
+                    <div>{{ quiz.question_set6.option2 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set5" value="3">
-                <div>{{ quiz.QuestionSet5.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set6" value="3">
+                    <div>{{ quiz.question_set6.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
 
-    {#  Question 6  #}
-    <div class="question-set">
-        <h2 class="question">{{ quiz.QuestionSet6.question }}</h2>
+        {#  Question 7  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[8/10]</div>
+                <div class="question">{{ quiz.question_set7.question }}</div>
+            </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set6" value="0">
-                <div>{{ quiz.QuestionSet6.option0 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set7" value="0">
+                    <div>{{ quiz.question_set7.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set6" value="1">
-                <div>{{ quiz.QuestionSet6.option1 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set7" value="1">
+                    <div>{{ quiz.question_set7.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set6" value="2">
-                <div>{{ quiz.QuestionSet6.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set7" value="2">
+                    <div>{{ quiz.question_set7.option2 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set6" value="3">
-                <div>{{ quiz.QuestionSet6.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set7" value="3">
+                    <div>{{ quiz.question_set7.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
 
-    {#  Question 7  #}
-    <div class="question-set">
-        <h2 class="question">{{ quiz.QuestionSet7.question }}</h2>
+        {#  Question 8  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[9/10]</div>
+                <div class="question">{{ quiz.question_set8.question }}</div>
+            </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set7" value="0">
-                <div>{{ quiz.QuestionSet7.option0 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set8" value="0">
+                    <div>{{ quiz.question_set8.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set7" value="1">
-                <div>{{ quiz.QuestionSet7.option1 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set8" value="1">
+                    <div>{{ quiz.question_set8.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set7" value="2">
-                <div>{{ quiz.QuestionSet7.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set8" value="2">
+                    <div>{{ quiz.question_set8.option2 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set7" value="3">
-                <div>{{ quiz.QuestionSet7.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set8" value="3">
+                    <div>{{ quiz.question_set8.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
 
-    {#  Question 8  #}
-    <div class="question-set">
-        <h2 class="question">{{ quiz.QuestionSet8.question }}</h2>
+        {#  Question 9  #}
+        <div class="question-set">
+            <div class="question-container">
+                <div class="question-number">[10/10]</div>
+                <div class="question">{{ quiz.question_set9.question }}</div>
+            </div>
 
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set8" value="0">
-                <div>{{ quiz.QuestionSet8.option0 }}</div>
-            </label>
+            <div class="options-container">
+                <label class="lbl">
+                    <input type="radio" name="question-set9" value="0">
+                    <div>{{ quiz.question_set9.option0 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set8" value="1">
-                <div>{{ quiz.QuestionSet8.option1 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set9" value="1">
+                    <div>{{ quiz.question_set9.option1 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set8" value="2">
-                <div>{{ quiz.QuestionSet8.option2 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set9" value="2">
+                    <div>{{ quiz.question_set9.option2 }}</div>
+                </label>
 
-            <label class="lbl">
-                <input type="radio" name="question-set8" value="3">
-                <div>{{ quiz.QuestionSet8.option3 }}</div>
-            </label>
+                <label class="lbl">
+                    <input type="radio" name="question-set9" value="3">
+                    <div>{{ quiz.question_set9.option3 }}</div>
+                </label>
+            </div>
         </div>
-    </div>
-
-    {#  Question 9  #}
-    <div class="question-set">
-        <h2 class="question">{{ quiz.QuestionSet9.question }}</h2>
-
-        <div class="options-container">
-            <label class="lbl">
-                <input type="radio" name="question-set9" value="0">
-                <div>{{ quiz.QuestionSet9.option0 }}</div>
-            </label>
-
-            <label class="lbl">
-                <input type="radio" name="question-set9" value="1">
-                <div>{{ quiz.QuestionSet9.option1 }}</div>
-            </label>
-
-            <label class="lbl">
-                <input type="radio" name="question-set9" value="2">
-                <div>{{ quiz.QuestionSet9.option2 }}</div>
-            </label>
-
-            <label class="lbl">
-                <input type="radio" name="question-set9" value="3">
-                <div>{{ quiz.QuestionSet9.option3 }}</div>
-            </label>
-        </div>
-    </div>
+        <button type="submit">Zapisz</button>
+    </form>
 
 {%  endblock %}

@@ -1,11 +1,43 @@
 import datetime
 from django.shortcuts import render
-from .models import Quiz
+from django.http import HttpResponse
+from .models import Quiz, AnswerSet
 
 
 def main(request):
-    now = datetime.datetime.now()
-    year = int(now.strftime("%Y"))
-    week = int(now.strftime("%W"))
-    quiz = Quiz.objects.get(year=year, week=week)
-    return render(request, 'home.html', {"quiz": quiz})
+    if request.method == "GET":
+        # If the user hasn't played yet, they should solve the quiz
+        now = datetime.datetime.now()
+        year = int(now.strftime("%Y"))
+        week = int(now.strftime("%W"))
+        quiz = Quiz.objects.get(year=year, week=week)
+        return render(request, 'home.html', {"quiz": quiz})
+
+        # If the user has already played, they should see the current result
+        # TODO
+    else:
+        answer0 = request.POST.get("question-set0")
+        answer1 = request.POST.get("question-set1")
+        answer2 = request.POST.get("question-set2")
+        answer3 = request.POST.get("question-set3")
+        answer4 = request.POST.get("question-set4")
+        answer5 = request.POST.get("question-set5")
+        answer6 = request.POST.get("question-set6")
+        answer7 = request.POST.get("question-set7")
+        answer8 = request.POST.get("question-set8")
+        answer9 = request.POST.get("question-set9")
+
+        AnswerSet.objects.create(user_id=1,
+                                 quiz_id=1,
+                                 answer0=answer0,
+                                 answer1=answer1,
+                                 answer2=answer2,
+                                 answer3=answer3,
+                                 answer4=answer4,
+                                 answer5=answer5,
+                                 answer6=answer6,
+                                 answer7=answer7,
+                                 answer8=answer8,
+                                 answer9=answer9)
+
+        return HttpResponse("Wysłano quiz")
