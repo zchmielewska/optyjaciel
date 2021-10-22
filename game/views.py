@@ -4,7 +4,8 @@ import pandas as pd
 from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Quiz, AnswerSet
-from .solver import derive_match_matrix
+from .solver import match
+from .transform import answers_to_scores_matrix
 
 
 def main(request):
@@ -41,18 +42,28 @@ def main(request):
 
 def test(request):
     # TODO: order_by id
-    x = AnswerSet.objects.filter(quiz_id=1).values('answer0', 'answer1', 'answer2', 'answer3', 'answer4',
-                                                   'answer5', 'answer6', 'answer7', 'answer8', 'answer9')
-    df = pd.DataFrame(list(x))
+    users_id = pd.DataFrame(list(AnswerSet.objects.filter(quiz_id=1).values('user_id')))
+    answers = pd.DataFrame(list(AnswerSet.objects.filter(quiz_id=1)
+                                .values('answer0', 'answer1', 'answer2', 'answer3', 'answer4',
+                                        'answer5', 'answer6', 'answer7', 'answer8', 'answer9')))
 
-    n = len(df.index)
-    scores = np.zeros((n, n))
 
-    for i in range(n):
-        for j in range(n):
-            scores[i, j] = sum(df.iloc[i] == df.iloc[j])
 
-    match_matrix = derive_match_matrix(scores)
+    scores = answers_to_scores_matrix(answers)
+    match_matrix = match(scores)
+
+    print("match_matrix")
     print(match_matrix)
+    print("")
+    print("users_id")
+    print(users_id)
 
-    return HttpResponse(df)
+    print(users_id.iloc[2] + 2)
+
+    data = []
+    n = len(users_id)
+    # for i in range(n):
+    #     for j in range(n):
+    #         data.append([1, ])
+
+    return HttpResponse("nanana")

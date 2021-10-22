@@ -21,7 +21,7 @@ import pulp
 #            [ 3,  3,  3,  3,  3]]
 
 
-def derive_match_matrix(scores):
+def match(scores):
     n = len(scores)
     result = np.zeros((n, n))
     possible_matches = [pm for pm in pulp.permutation(range(n), 2)]
