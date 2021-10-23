@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from django.shortcuts import render
 from django.http import HttpResponse
-from .models import Quiz, AnswerSet
+from .models import Quiz, AnswerSet, Match
 from .solver import match
 from .transform import answers_to_scores_matrix
 
@@ -42,28 +42,29 @@ def main(request):
 
 def test(request):
     # TODO: order_by id
-    users_id = pd.DataFrame(list(AnswerSet.objects.filter(quiz_id=1).values('user_id')))
+    users_id_objects = list(AnswerSet.objects.filter(quiz_id=1).values('user_id'))
+    users_id = [el["user_id"] for el in users_id_objects]
+
     answers = pd.DataFrame(list(AnswerSet.objects.filter(quiz_id=1)
                                 .values('answer0', 'answer1', 'answer2', 'answer3', 'answer4',
                                         'answer5', 'answer6', 'answer7', 'answer8', 'answer9')))
 
-
-
     scores = answers_to_scores_matrix(answers)
     match_matrix = match(scores)
 
-    print("match_matrix")
-    print(match_matrix)
-    print("")
-    print("users_id")
-    print(users_id)
-
-    print(users_id.iloc[2] + 2)
-
     data = []
     n = len(users_id)
-    # for i in range(n):
-    #     for j in range(n):
-    #         data.append([1, ])
+    for i in range(n):
+        for j in range(n):
+            if match_matrix[i, j] == 1:
+                data.append([users_id[i], users_id[j]])
+                break
+            else:
+                if j == n-1:
+                    data.append([users_id[i], None])
+    df = pd.DataFrame(data, columns=["user", "matched_user"])
 
-    return HttpResponse("nanana")
+    for index, row in df.iterrows():
+        Match.objects.create(quiz_id=1, user_id=row["user"], matched_user_id=row["matched_user"])
+
+    return HttpResponse("kukuryku")
