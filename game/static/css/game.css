@@ -77,3 +77,8 @@ div.gray-belt {
     line-height: 36px;
     padding-left: 16px;
 }
+
+div.footer {
+    background-color: #003c61;
+    margin-top: 24px;
+}

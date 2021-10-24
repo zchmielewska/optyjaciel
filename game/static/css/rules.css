@@ -1,0 +1,28 @@
+h1 {
+    text-align: center;
+}
+
+div.rules {
+    margin: 24px;
+    font-size: 1.1em;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+div.diagram {
+    width: 48%;
+}
+
+div.text {
+    width: 48%;
+    border: 1px dashed #d9d9d9;
+    padding: 12px;
+}
+
+img {
+    width: 75%;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

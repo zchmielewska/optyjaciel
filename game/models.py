@@ -27,6 +27,9 @@ class Quiz(models.Model):
 class User(models.Model):
     username = models.CharField(max_length=256)
 
+    def __str__(self):
+        return self.username
+
 
 class AnswerSet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

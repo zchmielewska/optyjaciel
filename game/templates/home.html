@@ -1,5 +1,9 @@
 {%  extends "base.html" %}
-
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+    <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
+{% endblock %}
 {%  block content %}
     <div class="gray-belt">runda 2021_41</div>
 
