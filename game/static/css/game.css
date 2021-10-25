@@ -5,6 +5,9 @@ body {
     font-family: Ubuntu, sans-serif;
     margin: 0;
     background-color: #eee;
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*height: 100vh; !* viewport height in % - trick for footer*!*/
 }
 
 .top-bar {
@@ -58,7 +61,6 @@ body {
 }
 
 .menu > ul > li > a:hover {
-    /*background-color: #552583;*/
     background-color: rgba(245, 180,76, 1);
     color: #fff;
 }
@@ -79,6 +81,6 @@ div.gray-belt {
 }
 
 div.footer {
-    background-color: #003c61;
+    /*background-color: #003c61;*/
     margin-top: 24px;
 }

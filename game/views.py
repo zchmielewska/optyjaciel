@@ -82,3 +82,9 @@ def test(request):
 class RulesView(View):
     def get(self, request):
         return render(request, "rules.html")
+
+
+class SuggestQuestionView(View):
+    def get(self, request):
+        return render(request, "suggest_question.html")
+
