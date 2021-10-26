@@ -1,0 +1,23 @@
+{%  extends "base.html" %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+    <link rel="stylesheet" href="{% static 'css/match.css' %}">
+{% endblock %}
+
+{%  block content %}
+    <div class="gray-belt">runda {{ year }}_{{ week }}</div>
+    <div class="current-match">
+        <span class="round-end">Do końca rundy zostało:</span>
+        <br><br>
+        Na tę chwilę Twoim optyjacielem jest:
+        <br><br>
+
+        <div class="match">
+            <div class="match-name">AlaMakota</div>
+            <div class="score">8 punktów</div>
+        </div>
+    </div>
+
+{% endblock %}

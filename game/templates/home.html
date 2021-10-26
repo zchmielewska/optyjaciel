@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
 {% endblock %}
 {%  block content %}
-    <div class="gray-belt">runda 2021_41</div>
+    <div class="gray-belt">runda {{ year }}_{{ week }}</div>
 
     <form method="post">
     {% csrf_token %}

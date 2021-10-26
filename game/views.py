@@ -1,36 +1,30 @@
-import datetime
-import numpy as np
 import pandas as pd
-from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import render
 from django.views import View
+import django.utils.timezone
 from .models import Quiz, AnswerSet, Match
-from .solver import match
-from .transform import answers_to_scores_matrix
+from game.utils.solver import match
+from game.utils.transform import answers_to_scores_matrix
+import game.utils.utils
 
 
 class MainView(View):
     def get(self, request):
-        # has_played = len(Match.objects.filter(quiz_id=1).filter(user_id=1)) > 0
-        has_played = False
+        quiz = game.utils.utils.get_current_quiz()
+        # played = len(Match.objects.filter(quiz=quiz).filter(user_id=1)) > 0
+        played = True
 
-        if not has_played:
-            # If the user hasn't played yet, they should solve the quiz
-            now = datetime.datetime.now()
-            year = int(now.strftime("%Y"))
-            week = int(now.strftime("%W"))
-            quiz = Quiz.objects.get(year=year, week=week)
+        if not played:
             return render(request, 'home.html', {"quiz": quiz})
-
         else:
-            # If the user has already played, they should see the current result
+            # See the current result
             # TODO
             match = Match.objects.get(quiz_id=1, user_id=1)
             matched_user = match.matched_user
-            return HttpResponse(matched_user)
+            return render(request, "current_match.html", {"matched_user": matched_user})
 
     def post(self, request):
-        # Save users answers
         AnswerSet.objects.create(user_id=1,
                                  quiz_id=1,
                                  answer0=request.POST.get("question-set0"),

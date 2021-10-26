@@ -10,3 +10,4 @@ def answers_to_scores_matrix(df):
             scores[i, j] = sum(df.iloc[i] == df.iloc[j])
 
     return scores
+

@@ -23,6 +23,9 @@ class Quiz(models.Model):
     question_set8 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set8")
     question_set9 = models.ForeignKey(QuestionSet, on_delete=models.CASCADE, related_name="question_set9")
 
+    class Meta:
+        unique_together = ("year", "week")
+
 
 class User(models.Model):
     username = models.CharField(max_length=256)
