@@ -1,3 +1,5 @@
+import arrow
+import datetime
 import django.utils.timezone
 import game.models
 import random
@@ -34,5 +36,10 @@ def create_random_quiz(year, week):
     return quiz
 
 
-def get_remaining_time_in_week(year, week):
-    pass
+def get_remaining_time_in_week():
+    now = arrow.get(django.utils.timezone.now())
+    week_end = now.ceil('week')
+    diff = week_end - now
+    days = diff.days
+    hours = str(datetime.timedelta(seconds=diff.seconds))
+    return f"{days} dni i {hours} godzin"

@@ -18,11 +18,17 @@ class MainView(View):
         if not played:
             return render(request, 'home.html', {"quiz": quiz})
         else:
+            print("TERAZ=", django.utils.timezone.now())
             # See the current result
             # TODO
             match = Match.objects.get(quiz_id=1, user_id=1)
             matched_user = match.matched_user
-            return render(request, "current_match.html", {"matched_user": matched_user})
+
+            ctx = {
+                "matched_user": matched_user,
+                "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
+            }
+            return render(request, "current_match.html", ctx)
 
     def post(self, request):
         AnswerSet.objects.create(user_id=1,
