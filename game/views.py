@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.views import View
 
 
-USER_ID = 6
+USER_ID = 1
 
 
 class MainView(View):
@@ -17,6 +17,7 @@ class MainView(View):
         quiz = game.utils.utils.get_current_quiz()
         # played = len(Match.objects.filter(quiz=quiz).filter(user_id=1)) > 0
         played = False
+        played = True
 
         if not played:
             quizitems = quiz.quizitem_set.all().order_by("question_set_index")
@@ -60,7 +61,6 @@ class MainView(View):
             "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
         }
         return render(request, "match.html", ctx)
-
 
     def get_answers(self, quiz):
         answers_list = []

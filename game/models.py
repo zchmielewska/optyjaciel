@@ -46,5 +46,5 @@ class Match(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
     matched_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="matched_user")
-    matched_at = models.DateField(auto_now_add=True)
+    matched_at = models.DateTimeField(auto_now_add=True)
 
