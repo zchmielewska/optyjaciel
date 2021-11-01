@@ -4,9 +4,10 @@
     <link rel="stylesheet" href="{% static 'css/game.css' %}">
     <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
 {% endblock %}
-{%  block content %}
-    <div class="gray-belt">runda {{ year }}_{{ week }}</div>
 
+{% block content-title %}runda {{ year }}_{{ week }}{% endblock %}
+
+{%  block content %}
     <form method="post">
     {% csrf_token %}
         {% for quizitem in quizitems %}

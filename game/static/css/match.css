@@ -1,0 +1,44 @@
+.user-card {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    text-align: center;
+    width: 66%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    border-radius: 5px;
+}
+
+.user-card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.left {
+    width: 33%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: rgba(245, 180,76, 0.7);
+}
+
+.right {
+    width: 66%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.score {
+    font-size: 4em;
+}
+
+.username {
+    font-size: 2.5em;
+}
+
+.bottom {
+    margin-top: 24px;
+}
+
+.buttons {
+    margin-top: 24px;
+    margin-bottom: 12px;
+}

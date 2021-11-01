@@ -98,3 +98,30 @@ def get_remaining_time_in_week():
             result += " i " + minutes_text
 
     return result
+
+
+def calculate_score(quiz, user1, user2):
+    quiz_items = quiz.quizitem_set.order_by("question_set_index")
+    score = 0
+    for quiz_item in quiz_items:
+        print(score)
+        answer1 = game.models.Answer.objects.get(user=user1, quiz_item=quiz_item)
+        answer2 = game.models.Answer.objects.get(user=user2, quiz_item=quiz_item)
+        if answer1.answer == answer2.answer:
+            score += 1
+
+    return score
+
+
+def conjugate_points(number):
+    if number == 0:
+        result = "punktów"
+    elif number == 1:
+        result = "punkt"
+    elif 2 <= number <= 4:
+        result = "punkty"
+    elif 5 <= number <= 10:
+        result = "punktów"
+    else:
+        result = "punkty"
+    return result

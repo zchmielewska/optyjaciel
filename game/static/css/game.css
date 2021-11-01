@@ -65,21 +65,25 @@ body {
     color: #fff;
 }
 
-.content {
+.content-container {
     width: 74%;
     background-color: #fff;
     border-radius: 2px;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
-div.gray-belt {
+.gray-belt {
     background-color: #343e40;
     color: #fff;
     height: 36px;
     line-height: 36px;
-    padding-left: 16px;
+    padding-left: 24px;
 }
 
-div.footer {
+.content {
+    padding: 24px;
+}
+
+.footer {
     margin-top: 24px;
 }

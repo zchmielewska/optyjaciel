@@ -3,19 +3,31 @@
 
 {% block styles %}
     <link rel="stylesheet" href="{% static 'css/game.css' %}">
-    <link rel="stylesheet" href="{% static 'css/current_match.css' %}">
+    <link rel="stylesheet" href="{% static 'css/match.css' %}">
 {% endblock %}
 
-{%  block content %}
-    <div class="gray-belt">runda {{ year }}_{{ week }}</div>
-    <div class="current-match">
-        <p>Do końca rundy zostało: {{ remaining_time_in_week }}</p>
-        <p>Na tę chwilę Twoim optyjacielem jest:</p>
+{% block content-title %}runda {{ year }}_{{ week }}{% endblock %}
 
-        <div class="matched-user">
-            AlaMakota<br>
-            8 punktów
+{%  block content %}
+    Do końca rundy zostało: {{ remaining_time_in_week }}
+    <br><br>
+    Na tę chwilę Twoim optyjacielem jest:
+    <br><br>
+
+    <div class="user-card">
+        <div class="left">
+            <span class="score">{{ score }}</span><br>{{ points }}
+        </div>
+
+        <div class="right">
+            <span class="username">{{ matched_user.username }}</span>
+            <div class="buttons">
+                <button>kompatybilność</button>
+                <button>wiadomość</button>
+            </div>
         </div>
     </div>
+
+    <div class="bottom"></div>
 
 {% endblock %}

@@ -3,11 +3,11 @@ import game.utils.utils
 import game.utils.solver
 import game.utils.transform
 import django.utils.timezone
-from .models import Quiz, Answer, Match
+from .models import Quiz, Answer, Match, User
+from django.db import transaction
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render
 from django.views import View
-
 
 USER_ID = 1
 
@@ -15,8 +15,8 @@ USER_ID = 1
 class MainView(View):
     def get(self, request):
         quiz = game.utils.utils.get_current_quiz()
+        user = User.objects.get(id=USER_ID)
         # played = len(Match.objects.filter(quiz=quiz).filter(user_id=1)) > 0
-        played = False
         played = True
 
         if not played:
@@ -27,9 +27,13 @@ class MainView(View):
             }
             return render(request, 'home.html', ctx)
         else:
-            match = Match.objects.get(quiz=quiz, user_id=USER_ID)  # TODO zmień user_id
+            match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+            matched_user = match.matched_user
+            score = game.utils.utils.calculate_score(quiz, user, matched_user)
             ctx = {
-                "matched_user": match.matched_user,
+                "matched_user": matched_user,
+                "score": score,
+                "points": game.utils.utils.conjugate_points(score),
                 "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
             }
             return render(request, "match.html", ctx)
@@ -40,22 +44,27 @@ class MainView(View):
         quiz_id = post.pop("quiz_id")
         quiz = Quiz.objects.get(id=quiz_id)
 
-        # Add user's answers to db
-        for key, value in post.items():
-            Answer.objects.create(
-                user_id=USER_ID,  # TODO zmień usera
-                quiz_item_id=key,
-                answer=value
-            )
+        with transaction.atomic():
+            # Add logged user's answers to db
+            for key, value in post.items():
+                Answer.objects.create(
+                    user_id=USER_ID,  # TODO zmień usera
+                    quiz_item_id=key,
+                    answer=value
+                )
 
-        answers, users_id = self.get_answers(quiz)
-        scores = game.utils.transform.answers_to_scores_matrix(answers)
-        match_matrix = game.utils.solver.match(scores)
-        match_table = game.utils.transform.match_matrix_to_match_table(match_matrix, users_id)
-        for index, row in match_table.iterrows():
-            Match.objects.create(quiz_id=quiz_id, user_id=row["user"], matched_user_id=row["matched_user"])
+            # Get answers of all users and recalculate matches
+            answers, users_id = self.get_answers(quiz)
+            scores = game.utils.transform.answers_to_scores_matrix(answers)
+            match_matrix = game.utils.solver.match(scores)
+            match_table = game.utils.transform.match_matrix_to_match_table(match_matrix, users_id)
 
-        match = Match.objects.get(quiz=quiz, user_id=USER_ID)  # TODO zmień user_id
+            # Save new matches
+            for index, row in match_table.iterrows():
+                matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
+                Match.objects.create(quiz_id=quiz_id, user_id=row["user"], matched_user_id=matched_user_id)
+
+        match = Match.objects.filter(quiz=quiz, user_id=USER_ID).order_by("-matched_at").first()  # TODO zmień user_id
         ctx = {
             "matched_user": match.matched_user,
             "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),

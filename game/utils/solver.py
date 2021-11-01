@@ -2,25 +2,6 @@ import numpy as np
 import pulp
 
 
-# scores1 = [[ 0, 10,  2,  7],
-#            [10,  0,  8,  1],
-#            [ 2,  8,  0,  4],
-#            [ 7,  1,  4,  0]]
-#
-# # Maximal number of matches (4th contraint)
-# scores2 = [[ 0, 10,  0,  0],
-#            [10,  0,  0,  0],
-#            [ 0,  0,  0,  0],
-#            [ 0,  0,  0,  0]]
-#
-# # Odd number of participants
-# scores3 = [[ 0, 10,  2,  4,  3],
-#            [10,  0,  8, 10,  3],
-#            [ 2,  8,  0,  2,  3],
-#            [ 4, 10,  2,  0,  3],
-#            [ 3,  3,  3,  3,  3]]
-
-
 def match(scores):
     n = len(scores)
     result = np.zeros((n, n))
@@ -62,10 +43,4 @@ def match(scores):
             result[key[0], key[1]] = x[key].value()
 
     return result
-
-
-# Tests:
-# print(derive_match_matrix(scores1))
-# print(derive_match_matrix(scores2))
-# print(derive_match_matrix(scores3))
 
