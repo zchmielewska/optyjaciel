@@ -1,6 +1,8 @@
 import arrow
 import datetime
 import django.utils.timezone
+from django.db import transaction
+
 import game.models
 import random
 
@@ -12,27 +14,36 @@ def get_current_quiz():
     if len(quizes) == 1:
         return quizes[0]
     elif len(quizes) == 0:
-        return create_random_quiz(year, week)
+        return create_random_quiz(year, week)  # TODO adjust to new model structure
     else:
         raise ValueError("There should be only one quiz per week.")
 
 
 def create_random_quiz(year, week):
-    question_sets = random.sample(list(game.models.QuestionSet.objects.all()), 10)
-    quiz = game.models.Quiz.objects.create(
-        year=year,
-        week=week,
-        question_set0=question_sets[0],
-        question_set1=question_sets[1],
-        question_set2=question_sets[2],
-        question_set3=question_sets[3],
-        question_set4=question_sets[4],
-        question_set5=question_sets[5],
-        question_set6=question_sets[6],
-        question_set7=question_sets[7],
-        question_set8=question_sets[8],
-        question_set9=question_sets[9],
-    )
+    with transaction.atomic():
+        quiz = game.models.Quiz.objects.create(year=year, week=week)
+
+        # Some question sets might not have been yet used
+        unused = game.models.QuestionSet.objects.filter(quizitem__isnull=True).distinct()
+        used = game.models.QuestionSet.objects.filter(quizitem__isnull=False).distinct()
+
+        n = len(unused)
+
+        # Quiz should have as many unused question sets as possible
+        if n >= 10:
+            question_sets = random.sample(list(unused), 10)
+        elif n >= 1:
+            question_sets = list(unused) + random.sample(list(used), 10-n)
+        else:
+            question_sets = random.sample(list(used), 10)
+
+        # Add quiz items to the quiz
+        for i in range(10):
+            game.models.QuizItem.objects.create(
+                quiz=quiz,
+                question_set_index=i+1,
+                question_set=question_sets[i],
+            )
     return quiz
 
 

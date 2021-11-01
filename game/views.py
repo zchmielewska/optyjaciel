@@ -1,52 +1,99 @@
 import pandas as pd
-from django.http import HttpResponse
+import game.utils.utils
+import game.utils.solver
+import game.utils.transform
+import django.utils.timezone
+from .models import Quiz, Answer, Match
+from django.http import HttpResponse, QueryDict
 from django.shortcuts import render
 from django.views import View
-import django.utils.timezone
-from .models import Quiz, AnswerSet, Match
-from game.utils.solver import match
-from game.utils.transform import answers_to_scores_matrix
-import game.utils.utils
+
+
+USER_ID = 6
 
 
 class MainView(View):
     def get(self, request):
         quiz = game.utils.utils.get_current_quiz()
         # played = len(Match.objects.filter(quiz=quiz).filter(user_id=1)) > 0
-        played = True
+        played = False
 
         if not played:
-            return render(request, 'home.html', {"quiz": quiz})
-        else:
-            print("TERAZ=", django.utils.timezone.now())
-            # See the current result
-            # TODO
-            match = Match.objects.get(quiz_id=1, user_id=1)
-            matched_user = match.matched_user
-
+            quizitems = quiz.quizitem_set.all().order_by("question_set_index")
             ctx = {
-                "matched_user": matched_user,
+                "quiz_id": quiz.id,
+                "quizitems": quizitems,
+            }
+            return render(request, 'home.html', ctx)
+        else:
+            match = Match.objects.get(quiz=quiz, user_id=USER_ID)  # TODO zmień user_id
+            ctx = {
+                "matched_user": match.matched_user,
                 "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
             }
-            return render(request, "current_match.html", ctx)
+            return render(request, "match.html", ctx)
 
     def post(self, request):
-        AnswerSet.objects.create(user_id=1,
-                                 quiz_id=1,
-                                 answer0=request.POST.get("question-set0"),
-                                 answer1=request.POST.get("question-set1"),
-                                 answer2=request.POST.get("question-set2"),
-                                 answer3=request.POST.get("question-set3"),
-                                 answer4=request.POST.get("question-set4"),
-                                 answer5=request.POST.get("question-set5"),
-                                 answer6=request.POST.get("question-set6"),
-                                 answer7=request.POST.get("question-set7"),
-                                 answer8=request.POST.get("question-set8"),
-                                 answer9=request.POST.get("question-set9"))
+        post = QueryDict.dict(request.POST)
+        post.pop("csrfmiddlewaretoken")
+        quiz_id = post.pop("quiz_id")
+        quiz = Quiz.objects.get(id=quiz_id)
 
-        # Create new matchings
-        x = AnswerSet.objects.filter(quiz_id=1)
-        return HttpResponse("Wysłano quiz")
+        # Add user's answers to db
+        for key, value in post.items():
+            Answer.objects.create(
+                user_id=USER_ID,  # TODO zmień usera
+                quiz_item_id=key,
+                answer=value
+            )
+
+        answers, users_id = self.get_answers(quiz)
+        scores = game.utils.transform.answers_to_scores_matrix(answers)
+        match_matrix = game.utils.solver.match(scores)
+        match_table = game.utils.transform.match_matrix_to_match_table(match_matrix, users_id)
+        for index, row in match_table.iterrows():
+            Match.objects.create(quiz_id=quiz_id, user_id=row["user"], matched_user_id=row["matched_user"])
+
+        match = Match.objects.get(quiz=quiz, user_id=USER_ID)  # TODO zmień user_id
+        ctx = {
+            "matched_user": match.matched_user,
+            "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
+        }
+        return render(request, "match.html", ctx)
+
+
+    def get_answers(self, quiz):
+        answers_list = []
+        for i in range(10):
+            question_set_index = i+1
+            quiz_item = quiz.quizitem_set.get(question_set_index=question_set_index)
+            quiz_item_answers = quiz_item.answer_set.all().order_by("user_id")
+            if question_set_index == 1:
+                df = pd.DataFrame(list(quiz_item_answers.values("user_id", "answer")))
+            else:
+                df = pd.DataFrame(list(quiz_item_answers.values("answer")))
+            df = df.rename(columns={"answer": "answer" + str(question_set_index)})
+            answers_list.append(df)
+
+        df = pd.concat(answers_list, axis=1)
+        answers = df[["answer" + str(i+1) for i in range(10)]]
+        users_id = list(df["user_id"])
+        return answers, users_id
+
+
+def test2(request):
+    answers_list = []
+    i = 1
+    quiz_item = quiz.quizitem_set.filter(question_set_index=i)
+    quiz_item_answers = quiz_item.answer_set.all().order_by("user_id")
+    if i == 1:
+        df = quiz_item_answers.values("user_id", "answer")
+    else:
+        df = quiz_item_answers.values("answer")
+    answers_list.append(df)
+    answers = pd.concat(answers_list, axis=1)
+
+    pass
 
 
 def test(request):
@@ -86,5 +133,5 @@ class RulesView(View):
 
 class SuggestQuestionView(View):
     def get(self, request):
-        return render(request, "suggest_question.html")
+        return render(request, "suggest.html")
 
