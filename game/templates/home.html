@@ -1,11 +1,11 @@
 {%  extends "base.html" %}
+
 {% load static %}
 {% block styles %}
-    <link rel="stylesheet" href="{% static 'css/game.css' %}">
     <link rel="stylesheet" href="{% static 'css/quiz.css' %}">
 {% endblock %}
 
-{% block content-title %}runda {{ year }}_{{ week }}{% endblock %}
+{% block content-title %}runda {{ quiz.year }}_{{ quiz.week }}{% endblock %}
 
 {%  block content %}
     <form method="post">

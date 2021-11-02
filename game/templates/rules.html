@@ -1,11 +1,13 @@
 {%  extends "base.html" %}
+
 {% load static %}
 {% block styles %}
-    <link rel="stylesheet" href="{% static 'css/game.css' %}">
     <link rel="stylesheet" href="{% static 'css/rules.css' %}">
 {% endblock %}
+
+{% block content-title %}zasady gry{% endblock %}
+
 {%  block content %}
-    <div class="gray-belt">zasady gry</div>
     <h1>Q&A</h1>
 
     <div class="rules">

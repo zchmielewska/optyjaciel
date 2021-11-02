@@ -1,12 +1,11 @@
 {%  extends "base.html" %}
-{% load static %}
 
+{% load static %}
 {% block styles %}
-    <link rel="stylesheet" href="{% static 'css/game.css' %}">
     <link rel="stylesheet" href="{% static 'css/match.css' %}">
 {% endblock %}
 
-{% block content-title %}runda {{ year }}_{{ week }}{% endblock %}
+{% block content-title %}runda {{ quiz.year }}_{{ quiz.week }}{% endblock %}
 
 {%  block content %}
     Do końca rundy zostało: {{ remaining_time_in_week }}
@@ -22,8 +21,10 @@
         <div class="right">
             <span class="username">{{ matched_user.username }}</span>
             <div class="buttons">
-                <button>kompatybilność</button>
-                <button>wiadomość</button>
+                <a href="{% url "compatibility" quiz.id user_id matched_user.id %}">
+                    kompatybilność
+                </a>
+                {# <button>wiadomość</button> #}
             </div>
         </div>
     </div>

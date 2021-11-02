@@ -104,7 +104,6 @@ def calculate_score(quiz, user1, user2):
     quiz_items = quiz.quizitem_set.order_by("question_set_index")
     score = 0
     for quiz_item in quiz_items:
-        print(score)
         answer1 = game.models.Answer.objects.get(user=user1, quiz_item=quiz_item)
         answer2 = game.models.Answer.objects.get(user=user2, quiz_item=quiz_item)
         if answer1.answer == answer2.answer:

@@ -3,7 +3,7 @@ import game.utils.utils
 import game.utils.solver
 import game.utils.transform
 import django.utils.timezone
-from .models import Quiz, Answer, Match, User
+from .models import Quiz, QuizItem, Answer, Match, User
 from django.db import transaction
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render
@@ -31,6 +31,8 @@ class MainView(View):
             matched_user = match.matched_user
             score = game.utils.utils.calculate_score(quiz, user, matched_user)
             ctx = {
+                "quiz": quiz,
+                "user_id": USER_ID,
                 "matched_user": matched_user,
                 "score": score,
                 "points": game.utils.utils.conjugate_points(score),
@@ -66,6 +68,7 @@ class MainView(View):
 
         match = Match.objects.filter(quiz=quiz, user_id=USER_ID).order_by("-matched_at").first()  # TODO zmień user_id
         ctx = {
+            "quiz": quiz,
             "matched_user": match.matched_user,
             "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
         }
@@ -90,51 +93,6 @@ class MainView(View):
         return answers, users_id
 
 
-def test2(request):
-    answers_list = []
-    i = 1
-    quiz_item = quiz.quizitem_set.filter(question_set_index=i)
-    quiz_item_answers = quiz_item.answer_set.all().order_by("user_id")
-    if i == 1:
-        df = quiz_item_answers.values("user_id", "answer")
-    else:
-        df = quiz_item_answers.values("answer")
-    answers_list.append(df)
-    answers = pd.concat(answers_list, axis=1)
-
-    pass
-
-
-def test(request):
-    # TODO: order_by id
-    users_id_objects = list(AnswerSet.objects.filter(quiz_id=1).values('user_id'))
-    users_id = [user_id_object["user_id"] for user_id_object in users_id_objects]
-
-    answers = pd.DataFrame(list(AnswerSet.objects.filter(quiz_id=1)
-                                .values('answer0', 'answer1', 'answer2', 'answer3', 'answer4',
-                                        'answer5', 'answer6', 'answer7', 'answer8', 'answer9')))
-
-    scores = answers_to_scores_matrix(answers)
-    match_matrix = match(scores)
-
-    data = []
-    n = len(users_id)
-    for i in range(n):
-        for j in range(n):
-            if match_matrix[i, j] == 1:
-                data.append([users_id[i], users_id[j]])
-                break
-            else:
-                if j == n-1:
-                    data.append([users_id[i], None])
-    df = pd.DataFrame(data, columns=["user", "matched_user"])
-
-    for index, row in df.iterrows():
-        Match.objects.create(quiz_id=1, user_id=row["user"], matched_user_id=row["matched_user"])
-
-    return HttpResponse("kukuryku")
-
-
 class RulesView(View):
     def get(self, request):
         return render(request, "rules.html")
@@ -144,3 +102,41 @@ class SuggestQuestionView(View):
     def get(self, request):
         return render(request, "suggest.html")
 
+
+class CompatibilityView(View):
+    def get(self, request, quiz_id, user1_id, user2_id):
+        quiz = Quiz.objects.get(id=quiz_id)
+        user1 = User.objects.get(id=user1_id)
+        user2 = User.objects.get(id=user2_id)
+        quiz_items = quiz.quizitem_set.all().order_by("question_set_index")
+
+        elements = []
+        for quiz_item in quiz_items:
+            question = quiz_item.question_set.question
+            answer1 = self.get_answer(quiz_item, user1)
+            answer2 = self.get_answer(quiz_item, user2)
+            elements.append((question, answer1, answer2))
+
+        ctx = {
+            "quiz": quiz,
+            "user1": user1,
+            "user2": user2,
+            "elements": elements,
+        }
+
+        return render(request, "compatibility.html", ctx)
+
+    def get_answer(self, quiz_item, user):
+        answer_object = Answer.objects.get(user=user, quiz_item=quiz_item)
+        answer = answer_object.answer
+
+        if answer == 1:
+            result = quiz_item.question_set.option1
+        elif answer == 2:
+            result = quiz_item.question_set.option2
+        elif answer == 3:
+            result = quiz_item.question_set.option3
+        elif answer == 4:
+            result = quiz_item.question_set.option4
+
+        return result

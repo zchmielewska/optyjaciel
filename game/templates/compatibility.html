@@ -1,6 +1,32 @@
 {%  extends "base.html" %}
+
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/compatibility.css' %}">
+{% endblock %}
+
+{% block content-title %}
+    kompatybilność | runda {{ quiz.year }}_{{ quiz.week }}
+{% endblock %}
+
 {%  block content %}
-    <ul>
-        <li></li>
-    </ul>
+
+    <table>
+        <tr>
+            <th>#</th>
+            <th>Pytanie</th>
+            <th>{{ user1.username }}</th>
+            <th>{{ user2.username }}</th>
+        </tr>
+
+        {% for element in elements %}
+        <tr {% if element.1 == element.2 %} class="good" {% endif %}>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ element.0 }}</td>
+            <td>{{ element.1 }}</td>
+            <td>{{ element.2 }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
 {% endblock %}

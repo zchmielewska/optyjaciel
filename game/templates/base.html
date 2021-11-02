@@ -6,9 +6,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Cookie" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu" rel="stylesheet">
-    {% block styles %}
     <link rel="stylesheet" href="{% static 'css/game.css' %}">
-    {% endblock %}
+    {% block styles %}{% endblock %}
     <title>optyjaciel | optymalny przyjaciel</title>
 </head>
 <body>
@@ -22,16 +21,20 @@
         <div class="menu">
             <div class="gray-belt">menu</div>
             <ul>
-                <li><a href="{% url "current-game" %}">aktualna runda</a></li>
+                <li><a href="{% url "game" %}">aktualna runda</a></li>
                 <li><a href="">Twoi optyjaciele</a></li>
                 <li><a href="{% url "rules" %}">zasady gry</a></li>
-                <li><a href="{% url "suggest-question" %}">zaproponuj pytanie</a></li>
+                <li><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
             </ul>
         </div>
 
         <div class="content-container">
-            <div class="gray-belt">{% block content-title %}{% endblock %}</div>
-            <div class="content">{% block content %}{% endblock %}</div>
+            <div class="gray-belt">
+                {% block content-title %}{% endblock %}
+            </div>
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </div>
 
