@@ -48,3 +48,12 @@ class Match(models.Model):
     matched_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="matched_user")
     matched_at = models.DateTimeField(auto_now_add=True)
 
+
+class Suggestion(models.Model):
+    question = models.CharField(max_length=256, verbose_name="pytanie")
+    option1 = models.CharField(max_length=256, verbose_name="Odpowiedź 1")
+    option2 = models.CharField(max_length=256, verbose_name="Odpowiedź 2")
+    option3 = models.CharField(max_length=256, verbose_name="Odpowiedź 3")
+    option4 = models.CharField(max_length=256, verbose_name="Odpowiedź 4")
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    suggested_at = models.DateTimeField(auto_now_add=True)

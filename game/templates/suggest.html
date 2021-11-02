@@ -3,6 +3,24 @@
 {% block content-title %}zaproponuj pytanie{% endblock %}
 
 {%  block content %}
-    Zaproponuj pytanie
+    Zaproponuj swoje pytanie do kolejnych rund gry:
+
+    {% if form.login.errors %}
+      <ol>
+      {% for err in form.login.errors %}
+        <li>
+          <strong>
+            {{ err|escape }}
+          </strong>
+        </li>
+      {% endfor %}
+      </ol>
+    {% endif %}
+
+    <form action="#" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Wyślij</button>
+    </form>
 
 {% endblock %}

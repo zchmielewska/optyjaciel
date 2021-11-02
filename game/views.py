@@ -3,11 +3,14 @@ import game.utils.utils
 import game.utils.solver
 import game.utils.transform
 import django.utils.timezone
-from .models import Quiz, QuizItem, Answer, Match, User
+
+from .forms import SuggestionForm
+from .models import Quiz, QuizItem, Answer, Match, User, Suggestion
 from django.db import transaction
 from django.http import HttpResponse, QueryDict
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
+from django.views.generic import FormView
 
 USER_ID = 1
 
@@ -98,11 +101,6 @@ class RulesView(View):
         return render(request, "rules.html")
 
 
-class SuggestQuestionView(View):
-    def get(self, request):
-        return render(request, "suggest.html")
-
-
 class CompatibilityView(View):
     def get(self, request, quiz_id, user1_id, user2_id):
         quiz = Quiz.objects.get(id=quiz_id)
@@ -136,7 +134,36 @@ class CompatibilityView(View):
             result = quiz_item.question_set.option2
         elif answer == 3:
             result = quiz_item.question_set.option3
-        elif answer == 4:
+        else:
             result = quiz_item.question_set.option4
 
         return result
+
+
+class SuggestionView(FormView):
+    template_name = "suggest.html"
+    form_class = SuggestionForm
+    success_url = "/"
+
+    def form_valid(self, form):
+        question = form.cleaned_data.get("question")
+        option1 = form.cleaned_data.get("option1")
+        option2 = form.cleaned_data.get("option2")
+        option3 = form.cleaned_data.get("option3")
+        option4 = form.cleaned_data.get("option4")
+
+        Suggestion.objects.create(
+            question=question,
+            option1=option1,
+            option2=option2,
+            option3=option3,
+            option4=option4,
+            user_id=USER_ID,  # TODO
+        )
+
+        return redirect("thanks")
+
+
+class ThanksView(View):
+    def get(self, request):
+        return render(request, "thanks.html")
