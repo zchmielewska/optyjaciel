@@ -13,6 +13,7 @@
     Na tę chwilę Twoim optyjacielem jest:
     <br><br>
 
+    {% if matched_user %}
     <div class="user-card">
         <div class="left">
             <span class="score">{{ score }}</span><br>{{ points }}
@@ -28,6 +29,9 @@
             </div>
         </div>
     </div>
+    {% else %}
+        <p><strong>Niestety obecnie jest nieparzysta liczba uczestników i nie masz optyjaciela. :-(</strong></p>
+    {% endif %}
 
     <div class="bottom"></div>
 

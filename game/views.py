@@ -12,38 +12,29 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView
 
-USER_ID = 1
+USER_ID = 4
 
 
 class MainView(View):
     def get(self, request):
-        quiz = game.utils.utils.get_current_quiz()
         user = User.objects.get(id=USER_ID)
-        # played = len(Match.objects.filter(quiz=quiz).filter(user_id=1)) > 0
-        played = True
+        quiz = game.utils.utils.get_current_quiz()
+        # quiz = Quiz.objects.get(id=1)  # TODO remove; used to add data to previous quizes
+        played = len(Match.objects.filter(quiz=quiz, user=user)) > 0  # TODO czy user tak zostaje?
 
         if not played:
             quizitems = quiz.quizitem_set.all().order_by("question_set_index")
             ctx = {
-                "quiz_id": quiz.id,
+                "quiz": quiz,
                 "quizitems": quizitems,
             }
             return render(request, 'home.html', ctx)
         else:
-            match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
-            matched_user = match.matched_user
-            score = game.utils.utils.calculate_score(quiz, user, matched_user)
-            ctx = {
-                "quiz": quiz,
-                "user_id": USER_ID,
-                "matched_user": matched_user,
-                "score": score,
-                "points": game.utils.utils.conjugate_points(score),
-                "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
-            }
+            ctx = self.get_match_ctx(quiz, user)
             return render(request, "match.html", ctx)
 
     def post(self, request):
+        user = User.objects.get(id=USER_ID)
         post = QueryDict.dict(request.POST)
         post.pop("csrfmiddlewaretoken")
         quiz_id = post.pop("quiz_id")
@@ -69,13 +60,22 @@ class MainView(View):
                 matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
                 Match.objects.create(quiz_id=quiz_id, user_id=row["user"], matched_user_id=matched_user_id)
 
-        match = Match.objects.filter(quiz=quiz, user_id=USER_ID).order_by("-matched_at").first()  # TODO zmień user_id
+        ctx = self.get_match_ctx(quiz, user)
+        return render(request, "match.html", ctx)
+
+    def get_match_ctx(self, quiz, user):
+        match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+        matched_user = match.matched_user
+        score = game.utils.utils.calculate_score(quiz, user, matched_user) if matched_user else 0
         ctx = {
             "quiz": quiz,
-            "matched_user": match.matched_user,
+            "user_id": user.id,
+            "matched_user": matched_user,
+            "score": score,
+            "points": game.utils.utils.conjugate_points(score),
             "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
         }
-        return render(request, "match.html", ctx)
+        return ctx
 
     def get_answers(self, quiz):
         answers_list = []
@@ -94,11 +94,6 @@ class MainView(View):
         answers = df[["answer" + str(i+1) for i in range(10)]]
         users_id = list(df["user_id"])
         return answers, users_id
-
-
-class RulesView(View):
-    def get(self, request):
-        return render(request, "rules.html")
 
 
 class CompatibilityView(View):
@@ -138,6 +133,17 @@ class CompatibilityView(View):
             result = quiz_item.question_set.option4
 
         return result
+
+
+class MatchesView(View):
+    # Znajdź wszystkie rundy w których brał udział użytkownik
+
+    pass
+
+
+class RulesView(View):
+    def get(self, request):
+        return render(request, "rules.html")
 
 
 class SuggestionView(FormView):
