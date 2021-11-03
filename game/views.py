@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView
 
-USER_ID = 4
+USER_ID = 1
 
 
 class MainView(View):
@@ -31,7 +31,7 @@ class MainView(View):
             return render(request, 'home.html', ctx)
         else:
             ctx = self.get_match_ctx(quiz, user)
-            return render(request, "match.html", ctx)
+            return render(request, "round.html", ctx)
 
     def post(self, request):
         user = User.objects.get(id=USER_ID)
@@ -61,19 +61,22 @@ class MainView(View):
                 Match.objects.create(quiz_id=quiz_id, user_id=row["user"], matched_user_id=matched_user_id)
 
         ctx = self.get_match_ctx(quiz, user)
-        return render(request, "match.html", ctx)
+        return render(request, "round.html", ctx)
 
     def get_match_ctx(self, quiz, user):
         match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
         matched_user = match.matched_user
         score = game.utils.utils.calculate_score(quiz, user, matched_user) if matched_user else 0
+        points = game.utils.utils.conjugate_points(score)
         ctx = {
-            "quiz": quiz,
             "user_id": user.id,
-            "matched_user": matched_user,
-            "score": score,
-            "points": game.utils.utils.conjugate_points(score),
             "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
+            "match": {
+                "quiz": quiz,
+                "matched_user": matched_user,
+                "score": score,
+                "points": points,
+            }
         }
         return ctx
 
@@ -136,9 +139,31 @@ class CompatibilityView(View):
 
 
 class MatchesView(View):
-    # Znajdź wszystkie rundy w których brał udział użytkownik
+    def get(self, request):
+        user = User.objects.get(id=USER_ID)
+        current_quiz = game.utils.utils.get_current_quiz()
 
-    pass
+        answers = Answer.objects.filter(user=USER_ID)
+        quiz_items = [answer.quiz_item for answer in answers]
+        quizes = []
+        for quiz_item in quiz_items:
+            if quiz_item.quiz not in quizes and quiz_item.quiz != current_quiz:
+                quizes.append(quiz_item.quiz)
+
+        matches = []
+        for quiz in quizes:
+            match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+            matched_user = match.matched_user
+            score = game.utils.utils.calculate_score(quiz, user, matched_user) if matched_user else 0
+            points = game.utils.utils.conjugate_points(score)
+            element = {"quiz": quiz, "matched_user": matched_user, "score": score, "points": points}
+            matches.append(element)
+
+        ctx = {
+            "user_id": user.id,
+            "matches": matches,
+        }
+        return render(request, "matches.html", ctx)
 
 
 class RulesView(View):

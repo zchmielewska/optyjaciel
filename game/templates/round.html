@@ -1,0 +1,20 @@
+{%  extends "base.html" %}
+
+{% load static %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'css/round.css' %}">
+{% endblock %}
+
+{% block content-title %}aktualna runda{% endblock %}
+
+{%  block content %}
+    Do końca rundy zostało: {{ remaining_time_in_week }}
+    <br><br>
+    Na tę chwilę Twoim optyjacielem jest:
+    <br><br>
+
+    {% include "match.html" %}
+
+    <div class="bottom"></div>
+
+{% endblock %}

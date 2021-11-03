@@ -1,38 +1,20 @@
-{%  extends "base.html" %}
-
-{% load static %}
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'css/match.css' %}">
-{% endblock %}
-
-{% block content-title %}runda {{ quiz.year }}_{{ quiz.week }}{% endblock %}
-
-{%  block content %}
-    Do końca rundy zostało: {{ remaining_time_in_week }}
-    <br><br>
-    Na tę chwilę Twoim optyjacielem jest:
-    <br><br>
-
-    {% if matched_user %}
+Rok: {{ match.quiz.year }}, tydzień {{ match.quiz.week }}
+{% if match.matched_user %}
     <div class="user-card">
         <div class="left">
-            <span class="score">{{ score }}</span><br>{{ points }}
+            <span class="score">{{ match.score }}</span><br>{{ match.points }}
         </div>
 
         <div class="right">
-            <span class="username">{{ matched_user.username }}</span>
+            <span class="username">{{ match.matched_user.username }}</span>
             <div class="buttons">
-                <a href="{% url "compatibility" quiz.id user_id matched_user.id %}">
+                <a href="{% url "compatibility" match.quiz.id user_id match.matched_user.id %}">
                     kompatybilność
                 </a>
                 {# <button>wiadomość</button> #}
             </div>
         </div>
     </div>
-    {% else %}
-        <p><strong>Niestety obecnie jest nieparzysta liczba uczestników i nie masz optyjaciela. :-(</strong></p>
-    {% endif %}
-
-    <div class="bottom"></div>
-
-{% endblock %}
+{% else %}
+    <p><strong>Niestety obecnie jest nieparzysta liczba uczestników i nie masz optyjaciela. :-(</strong></p>
+{% endif %}
