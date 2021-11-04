@@ -4,14 +4,10 @@ h1 {
 
 div.rules {
     margin: 24px;
-}
-
-div.matching_example {
-    display: flex;
     text-align: justify;
 }
 
 img {
-    width: 45%;
-    display: block;
+    width: 320px;
+    float: right;
 }

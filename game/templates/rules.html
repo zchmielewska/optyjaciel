@@ -12,33 +12,33 @@
 
     <div class="rules">
         <h2>Na czym polega gra?</h2>
-        <p>W każdej rundzie wszyscy gracze odpowiadają na 10 takich samych pytań.</p>
-
-        <p>Następnie gracze są dobierani w pary tak, aby było jak najwięcej punktów wśród wszystkich graczy.
+        <p>
+            W każdej rundzie wszyscy gracze odpowiadają na 10 takich samych pytań.
+            <br><br>
+            Następnie gracze są dobierani w pary tak, aby było jak najwięcej punktów wśród wszystkich graczy.
             Punkty są przyznawane za takie same odpowiedzi na pytania.
-            Dobraną parę nazywamy <strong>optyjaciółmi</strong>.</p>
-
-        <p>Każda runda trwa jeden tydzień.
+            Dobraną parę nazywamy <strong>optyjaciółmi</strong>.
+            <br><br>
+            Każda runda trwa jeden tydzień.
             W trakcie trwania rundy optyjaciele mogą się zmieniać, ponieważ do gry dołączają nowi gracze.
-            Na koniec rundy, gra jest zakańczana a optyjaciele są ustanawianie na stałe.</p>
+            Na koniec rundy, gra jest zakańczana a optyjaciele są ustanawianie na stałe.
+        </p>
 
         <h2>Jak dobierani są optyjaciele?</h2>
-        <div class="matching_example">
-            <div>
-                <p>Optyjaciele są łączeni w pary tak, aby było jak najwięcej punktów wśród wszystkich grających.
-                    Punkt jest przyznawany zawsze wtedy, gdy dwie osoby odpowiedzą tak samo na pytanie.</p>
-
-                <p>Załóżmy, że w grze biorą udział Alicja, Bartek, Czarek i Daria.
-                    Ich wyniki można zobaczyć na diagramie.</p>
-
-                <p>Optyjacielami zostaliby Alicja i Bartek (wynik 7 punktów) i Czarek z Darią (wynik 6 punktów).
-                    W ten sposób wynik całej grupy to 13 punktów.</p>
-
-                <p>Mimo że najwyższy wynik mają Alicja i Czarek (8 punktów) nie są oni optyjacielami,
-                    ponieważ wtedy Bartek zostałby połączony z Darią (4 punkty).
-                    Wynik całej grupy wyniósłby tylko 12 punktów.</p>
-            </div>
-            <img src="{% static 'img/diagram.png' %}" alt="Example of scores between players">
-        </div>
+        <p>
+            <img src="{% static 'img/diagram.png' %}" alt="Przykładowe wyniki z rundy">
+            Optyjaciele są łączeni w pary tak, aby było jak najwięcej punktów wśród wszystkich grających.
+            Punkt jest przyznawany zawsze wtedy, gdy dwie osoby odpowiedzą tak samo na pytanie.
+            <br><br>
+            Załóżmy, że w grze biorą udział Alicja, Bartek, Czarek i Daria.
+            Ich wyniki można zobaczyć na diagramie.
+            <br><br>
+            Optyjacielami zostaliby Alicja i Bartek (wynik 7 punktów) i Czarek z Darią (wynik 6 punktów).
+            W ten sposób wynik całej grupy to 13 punktów.
+            <br><br>
+            Mimo że najwyższy wynik mają Alicja i Czarek (8 punktów) nie są oni optyjacielami,
+            ponieważ wtedy Bartek zostałby połączony z Darią (4 punkty).
+            Wynik całej grupy wyniósłby tylko 12 punktów.
+        </p>
     </div>
 {% endblock %}
