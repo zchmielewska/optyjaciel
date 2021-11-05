@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView
 
-USER_ID = 1
+USER_ID = 6
 
 
 class MainView(View):
@@ -21,6 +21,7 @@ class MainView(View):
         quiz = game.utils.utils.get_current_quiz()
         # quiz = Quiz.objects.get(id=1)  # TODO remove; used to add data to previous quizes
         played = len(Match.objects.filter(quiz=quiz, user=user)) > 0  # TODO czy user tak zostaje?
+        played = False;
 
         if not played:
             quizitems = quiz.quizitem_set.all().order_by("question_set_index")
@@ -28,7 +29,7 @@ class MainView(View):
                 "quiz": quiz,
                 "quizitems": quizitems,
             }
-            return render(request, 'home.html', ctx)
+            return render(request, 'quiz.html', ctx)
         else:
             ctx = self.get_match_ctx(quiz, user)
             return render(request, "round.html", ctx)
