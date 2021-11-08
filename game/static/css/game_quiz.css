@@ -71,7 +71,7 @@ button {
     width: 33%;
     font-size: 16px;
 }
+
 button:hover {
     background-color: rgba(245, 180, 76, 1);
 }
-

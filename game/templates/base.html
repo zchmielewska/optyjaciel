@@ -7,13 +7,19 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Cookie" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/game.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block head %}{% endblock %}
     <title>optyjaciel | optymalny przyjaciel</title>
 </head>
 <body>
     <div class="top-bar">
-        <div class="top-bar-container">zaloguj się</div>
+        <div class="top-bar-container">
+            {% if request.user.username %}
+                <strong>{{ request.user.username }}</strong> | <a href="{% url "logout" %}">wyloguj się</a>
+            {% else %}
+                <a href="{% url "login" %}">zaloguj się</a>
+            {% endif %}
+        </div>
     </div>
 
     <h1 class="logo">optyjaciel</h1>
@@ -21,9 +27,9 @@
     <div class="container">
         <div class="menu">
             <ul>
+                <li><a href="{% url "rules" %}">zasady gry</a></li>
                 <li><a href="{% url "game" %}">aktualna runda</a></li>
                 <li><a href="{% url "matches" %}">Twoi optyjaciele</a></li>
-                <li><a href="{% url "rules" %}">zasady gry</a></li>
                 <li><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
             </ul>
         </div>

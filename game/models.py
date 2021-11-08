@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 
 
@@ -26,15 +27,8 @@ class QuizItem(models.Model):
         unique_together = ("quiz", "question_set_index")
 
 
-class User(models.Model):
-    username = models.CharField(max_length=256)
-
-    def __str__(self):
-        return self.username
-
-
 class Answer(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quiz_item = models.ForeignKey(QuizItem, on_delete=models.CASCADE)
     answer = models.PositiveIntegerField()
 
@@ -44,8 +38,8 @@ class Answer(models.Model):
 
 class Match(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user")
-    matched_user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name="matched_user")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user")
+    matched_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name="matched_user")
     matched_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -55,5 +49,5 @@ class Suggestion(models.Model):
     option2 = models.CharField(max_length=256, verbose_name="Odpowiedź 2")
     option3 = models.CharField(max_length=256, verbose_name="Odpowiedź 3")
     option4 = models.CharField(max_length=256, verbose_name="Odpowiedź 4")
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     suggested_at = models.DateTimeField(auto_now_add=True)

@@ -36,7 +36,6 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    flex-wrap: wrap;
     gap: 10px;
 }
 
@@ -45,6 +44,7 @@ body {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border-top: 2px solid rgba(245, 180,76, 1);
     flex-basis: 300px;
+    flex-shrink: 0;
 }
 
 .menu > ul {
@@ -82,6 +82,10 @@ body {
 }
 
 @media only screen and (max-width: 768px) {
+    .container {
+        flex-wrap: wrap;
+    }
+
     .menu {
         flex-basis: 100%;
         margin-top: 10px;

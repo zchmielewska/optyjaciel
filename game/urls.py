@@ -1,12 +1,15 @@
 from django.urls import path
-from . import views
+from .views import *
 
 urlpatterns = [
-    path('', views.MainView.as_view(), name="game"),
-    path('kompatybilnosc/<int:quiz_id>/<int:user1_id>/<int:user2_id>/', views.CompatibilityView.as_view(),
+    path('', RulesView.as_view(), name="rules"),
+    path('runda/', GameView.as_view(), name="game"),
+    path('kompatybilnosc/<int:quiz_id>/<int:user1_id>/<int:user2_id>/', CompatibilityView.as_view(),
          name="compatibility"),
-    path('optyjaciele/', views.MatchesView.as_view(), name="matches"),
-    path('zasady-gry/', views.RulesView.as_view(), name="rules"),
-    path('zaproponuj-pytanie/', views.SuggestionView.as_view(), name="suggest"),
-    path('dziekuje/', views.ThanksView.as_view(), name="thanks"),
+    path('optyjaciele/', MatchesView.as_view(), name="matches"),
+    path('zaproponuj-pytanie/', SuggestionView.as_view(), name="suggest"),
+    path('dziekuje/', ThanksView.as_view(), name="thanks"),
+    path('zarejestruj/', RegisterView.as_view(), name="register"),
+    path('zaloguj/', LoginView.as_view(), name="login"),
+    path('wyloguj/', LogoutView.as_view(), name="logout"),
 ]

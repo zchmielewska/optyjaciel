@@ -1,8 +1,8 @@
 {%  extends "base.html" %}
 
 {% load static %}
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'css/round.css' %}">
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/game_result.css' %}">
 {% endblock %}
 
 {% block content-title %}aktualna runda{% endblock %}
@@ -13,7 +13,7 @@
     Na tę chwilę Twoim optyjacielem jest:
     <br><br>
 
-    {% include "quiz-match.html" %}
+    {% include "match.html" %}
 
     <div class="bottom"></div>
 

@@ -1,14 +1,12 @@
 {%  extends "base.html" %}
 
 {% load static %}
-{% block styles %}
+{% block head %}
     <link rel="stylesheet" href="{% static 'css/rules.css' %}">
 {% endblock %}
 
 {%  block content %}
     <h1>Q&A</h1>
-
-    <div class="rules">
         <h2>Na czym polega gra?</h2>
         <p>
             W każdej rundzie wszyscy gracze odpowiadają na 10 takich samych pytań.

@@ -1,16 +1,15 @@
 {%  extends "base.html" %}
 
 {% load static %}
-{% block styles %}
-    <link rel="stylesheet" href="{% static 'css/round.css' %}">
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/game_result.css' %}">
 {% endblock %}
 
-{% block content-title %}Twoi optyjaciele{% endblock %}
 
 {%  block content %}
 
     {% for match in matches %}
-        {% include "quiz-match.html" %}
+        {% include "match.html" %}
     {% endfor %}
 
     <div class="bottom"></div>

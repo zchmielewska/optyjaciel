@@ -1,0 +1,21 @@
+{%  extends "join.html" %}
+
+{% block content %}
+
+<h2>Zaloguj się</h2>
+
+ {% if form.login.errors %}
+  {% for err in form.login.errors %}
+      {{ err|escape }}
+  {% endfor %}
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="vertical-center"><button type="submit">Zaloguj</button></div>
+    <br>
+    Nie masz jeszcze konta? <a href="{% url "register" %}">Zarejestruj się.</a>
+</form>
+
+{% endblock %}

@@ -3,25 +3,31 @@ import game.utils.utils
 import game.utils.solver
 import game.utils.transform
 import django.utils.timezone
-
-from .forms import SuggestionForm
-from .models import Quiz, QuizItem, Answer, Match, User, Suggestion
+from .forms import *
+from .models import *
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView
 
-USER_ID = 6
+USER_ID = 11
 
 
-class MainView(View):
+class RulesView(View):
+    def get(self, request):
+        return render(request, "rules.html")
+
+
+class GameView(View):
     def get(self, request):
         user = User.objects.get(id=USER_ID)
         quiz = game.utils.utils.get_current_quiz()
         # quiz = Quiz.objects.get(id=1)  # TODO remove; used to add data to previous quizes
         played = len(Match.objects.filter(quiz=quiz, user=user)) > 0  # TODO czy user tak zostaje?
-        played = False;
+        # played = False;
 
         if not played:
             quizitems = quiz.quizitem_set.all().order_by("question_set_index")
@@ -29,10 +35,10 @@ class MainView(View):
                 "quiz": quiz,
                 "quizitems": quizitems,
             }
-            return render(request, 'quiz.html', ctx)
+            return render(request, 'game_quiz.html', ctx)
         else:
             ctx = self.get_match_ctx(quiz, user)
-            return render(request, "round.html", ctx)
+            return render(request, "game_result.html", ctx)
 
     def post(self, request):
         user = User.objects.get(id=USER_ID)
@@ -62,7 +68,7 @@ class MainView(View):
                 Match.objects.create(quiz_id=quiz_id, user_id=row["user"], matched_user_id=matched_user_id)
 
         ctx = self.get_match_ctx(quiz, user)
-        return render(request, "round.html", ctx)
+        return render(request, "game_result.html", ctx)
 
     def get_match_ctx(self, quiz, user):
         match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
@@ -159,17 +165,12 @@ class MatchesView(View):
             points = game.utils.utils.conjugate_points(score)
             element = {"quiz": quiz, "matched_user": matched_user, "score": score, "points": points}
             matches.append(element)
-
+        print("matches:", matches)
         ctx = {
             "user_id": user.id,
             "matches": matches,
         }
         return render(request, "matches.html", ctx)
-
-
-class RulesView(View):
-    def get(self, request):
-        return render(request, "rules.html")
 
 
 class SuggestionView(FormView):
@@ -199,3 +200,51 @@ class SuggestionView(FormView):
 class ThanksView(View):
     def get(self, request):
         return render(request, "thanks.html")
+
+
+class RegisterView(View):
+    def get(self, request):
+        form = RegisterForm()
+        return render(request, "register.html", {"form": form})
+
+    def post(self, request):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+
+            username_is_taken = username in User.objects.values_list("username", flat=True)
+            if username_is_taken:
+                form.add_error("username", "Ta nazwa użytkownika jest już zajęta :-(")
+                return render(request, "register.html", {"form": form})
+
+            user = User.objects.create_user(username=username, email=None, password=password)
+            login(request, user)
+            return redirect("rules")
+
+
+class LoginView(View):
+    def get(self, request):
+        form = LoginForm()
+        return render(request, "login.html", {"form": form})
+
+    def post(self, request):
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                login(request, user)
+                url_next = request.GET.get("next", "/")
+                return redirect(url_next)
+            else:
+                form.add_error("username", "Nieprawidłowa nazwa użytkownika lub hasło.")
+                return render(request, "login.html", {"form": form})
+
+
+class LogoutView(View):
+    def get(self, request):
+        logout(request)
+        return redirect("rules")

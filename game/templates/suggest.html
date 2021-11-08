@@ -1,7 +1,5 @@
 {%  extends "base.html" %}
 
-{% block content-title %}zaproponuj pytanie{% endblock %}
-
 {%  block content %}
     Zaproponuj swoje pytanie do kolejnych rund gry:
 
@@ -19,7 +17,9 @@
 
     <form action="#" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        <table>
+            {{ form.as_table }}
+        </table>
         <button type="submit">Wyślij</button>
     </form>
 
