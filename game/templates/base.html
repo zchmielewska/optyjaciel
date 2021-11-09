@@ -23,14 +23,21 @@
     </div>
 
     <h1 class="logo">optyjaciel</h1>
-
     <div class="container">
         <div class="menu">
             <ul>
-                <li><a href="{% url "rules" %}">zasady gry</a></li>
-                <li><a href="{% url "game" %}">aktualna runda</a></li>
-                <li><a href="{% url "matches" %}">Twoi optyjaciele</a></li>
-                <li><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
+                <li {% if path_name == "rules" %} class="checked" {% endif %}>
+                    <a href="{% url "rules" %}">zasady gry</a>
+                </li>
+                <li {% if path_name == "game" %} class="checked" {% endif %}>
+                    <a href="{% url "game" %}">aktualna runda</a>
+                </li>
+                <li {% if path_name == "matches" %} class="checked" {% endif %}>
+                    <a href="{% url "matches" %}">Twoi optyjaciele</a>
+                </li>
+                <li {% if path_name == "suggest" %} class="checked" {% endif %}>
+                    <a href="{% url "suggest" %}">zaproponuj pytanie</a>
+                </li>
             </ul>
         </div>
 

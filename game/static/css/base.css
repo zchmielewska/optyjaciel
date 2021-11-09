@@ -63,7 +63,7 @@ body {
     padding: 8px 16px;
 }
 
-.menu > ul > li > a:hover {
+.menu > ul > li > a:hover, .checked{
     background-color: rgba(245, 180, 76, 1);
     color: #fff;
 }

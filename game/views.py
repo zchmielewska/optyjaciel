@@ -6,6 +6,7 @@ import django.utils.timezone
 from .forms import *
 from .models import *
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import HttpResponse, QueryDict
@@ -13,21 +14,17 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView
 
-USER_ID = 11
-
 
 class RulesView(View):
     def get(self, request):
         return render(request, "rules.html")
 
 
-class GameView(View):
+class GameView(LoginRequiredMixin, View):
     def get(self, request):
-        user = User.objects.get(id=USER_ID)
+        user = request.user
         quiz = game.utils.utils.get_current_quiz()
-        # quiz = Quiz.objects.get(id=1)  # TODO remove; used to add data to previous quizes
-        played = len(Match.objects.filter(quiz=quiz, user=user)) > 0  # TODO czy user tak zostaje?
-        # played = False;
+        played = len(Match.objects.filter(quiz=quiz, user=user)) > 0
 
         if not played:
             quizitems = quiz.quizitem_set.all().order_by("question_set_index")
@@ -41,7 +38,7 @@ class GameView(View):
             return render(request, "game_result.html", ctx)
 
     def post(self, request):
-        user = User.objects.get(id=USER_ID)
+        user = request.user
         post = QueryDict.dict(request.POST)
         post.pop("csrfmiddlewaretoken")
         quiz_id = post.pop("quiz_id")
@@ -51,7 +48,7 @@ class GameView(View):
             # Add logged user's answers to db
             for key, value in post.items():
                 Answer.objects.create(
-                    user_id=USER_ID,  # TODO zmień usera
+                    user=request.user,
                     quiz_item_id=key,
                     answer=value
                 )
@@ -145,12 +142,12 @@ class CompatibilityView(View):
         return result
 
 
-class MatchesView(View):
+class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
-        user = User.objects.get(id=USER_ID)
+        user = request.user
         current_quiz = game.utils.utils.get_current_quiz()
 
-        answers = Answer.objects.filter(user=USER_ID)
+        answers = Answer.objects.filter(user=user)
         quiz_items = [answer.quiz_item for answer in answers]
         quizes = []
         for quiz_item in quiz_items:
@@ -173,7 +170,7 @@ class MatchesView(View):
         return render(request, "matches.html", ctx)
 
 
-class SuggestionView(FormView):
+class SuggestionView(LoginRequiredMixin, FormView):
     template_name = "suggest.html"
     form_class = SuggestionForm
     success_url = "/"
@@ -191,7 +188,7 @@ class SuggestionView(FormView):
             option2=option2,
             option3=option3,
             option4=option4,
-            user_id=USER_ID,  # TODO
+            user=request.user,
         )
 
         return redirect("thanks")

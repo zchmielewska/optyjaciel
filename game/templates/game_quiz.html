@@ -11,7 +11,7 @@
     {% csrf_token %}
         {% for quizitem in quizitems %}
         <div class="question-set">
-            <div class="question-container">
+            <div class="question-container" id="{{ quizitem.id }}" data-counter="{{ forloop.counter }}">
                 <div class="question-number">[{{ forloop.counter }}/10]</div>
                 <div class="question">{{ quizitem.question_set.question }}</div>
             </div>
