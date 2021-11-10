@@ -25,7 +25,6 @@ def match_matrix_to_match_table(match_matrix, users_id):
                 if j == n-1:
                     data.append([users_id[i], None])
 
-    print("data:", data)
     match_table = pd.DataFrame(data, columns=["user", "matched_user"])
     return match_table
 

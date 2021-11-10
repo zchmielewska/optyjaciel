@@ -1,5 +1,9 @@
-h1 {
-    text-align: center;
+.high-line {
+    line-height: 150%;
+}
+
+.qa {
+    font-size: 1.5em;
 }
 
 img {

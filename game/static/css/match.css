@@ -1,0 +1,38 @@
+.information {
+    padding: 12px;
+    text-align: center;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.top {
+    border-radius: 25px 25px 0 0;
+    background-color: #d5d6da;
+    box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+    font-size: 0.9em;
+    padding: 4px 0 4px 0;
+}
+
+.middle {
+    background-color: #F2F1F6;
+    flex-basis: 180px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    overflow-wrap: break-word;
+    box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+}
+
+.down {
+    padding-top: 16px;
+    flex-basis: 180px;
+    background-color: #fff;
+    border-radius: 0 0 25px 25px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+}

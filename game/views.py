@@ -162,7 +162,6 @@ class MatchesView(LoginRequiredMixin, View):
             points = game.utils.utils.conjugate_points(score)
             element = {"quiz": quiz, "matched_user": matched_user, "score": score, "points": points}
             matches.append(element)
-        print("matches:", matches)
         ctx = {
             "user_id": user.id,
             "matches": matches,

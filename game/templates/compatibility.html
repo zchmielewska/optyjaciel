@@ -6,21 +6,23 @@
 {% endblock %}
 
 {%  block content %}
-    <table>
-        <tr>
-            <th>#</th>
-            <th>Pytanie</th>
-            <th>{{ user1.username }}</th>
-            <th>{{ user2.username }}</th>
-        </tr>
+    <div class="box">
+        <table>
+            <tr>
+                <th>#</th>
+                <th>Pytanie</th>
+                <th>{{ user1.username }}</th>
+                <th>{{ user2.username }}</th>
+            </tr>
 
-        {% for element in elements %}
-        <tr {% if element.1 == element.2 %} class="good" {% endif %}>
-            <td>{{ forloop.counter }}</td>
-            <td>{{ element.0 }}</td>
-            <td>{{ element.1 }}</td>
-            <td>{{ element.2 }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+            {% for element in elements %}
+            <tr {% if element.1 == element.2 %} class="good" {% endif %}>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ element.0 }}</td>
+                <td>{{ element.1 }}</td>
+                <td>{{ element.2 }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 {% endblock %}

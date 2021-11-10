@@ -2,15 +2,17 @@
 
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" href="{% static 'css/game_result.css' %}">
+    <link rel="stylesheet" href="{% static 'css/match.css' %}">
 {% endblock %}
 
-
 {%  block content %}
-
     {% for match in matches %}
         {% include "match.html" %}
+    {% empty %}
+        <div style="text-align: center;">
+            <span style="font-size: 2em;">Jeszcze nie masz żadnych optyjaciół.</span><br><br>
+            <span style="font-size: 1.5em;">Optyjaciele pojawią się po zakończonej rundzie, w której weźmiesz udział.</span>
+        </div>
     {% endfor %}
-
     <div class="bottom"></div>
 {% endblock %}

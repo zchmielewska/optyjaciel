@@ -2,15 +2,16 @@
 
 {% load static %}
 {% block head %}
-    <link rel="stylesheet" href="{% static 'css/game_result.css' %}">
+    <link rel="stylesheet" href="{% static 'css/match.css' %}">
 {% endblock %}
 
 {% block content-title %}aktualna runda{% endblock %}
 
 {%  block content %}
-    Do końca rundy zostało: {{ remaining_time_in_week }}
-    <br><br>
-    Na tę chwilę Twoim optyjacielem jest:
+    <div class="information">
+        Do końca rundy zostało: <strong>{{ remaining_time_in_week }}</strong>.
+        Obecnie Twoim optyjacielem jest:
+    </div>
     <br><br>
 
     {% include "match.html" %}
