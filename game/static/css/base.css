@@ -32,6 +32,7 @@ body {
     font-family: "Cookie", serif;
 }
 
+/* Container embraces menu and content */
 .container {
     width: 90%;
     margin: 0 auto;
@@ -75,30 +76,17 @@ body {
     border-top: 2px solid rgba(245, 180,76, 1);
 }
 
-.footer {
-    margin-top: 12px;
-}
-
-@media only screen and (max-width: 768px) {
-    .container {
-        flex-wrap: wrap;
-    }
-
-    .menu {
-        flex-basis: 100%;
-        margin-top: 10px;
-    }
-    .logo {
-        display: none;
-    }
-}
-
+/* Used for text-based content inside of content*/
 .box {
     background-color: #fff;
     padding: 16px;
     margin-bottom: 24px;
     overflow: hidden;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+.footer {
+    margin-top: 12px;
 }
 
 .big-orange-button {
@@ -114,9 +102,12 @@ body {
     font-size: 14px;
 }
 
+.big-orange-button:hover {
+    background-color: rgba(245, 180, 76, 1);
+}
+
 .small-blue-button {
     padding: 12px;
-    /*border: 1px solid #003c61;*/
     margin-top: 24px;
     display: inline-block;
     width: auto;
@@ -134,12 +125,12 @@ body {
     justify-content: center;
 }
 
-.big-orange-button:hover {
-    background-color: rgba(245, 180, 76, 1);
-}
-
 table {
     margin: 0 auto;
+}
+
+.orange {
+    color: rgba(245, 180, 76, 1);
 }
 
 .blue {
@@ -153,6 +144,16 @@ table {
     font-weight: bold;
 }
 
-.orange {
-    color: rgba(245, 180, 76, 1);
+@media only screen and (max-width: 768px) {
+    .container {
+        flex-wrap: wrap;
+    }
+
+    .menu {
+        flex-basis: 100%;
+        margin-top: 10px;
+    }
+    .logo {
+        display: none;
+    }
 }
