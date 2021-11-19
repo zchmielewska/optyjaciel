@@ -7,6 +7,12 @@ import random
 
 
 def get_current_quiz():
+    """
+    Retrieves quiz for the current week.
+    If the quiz doesn't exist, it creates a random one.
+
+    :return: quiz object
+    """
     year, week, day = django.utils.timezone.now().isocalendar()
     quizes = game.models.Quiz.objects.filter(year=year, week=week)
 
@@ -124,3 +130,39 @@ def conjugate_points(number):
     else:
         result = "punkty"
     return result
+
+
+def get_match_context(quiz, user, nest=True):
+    """
+    :param quiz: quiz object
+    :param user: user object
+    :param nest: boolean, should the context be included in an additional dictionary?
+
+    Return context for the match template.
+    The nest flag is used so that the function can be used for both: single match and multiple matches.
+    Single match is used for the current game's results and multiple matches are used for historical matches.
+
+    :return: context for the match template
+    """
+    match = game.models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+
+    if not match:
+        inner_data = {
+            "exists": False,
+            "quiz": quiz
+        }
+        context = {"match": inner_data} if nest else inner_data
+    else:
+        matched_user = match.matched_user
+        score = game.utils.utils.calculate_score(quiz, user, matched_user)
+        points = game.utils.utils.conjugate_points(score)
+        inner_data = {
+            "exists": True,
+            "quiz": quiz,
+            "user": user,
+            "matched_user": matched_user,
+            "score": score,
+            "points": points,
+        }
+        context = {"match": inner_data} if nest else inner_data
+    return context

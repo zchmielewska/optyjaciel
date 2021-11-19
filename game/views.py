@@ -34,7 +34,8 @@ class GameView(LoginRequiredMixin, View):
             }
             return render(request, 'game_quiz.html', ctx)
         else:
-            ctx = self.get_match_ctx(quiz, user)
+            ctx = game.utils.utils.get_match_context(quiz, user)
+            ctx["remaining_time_in_week"] = game.utils.utils.get_remaining_time_in_week()
             return render(request, "game_match.html", ctx)
 
     def post(self, request):
@@ -52,38 +53,11 @@ class GameView(LoginRequiredMixin, View):
                     quiz_item_id=key,
                     answer=value
                 )
-
             game.utils.transform.recalculate_and_save_matches(quiz)
-            # # Get answers of all users and recalculate matches
-            # answers, users_id = game.utils.transform.get_answers(quiz)
-            # scores = game.utils.transform.answers_to_scores_matrix(answers)
-            # match_matrix = game.utils.solver.match(scores)
-            # match_table = game.utils.transform.match_matrix_to_match_table(match_matrix, users_id)
-            #
-            # # Save new matches
-            # for index, row in match_table.iterrows():
-            #     matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
-            #     Match.objects.create(quiz_id=quiz_id, user_id=row["user"], matched_user_id=matched_user_id)
 
-        ctx = self.get_match_ctx(quiz, user)
+        ctx = game.utils.utils.get_match_context(quiz, user)
+        ctx["remaining_time_in_week"] = game.utils.utils.get_remaining_time_in_week()
         return render(request, "game_match.html", ctx)
-
-    def get_match_ctx(self, quiz, user):
-        match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
-        matched_user = match.matched_user
-        score = game.utils.utils.calculate_score(quiz, user, matched_user) if matched_user else 0
-        points = game.utils.utils.conjugate_points(score)
-        ctx = {
-            "user_id": user.id,
-            "remaining_time_in_week": game.utils.utils.get_remaining_time_in_week(),
-            "match": {
-                "quiz": quiz,
-                "matched_user": matched_user,
-                "score": score,
-                "points": points,
-            }
-        }
-        return ctx
 
 
 class CompatibilityView(View):
@@ -129,6 +103,7 @@ class MatchesView(LoginRequiredMixin, View):
         user = request.user
         current_quiz = game.utils.utils.get_current_quiz()
 
+        # User might have participated only in few historical quizes
         answers = Answer.objects.filter(user=user)
         quiz_items = [answer.quiz_item for answer in answers]
         quizes = []
@@ -138,17 +113,10 @@ class MatchesView(LoginRequiredMixin, View):
 
         matches = []
         for quiz in quizes:
-            match = Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
-            matched_user = match.matched_user
-            score = game.utils.utils.calculate_score(quiz, user, matched_user) if matched_user else 0
-            points = game.utils.utils.conjugate_points(score)
-            element = {"quiz": quiz, "matched_user": matched_user, "score": score, "points": points}
-            matches.append(element)
-        ctx = {
-            "user_id": user.id,
-            "matches": matches,
-        }
-        return render(request, "previous_matches.html", ctx)
+            match = game.utils.utils.get_match_context(quiz, user, nest=False)
+            matches.append(match)
+
+        return render(request, "previous_matches.html", {"matches": matches})
 
 
 class SuggestionView(LoginRequiredMixin, FormView):

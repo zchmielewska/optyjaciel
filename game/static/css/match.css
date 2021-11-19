@@ -36,11 +36,21 @@
     box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
 }
 
-.previous_matches {
+.previous-matches {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
     gap: 20px;
     padding: 24px;
+}
+
+.no-match {
+    border: 1px dashed #d9d9d9;
+    margin-top: 20px;
+    margin-left: 12px;
+    margin-right: 12px;
+    padding: 10px;
+    font-size: smaller;
+    color: #333;
 }

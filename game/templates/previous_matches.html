@@ -7,13 +7,13 @@
 
 {%  block content %}
     <div class="information">Twoi optyjaciele z poprzednich rund</div>
-    <div class="previous_matches">
+    <div class="previous-matches">
         {% for match in matches %}
-            {% include "match.html" %}
+            {% include "single_match.html" %}
         {% empty %}
-            <div style="text-align: center;">
-                <span style="font-size: 2em;">Jeszcze nie masz żadnych optyjaciół.</span><br><br>
-                <span style="font-size: 1.5em;">Optyjaciele pojawią się po zakończonej rundzie, w której weźmiesz udział.</span>
+            <div style="text-align: center; width: 100%;">
+                <span style="font-size: 1.5em;">Jeszcze nie masz żadnych optyjaciół.<br>
+                Optyjaciele pojawią się po zakończonej rundzie, w której weźmiesz udział.</span>
             </div>
         {% endfor %}
     </div>

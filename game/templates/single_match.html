@@ -1,0 +1,35 @@
+<div class="card">
+    <div class="top">
+        {{ match.quiz.year }}_{{ match.quiz.week }}
+    </div>
+
+    <div class="middle">
+        {% if match.exists %}
+            <span style="font-size: 2em;"><strong>{{ match.matched_user.username }}</strong></span>
+        {% else %}
+            <i class="material-icons" style="font-size: 4em;">person_off</i>
+        {% endif %}
+    </div>
+
+    <div class="down">
+        {% if match.exists %}
+            <div>
+                <span style="font-size: 1.4em;"><strong>{{ match.score }}</strong></span><br>
+                <span style="font-size: 1em; color: #333; text-transform: uppercase;">{{ match.points }}</span>
+            </div>
+            <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="small-blue-button">
+                kompatybilność
+            </a>
+        {% else %}
+            <div>
+                <span style="font-size: 1.4em;"><strong>0</strong></span><br>
+                <span style="font-size: 1em; color: #333; text-transform: uppercase;">punktów</span>
+            </div>
+            <div class="no-match">Brak optyjaciela ze względu na nieparzystą liczbę graczy.</div>
+        {% endif %}
+    </div>
+
+
+    <p>{{ test }}</p>
+
+</div>
