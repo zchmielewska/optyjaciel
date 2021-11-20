@@ -27,10 +27,10 @@ class GameView(LoginRequiredMixin, View):
         played = len(Match.objects.filter(quiz=quiz, user=user)) > 0
 
         if not played:
-            quizitems = quiz.quizitem_set.all().order_by("question_set_index")
+            quiz_questions = quiz.quizquestion_set.order_by("question_index")
             ctx = {
                 "quiz": quiz,
-                "quizitems": quizitems,
+                "quiz_questions": quiz_questions,
             }
             return render(request, 'game_quiz.html', ctx)
         else:
@@ -46,11 +46,11 @@ class GameView(LoginRequiredMixin, View):
         quiz = Quiz.objects.get(id=quiz_id)
 
         with transaction.atomic():
-            # Add logged user's answers to db
+            # Add user's answers to db
             for key, value in post.items():
                 Answer.objects.create(
                     user=request.user,
-                    quiz_item_id=key,
+                    quiz_question_id=key,
                     answer=value
                 )
             game.utils.transform.recalculate_and_save_matches(quiz)
@@ -65,13 +65,13 @@ class CompatibilityView(View):
         quiz = Quiz.objects.get(id=quiz_id)
         user1 = User.objects.get(id=user1_id)
         user2 = User.objects.get(id=user2_id)
-        quiz_items = quiz.quizitem_set.all().order_by("question_set_index")
+        quiz_questions = quiz.quizquestion_set.order_by("question_index")
 
         elements = []
-        for quiz_item in quiz_items:
-            question = quiz_item.question_set.question
-            answer1 = self.get_answer(quiz_item, user1)
-            answer2 = self.get_answer(quiz_item, user2)
+        for quiz_question in quiz_questions:
+            question = quiz_question.question.question
+            answer1 = game.utils.utils.get_text_answer(quiz_question, user1)
+            answer2 = game.utils.utils.get_text_answer(quiz_question, user2)
             elements.append((question, answer1, answer2))
 
         ctx = {
@@ -82,21 +82,6 @@ class CompatibilityView(View):
         }
         return render(request, "compatibility.html", ctx)
 
-    def get_answer(self, quiz_item, user):
-        answer_object = Answer.objects.get(user=user, quiz_item=quiz_item)
-        answer = answer_object.answer
-
-        if answer == 1:
-            result = quiz_item.question_set.option1
-        elif answer == 2:
-            result = quiz_item.question_set.option2
-        elif answer == 3:
-            result = quiz_item.question_set.option3
-        else:
-            result = quiz_item.question_set.option4
-
-        return result
-
 
 class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
@@ -105,11 +90,11 @@ class MatchesView(LoginRequiredMixin, View):
 
         # User might have participated only in few historical quizes
         answers = Answer.objects.filter(user=user)
-        quiz_items = [answer.quiz_item for answer in answers]
+        quiz_questions = [answer.quiz_question for answer in answers]
         quizes = []
-        for quiz_item in quiz_items:
-            if quiz_item.quiz not in quizes and quiz_item.quiz != current_quiz:
-                quizes.append(quiz_item.quiz)
+        for quiz_question in quiz_questions:
+            if quiz_question.quiz not in quizes and quiz_question.quiz != current_quiz:
+                quizes.append(quiz_question.quiz)
 
         matches = []
         for quiz in quizes:
