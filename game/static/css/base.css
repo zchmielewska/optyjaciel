@@ -1,22 +1,43 @@
 /*
     orange: rgba(245, 180, 76, 1);
-    blue: #003c61;
+    blue: #003c61; rgba(0, 60, 97, 1);
 */
 
 * { box-sizing: border-box; }
-a {color: inherit; text-decoration: none; }
+a { color: inherit; text-decoration: none; }
+
+html {
+    height: 100%;
+    margin: 0;
+}
 
 body {
-    font-family: Ubuntu, sans-serif;
+    height: 100%;
     margin: 0;
+    font-family: Ubuntu, sans-serif;
     background-color: #eee;
     overflow-y : scroll;
+}
+
+/* wrapper and push are used to make footer sticky */
+.wrapper {
+    min-height: 100%;
+    margin-bottom: -48px;
+}
+
+.footer, .push {
+    height: 48px;
+}
+
+.footer {
+    background-color: rgba(0, 60, 97, 0.7);
+    background-color: #d5d6da;
 }
 
 .top-bar {
     background-color: #003c61;
     color: #fff;
-    line-height: 36px;
+    line-height: 48px;
 }
 
 .top-bar-container {
@@ -34,6 +55,7 @@ body {
 
 /* Container embraces menu and content */
 .container {
+    min-height: 100%;
     width: 90%;
     margin: 0 auto;
     display: flex;
@@ -83,10 +105,6 @@ body {
     margin-bottom: 24px;
     overflow: hidden;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-}
-
-.footer {
-    margin-top: 12px;
 }
 
 .big-orange-button {
