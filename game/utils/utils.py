@@ -39,25 +39,25 @@ def create_random_quiz(year, week):
         quiz = game.models.Quiz.objects.create(year=year, week=week)
 
         # Some questions might not have been yet used
-        unused = game.models.QuizQuestion.objects.filter(quizitem__isnull=True).distinct()
-        used = game.models.Question.objects.filter(quizitem__isnull=False).distinct()
+        unused = game.models.Question.objects.filter(quizquestion__isnull=True).distinct()
+        used = game.models.Question.objects.filter(quizquestion__isnull=False).distinct()
 
         n = len(unused)
 
-        # Quiz should have as many unused question sets as possible
+        # Quiz should have as many unused questions as possible
         if n >= 10:
-            question_sets = random.sample(list(unused), 10)
+            questions = random.sample(list(unused), 10)
         elif n >= 1:
-            question_sets = list(unused) + random.sample(list(used), 10-n)
+            questions = list(unused) + random.sample(list(used), 10-n)
         else:
-            question_sets = random.sample(list(used), 10)
+            questions = random.sample(list(used), 10)
 
-        # Add question sets to the quiz
+        # Add questions to the quiz
         for i in range(10):
-            game.models.QuizQuestionSet.objects.create(
+            game.models.QuizQuestion.objects.create(
                 quiz=quiz,
-                question_set=question_sets[i],
-                question_set_index=i+1,
+                question=questions[i],
+                question_index=i+1,
             )
     return quiz
 
