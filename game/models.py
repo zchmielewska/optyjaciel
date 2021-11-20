@@ -9,6 +9,9 @@ class Quiz(models.Model):
     class Meta:
         unique_together = ("year", "week")
 
+    def __str__(self):
+        return f"{self.year}_{self.week}"
+
 
 class QuestionSet(models.Model):
     question = models.CharField(max_length=256)
@@ -16,6 +19,9 @@ class QuestionSet(models.Model):
     option2 = models.CharField(max_length=256)
     option3 = models.CharField(max_length=256)
     option4 = models.CharField(max_length=256)
+
+    def __str__(self):
+        return f"{self.question} (1: {self.option1}, 2: {self.option2}, 3: {self.option3}, 4: {self.option4})"
 
 
 class QuizItem(models.Model):
