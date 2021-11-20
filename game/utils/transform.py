@@ -1,20 +1,31 @@
 import pandas as pd
 import numpy as np
-from .solver import match
-from game.models import *
+import game.models
+import game.utils.solver
 
 
 def get_answers(quiz):
+    """
+    Prepares the table (data frame) with answers for the given quiz and list of users ids.
+    The table has 10 column, one for each question.
+    Each row of the table are answers of one user.
+
+    The list contains users ids in the same order as the table.
+    For example, the answers in the first row were given by the user with id located in the first element of the list.
+
+    :param quiz:
+    :return: table with answers, list with users ids
+    """
     answers_list = []
     for i in range(10):
-        question_set_index = i + 1
-        quiz_item = quiz.quizitem_set.get(question_set_index=question_set_index)
-        quiz_item_answers = quiz_item.answer_set.all().order_by("user_id")
-        if question_set_index == 1:
-            df = pd.DataFrame(list(quiz_item_answers.values("user_id", "answer")))
+        question_index = i + 1
+        quiz_question = quiz.quizquestion_set.get(question_index=question_index)
+        quiz_question_answers = quiz_question.answer_set.order_by("user_id")
+        if question_index == 1:
+            df = pd.DataFrame(list(quiz_question_answers.values("user_id", "answer")))
         else:
-            df = pd.DataFrame(list(quiz_item_answers.values("answer")))
-        df = df.rename(columns={"answer": "answer" + str(question_set_index)})
+            df = pd.DataFrame(list(quiz_question_answers.values("answer")))
+        df = df.rename(columns={"answer": "answer" + str(question_index)})
         answers_list.append(df)
 
     df = pd.concat(answers_list, axis=1)
@@ -23,18 +34,36 @@ def get_answers(quiz):
     return answers, users_id
 
 
-def answers_to_scores_matrix(df):
-    n = len(df.index)
+def answers_to_scores_matrix(answers):
+    """
+    Calculates the scores matrix based on the answers table.
+    Scores matrix has the dimension of the number of users.
+    Values in the matrix are the number of questions to which users answers in the same way.
+
+    :param answers: table with answers
+    :return: matrix with scores
+    """
+    n = len(answers.index)
     scores = np.zeros((n, n))
 
     for i in range(n):
         for j in range(n):
-            scores[i, j] = sum(df.iloc[i] == df.iloc[j])
+            scores[i, j] = sum(answers.iloc[i] == answers.iloc[j])
 
     return scores
 
 
 def match_matrix_to_match_table(match_matrix, users_id):
+    """
+    Transforms match matrix into match table.
+    Match table contains two columns:
+     - user - id of the user,
+     - matched_user - id of the user's match.
+
+    :param match_matrix: matrix with boolean values representing matches
+    :param users_id: list of users' ids
+    :return: table with matches
+    """
     data = []
     n = len(users_id)
     for i in range(n):
@@ -51,13 +80,18 @@ def match_matrix_to_match_table(match_matrix, users_id):
 
 
 def recalculate_and_save_matches(quiz):
-    # Get answers of all users and recalculate matches
+    """
+    Gets answers of all users and recalculates matches.
+    Saves new matches.
+
+    :param quiz: quiz for which new matches are recalculated
+    :return: None
+    """
     answers, users_id = get_answers(quiz)
     scores = answers_to_scores_matrix(answers)
-    match_matrix = match(scores)
+    match_matrix = game.utils.solver.match(scores)
     match_table = match_matrix_to_match_table(match_matrix, users_id)
 
-    # Save new matches
     for index, row in match_table.iterrows():
         matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
-        Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
+        game.models.Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)

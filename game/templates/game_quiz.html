@@ -10,31 +10,31 @@
     <div class="box">
         <form method="post">
         {% csrf_token %}
-            {% for quizitem in quizitems %}
+            {% for quiz_question in quiz_questions %}
             <div class="question-set">
-                <div class="question-container" id="{{ quizitem.id }}" data-counter="{{ forloop.counter }}">
+                <div class="question-container" id="{{ quiz_question.id }}" data-counter="{{ forloop.counter }}">
                     <div class="question-number">[{{ forloop.counter }}/10]</div>
-                    <div class="question">{{ quizitem.question_set.question }}</div>
+                    <div class="question">{{ quiz_question.question.question }}</div>
                 </div>
                 <div class="options-container">
                     <label class="lbl">
-                        <input type="radio" name="{{ quizitem.id }}" value="1" required>
-                        <div>{{ quizitem.question_set.option1 }}</div>
+                        <input type="radio" name="{{ quiz_question.id }}" value="1" required>
+                        <div>{{ quiz_question.question.option1 }}</div>
                     </label>
 
                     <label class="lbl">
-                        <input type="radio" name="{{ quizitem.id }}" value="2">
-                        <div>{{ quizitem.question_set.option2 }}</div>
+                        <input type="radio" name="{{ quiz_question.id }}" value="2">
+                        <div>{{ quiz_question.question.option2 }}</div>
                     </label>
 
                     <label class="lbl">
-                        <input type="radio" name="{{ quizitem.id }}" value="3">
-                        <div>{{ quizitem.question_set.option3 }}</div>
+                        <input type="radio" name="{{ quiz_question.id }}" value="3">
+                        <div>{{ quiz_question.question.option3 }}</div>
                     </label>
 
                     <label class="lbl">
-                        <input type="radio" name="{{ quizitem.id }}" value="4">
-                        <div>{{ quizitem.question_set.option4 }}</div>
+                        <input type="radio" name="{{ quiz_question.id }}" value="4">
+                        <div>{{ quiz_question.question.option4 }}</div>
                     </label>
                 </div>
             </div>
