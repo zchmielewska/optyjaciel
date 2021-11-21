@@ -20,7 +20,7 @@ class Question(models.Model):
     option4 = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"{self.question} (1: {self.option1}, 2: {self.option2}, 3: {self.option3}, 4: {self.option4})"
+        return f"[{self.id}] {self.question} ({self.option1}, {self.option2}, {self.option3}, {self.option4})"
 
 
 class Quiz(models.Model):
@@ -42,6 +42,9 @@ class QuizQuestion(models.Model):
 
     class Meta:
         unique_together = ("quiz", "question_index")
+
+    def __str__(self):
+        return f"{self.quiz.year}_{self.quiz.week}_{self.question_index} {self.question.question}"
 
 
 class Answer(models.Model):
