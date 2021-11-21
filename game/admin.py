@@ -3,4 +3,4 @@ from game.models import *
 
 
 admin.site.register(Quiz)
-# admin.site.register(QuizItem)
+admin.site.register(Question)
