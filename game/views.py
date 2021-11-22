@@ -1,4 +1,6 @@
 import pandas as pd
+from django.urls import reverse_lazy
+
 import game.utils.solver
 import game.utils.transform
 import game.utils.utils
@@ -12,7 +14,7 @@ from django.db import transaction
 from django.http import HttpResponse, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, CreateView
 
 
 class RulesView(View):
@@ -179,3 +181,39 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect("rules")
+
+
+class MessageListView(View):
+    def get(self, request):
+        messages_in = Message.objects.filter(to_user=request.user)
+        messages_out = Message.objects.filter(from_user=request.user)
+        ctx = {
+            "messages_in": messages_in,
+            "messages_out": messages_out,
+        }
+        return render(request, "message_list.html", ctx)
+
+
+class MessageWriteView(LoginRequiredMixin, FormView):
+    template_name = "message_write.html"
+    form_class = MessageForm
+    success_url = "/"
+
+    def form_valid(self, form):
+        to_user = form.cleaned_data.get("to_user")
+        title = form.cleaned_data.get("title")
+        body = form.cleaned_data.get("body")
+        Message.objects.create(
+            from_user=self.request.user,
+            to_user=to_user,
+            title=title,
+            body=body,
+        )
+        return redirect("thanks")
+
+
+class MessageReadView(View):
+    def get(self, request, message_id):
+        message = Message.objects.get(id=message_id)
+        return render(request, "message_read.html", {"message": message})
+

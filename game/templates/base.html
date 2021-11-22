@@ -37,6 +37,9 @@
                     <li {% if path_name == "matches" %} class="checked" {% endif %}>
                         <a href="{% url "matches" %}">Twoi optyjaciele</a>
                     </li>
+                    <li {% if path_name == "message-list" %} class="checked" {% endif %}>
+                        <a href="{% url "message-list" %}">wiadomości</a>
+                    </li>
                     <li {% if path_name == "suggest" %} class="checked" {% endif %}>
                         <a href="{% url "suggest" %}">zaproponuj pytanie</a>
                     </li>

@@ -1,0 +1,44 @@
+{%  extends "base.html" %}
+
+{% load static %}
+{% block head %}
+{% endblock %}
+
+{%  block content %}
+    <div class="box">
+        <a href="{% url "message-write" %}">
+            <div class="vertical-center">
+                <button class="big-orange-button">Napisz wiadomość</button>
+            </div>
+        </a>
+
+        <h2>Wiadomości odebrane:</h2>
+        <ul>
+        {% for message in messages_in %}
+            <li>{{ message.sent_at }}</li>
+            <li>od: {{ message.from_user.username }}</li>
+            <li>{{ message.title }}</li>
+            <li><a href="{% url "message-read" message.id %}">Czytaj</a></li>
+        {% endfor %}
+        </ul>
+
+        <h2>Wiadomości wysłane:</h2>
+        <table>
+            <tr>
+                <th>Nadawca</th>
+                <th>Tytuł wiadomości</th>
+                <th>Przesłane</th>
+            </tr>
+        {% for message in messages_out %}
+        <a href="{% url "message-read" message.id %}">
+            <tr>
+                <td>{{ message.from_user.username }}</td>
+                <td>{{ message.title }}</td>
+                <td>{{ message.sent_at }}</td>
+            </tr>
+        </a>
+        {% endfor %}
+        </table>
+
+    </div>
+{% endblock %}

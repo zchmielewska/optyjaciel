@@ -17,3 +17,9 @@ class RegisterForm(forms.Form):
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=36, label="Nazwa użytkownika")
     password = forms.CharField(label="Hasło", widget=forms.PasswordInput)
+
+
+class MessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        exclude = ["from_user", "sent_at"]
