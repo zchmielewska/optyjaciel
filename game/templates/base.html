@@ -38,7 +38,11 @@
                         <a href="{% url "matches" %}">Twoi optyjaciele</a>
                     </li>
                     <li {% if path_name == "message-list" %} class="checked" {% endif %}>
-                        <a href="{% url "message-list" %}">wiadomości</a>
+                        {% if no_messages > 0 %}
+                            <a href="{% url "message-list" %}"><strong>wiadomości [{{ no_messages }}]</strong></a>
+                        {% else %}
+                            <a href="{% url "message-list" %}">wiadomości</a>
+                        {% endif %}
                     </li>
                     <li {% if path_name == "suggest" %} class="checked" {% endif %}>
                         <a href="{% url "suggest" %}">zaproponuj pytanie</a>

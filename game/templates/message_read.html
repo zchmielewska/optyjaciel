@@ -2,12 +2,20 @@
 
 {% load static %}
 {% block head %}
+    <link rel="stylesheet" href="{% static 'css/message.css' %}">
 {% endblock %}
 
 {%  block content %}
     <div class="box">
-        {{ message.title }}
-        <br>
-        {{ message.body }}
+        <div class="msg-container">
+            {% if msg_type == "in" %}
+                <div class="from-to-user">Od: {{ message.from_user.username }}</div>
+            {% else %}
+                <div class="from-to-user">Do: {{ message.to_user.username }}</div>
+            {% endif %}
+            <div class="sent-at">{{ message.sent_at }}</div>
+            <div class="title">{{ message.title }}</div>
+            <div class="body">{{ message.body }}</div>
+        </div>
     </div>
 {% endblock %}

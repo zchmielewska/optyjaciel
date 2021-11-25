@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.http import HttpResponse, QueryDict
+from django.http import HttpResponse, Http404, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import FormView, CreateView
@@ -88,21 +88,7 @@ class CompatibilityView(View):
 class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        current_quiz = game.utils.utils.get_current_quiz()
-
-        # User might have participated only in few historical quizes
-        answers = Answer.objects.filter(user=user)
-        quiz_questions = [answer.quiz_question for answer in answers]
-        quizes = []
-        for quiz_question in quiz_questions:
-            if quiz_question.quiz not in quizes and quiz_question.quiz != current_quiz:
-                quizes.append(quiz_question.quiz)
-
-        matches = []
-        for quiz in quizes:
-            match = game.utils.utils.get_match_context(quiz, user, nest=False)
-            matches.append(match)
-
+        matches = game.utils.utils.get_matches(user)
         return render(request, "previous_matches.html", {"matches": matches})
 
 
@@ -183,7 +169,7 @@ class LogoutView(View):
         return redirect("rules")
 
 
-class MessageListView(View):
+class MessageListView(LoginRequiredMixin, View):
     def get(self, request):
         messages_in = Message.objects.filter(to_user=request.user)
         messages_out = Message.objects.filter(from_user=request.user)
@@ -197,7 +183,6 @@ class MessageListView(View):
 class MessageWriteView(LoginRequiredMixin, FormView):
     template_name = "message_write.html"
     form_class = MessageForm
-    success_url = "/"
 
     def form_valid(self, form):
         to_user = form.cleaned_data.get("to_user")
@@ -209,11 +194,26 @@ class MessageWriteView(LoginRequiredMixin, FormView):
             title=title,
             body=body,
         )
-        return redirect("thanks")
+        return redirect("message-list")
 
 
-class MessageReadView(View):
+class MessageReadView(LoginRequiredMixin, View):
     def get(self, request, message_id):
         message = Message.objects.get(id=message_id)
-        return render(request, "message_read.html", {"message": message})
 
+        if request.user == message.to_user:
+            msg_type = "in"
+        elif request.user == message.from_user:
+            msg_type = "out"
+        else:
+            raise Http404("Wiadomość nie istnieje.")
+
+        if msg_type == "in" and message.new:
+            message.new = False
+            message.save()
+
+        ctx = {
+            "msg_type": msg_type,
+            "message": message,
+        }
+        return render(request, "message_read.html", ctx)

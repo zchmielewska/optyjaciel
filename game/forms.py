@@ -22,4 +22,4 @@ class LoginForm(forms.Form):
 class MessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        exclude = ["from_user", "sent_at"]
+        exclude = ["from_user", "sent_at", "new"]

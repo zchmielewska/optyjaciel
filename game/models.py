@@ -79,3 +79,4 @@ class Message(models.Model):
     sent_at = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=1024)
     body = models.TextField()
+    new = models.BooleanField(default=True)
