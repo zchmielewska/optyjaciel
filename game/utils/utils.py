@@ -1,28 +1,31 @@
 import arrow
-import django.utils.timezone
 import django.db
 import game.models
 import random
 from django.contrib.auth.models import User
+from django.utils.timezone import now
+from game import models
 
 
-def get_current_quiz():
+def get_or_create_quiz(year, week):
     """
-    Retrieves quiz for the current week.
-    If the quiz doesn't exist, it creates one and populates with random questions.
+    Retrieves quiz for the specific week.
+    If arguments are not provided, the current week is retrieved.
+    If the quiz doesn't exist, it creates it and populates with random questions.
 
     :return: quiz object
     """
-    year, week, day = django.utils.timezone.now().isocalendar()
-    quizes = game.models.Quiz.objects.filter(year=year, week=week)
+    if not (year and week):
+        year, week, day = now().isocalendar()
+    quizes = models.Quiz.objects.filter(year=year, week=week)
     no_quizes = quizes.count()
 
-    if no_quizes == 1:
+    if no_quizes > 1:
+        raise ValueError("There should be only one quiz per week.")
+    elif no_quizes == 1:
         return quizes.first()
     elif no_quizes == 0:
         return create_random_quiz(year, week)
-    else:
-        raise ValueError("There should be only one quiz per week.")
 
 
 def get_remaining_time_in_week():
@@ -42,9 +45,9 @@ def get_remaining_time_in_week():
     hours_count = diff.seconds//3600
     minutes_count = (diff.seconds//60) % 60
 
-    days_text = conjugate_days(days_count)
-    hours_text = conjugate_hours(hours_count)
-    minutes_text = conjugate_minutes(minutes_count)
+    days_text = f"{days_count} {conjugate_days(days_count)}"
+    hours_text = f"{hours_count} {conjugate_hours(hours_count)}"
+    minutes_text = f"{minutes_count} {conjugate_minutes(minutes_count)}"
 
     result = ""
     if days_text:
@@ -179,89 +182,87 @@ def calculate_score(quiz, user1, user2):
 
 def conjugate_days(days_count):
     """
-    Conjugates number of days in Polish.
+    Conjugates number of days (in a week) in Polish language.
 
-    :param days_count: number of days
+    :param days_count: integer, number of days
     :return: string
     """
-    days_text = None
     if days_count == 1:
-        days_text = f"{days_count} dzień"
+        days_text = f"dzień"
+    elif 2 <= days_count <= 7:
+        days_text = f"dni"
     else:
-        days_text = f"{days_count} dni"
+        raise ValueError("Count of days must be between 1 and 7.")
     return days_text
 
 
 def conjugate_hours(hours_count):
     """
-    Conjugates number of hours in Polish.
+    Conjugates number of hours (in a day) in Polish language.
 
-    :param hours_count: number of hours
+    :param hours_count: integer, number of hours
     :return: string
     """
-    hours_text = None
     if hours_count == 1:
-        hours_text = f"{hours_count} godzina"
+        hours_text = f"godzina"
     elif 2 <= hours_count <= 4 or 22 <= hours_count <= 24:
-        hours_text = f"{hours_count} godziny"
+        hours_text = f"godziny"
     elif 5 <= hours_count <= 21:
-        hours_text = f"{hours_count} godzin"
+        hours_text = f"godzin"
     else:
-        raise ValueError("Number of hours shoud be between 1 and 24.")
+        raise ValueError("Number of hours must be between 1 and 24.")
     return hours_text
 
 
 def conjugate_minutes(minutes_count):
     """
-    Conjugates number of minutes in Polish.
+    Conjugates number of minutes (in an hour) in Polish language.
 
-    :param minutes_count: number of minutes
+    :param minutes_count: integer, number of minutes
     :return: string
     """
-    minutes_text = None
     if minutes_count == 1:
-        minutes_text = f"{minutes_count} minuta"
+        minutes_text = f"minuta"
     elif 2 <= minutes_count <= 4 or \
             22 <= minutes_count <= 24 or \
             32 <= minutes_count <= 34 or \
             42 <= minutes_count <= 44 or \
             52 <= minutes_count <= 54:
-        minutes_text = f"{minutes_count} minuty"
+        minutes_text = f"minuty"
     elif 5 <= minutes_count <= 21 or \
             25 <= minutes_count <= 31 or \
             35 <= minutes_count <= 41 or \
             45 <= minutes_count <= 51 or \
-            55 <= minutes_count <= 59:
-        minutes_text = f"{minutes_count} minut"
+            55 <= minutes_count <= 60:
+        minutes_text = f"minut"
     else:
-        raise ValueError("Number of minutes should be between 1 and 59.")
+        raise ValueError("Number of minutes must be between 1 and 60.")
     return minutes_text
 
 
-def conjugate_points(number):
-
+def conjugate_points(points_count):
     """
-    Conjugates the word "points" in Polish for different number of points.
+    Conjugates number of points (in a range 0 to 10) in Polish language.
 
-    :param number: number of points
+    :param points_count: number of points
     :return: conjugated word
     """
-    if number == 0:
+    if points_count == 0:
         result = "punktów"
-    elif number == 1:
+    elif points_count == 1:
         result = "punkt"
-    elif 2 <= number <= 4:
+    elif 2 <= points_count <= 4:
         result = "punkty"
-    elif 5 <= number <= 10:
+    elif 5 <= points_count <= 10:
         result = "punktów"
     else:
-        result = "punkty"
+        raise ValueError("Number of points must be between 0 and 10.")
     return result
 
 
 def get_users_previous_quizes(user):
     # Current game is ignored
-    current_quiz = get_current_quiz()
+    current_quiz = get_or_create_quiz()
 
     # User might have participated only in few historical quizes
     answers = game.models.Answer.objects.filter(user=user)

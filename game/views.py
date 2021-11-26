@@ -18,7 +18,7 @@ class RulesView(View):
 class GameView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        quiz = utils.get_current_quiz()
+        quiz = utils.get_or_create_quiz()
         played = len(models.Match.objects.filter(quiz=quiz, user=user)) > 0
 
         if not played:
