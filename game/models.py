@@ -71,3 +71,12 @@ class Suggestion(models.Model):
     option4 = models.CharField(max_length=256, verbose_name="Odpowiedź 4")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     suggested_at = models.DateTimeField(auto_now_add=True)
+
+
+class Message(models.Model):
+    from_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="from_user")
+    to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="to_user")
+    sent_at = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=1024)
+    body = models.TextField()
+    new = models.BooleanField(default=True)

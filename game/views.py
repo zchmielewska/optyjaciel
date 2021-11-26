@@ -1,4 +1,6 @@
 import pandas as pd
+from django.urls import reverse_lazy
+
 import game.utils.solver
 import game.utils.transform
 import game.utils.utils
@@ -9,10 +11,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.http import HttpResponse, QueryDict
+from django.forms import modelformset_factory
+from django.http import HttpResponse, Http404, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView
+from django.views.generic import FormView, CreateView
 
 
 class RulesView(View):
@@ -86,21 +89,7 @@ class CompatibilityView(View):
 class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        current_quiz = game.utils.utils.get_current_quiz()
-
-        # User might have participated only in few historical quizes
-        answers = Answer.objects.filter(user=user)
-        quiz_questions = [answer.quiz_question for answer in answers]
-        quizes = []
-        for quiz_question in quiz_questions:
-            if quiz_question.quiz not in quizes and quiz_question.quiz != current_quiz:
-                quizes.append(quiz_question.quiz)
-
-        matches = []
-        for quiz in quizes:
-            match = game.utils.utils.get_match_context(quiz, user, nest=False)
-            matches.append(match)
-
+        matches = game.utils.utils.get_matches_context(user)
         return render(request, "previous_matches.html", {"matches": matches})
 
 
@@ -179,3 +168,66 @@ class LogoutView(View):
     def get(self, request):
         logout(request)
         return redirect("rules")
+
+
+class MessageInboxView(LoginRequiredMixin, View):
+    def get(self, request):
+        messages_in = Message.objects.filter(to_user=request.user).order_by("-sent_at")
+        return render(request, "message_inbox.html", {"messages_in": messages_in})
+
+
+class MessageOutboxView(LoginRequiredMixin, View):
+    def get(self, request):
+        messages_out = Message.objects.filter(from_user=request.user).order_by("-sent_at")
+        return render(request, "message_outbox.html", {"messages_out": messages_out})
+
+
+class MessageWriteView(LoginRequiredMixin, View):
+    MeesageFormSet = modelformset_factory(Message, fields=("to_user", "title", "body"))
+
+    def get(self, request):
+        matches = game.utils.utils.get_matches_queryset(request.user)
+        form = MessageForm()
+        form.fields["to_user"].queryset = matches
+        no_matches = matches.count()
+        ctx = {
+            "form": form,
+            "no_matches": no_matches,
+        }
+        return render(request, "message_write.html", ctx)
+
+    def post(self, request):
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            to_user = form.cleaned_data.get("to_user")
+            title = form.cleaned_data.get("title")
+            body = form.cleaned_data.get("body")
+            Message.objects.create(
+                from_user=self.request.user,
+                to_user=to_user,
+                title=title,
+                body=body,
+            )
+            return redirect("message-outbox")
+
+
+class MessageReadView(LoginRequiredMixin, View):
+    def get(self, request, message_id):
+        message = Message.objects.get(id=message_id)
+
+        if request.user == message.to_user:
+            msg_type = "in"
+        elif request.user == message.from_user:
+            msg_type = "out"
+        else:
+            raise Http404("Wiadomość nie istnieje.")
+
+        if msg_type == "in" and message.new:
+            message.new = False
+            message.save()
+
+        ctx = {
+            "msg_type": msg_type,
+            "message": message,
+        }
+        return render(request, "message_read.html", ctx)

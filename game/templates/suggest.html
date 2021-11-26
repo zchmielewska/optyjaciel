@@ -24,9 +24,7 @@
         <div class="suggest-form">
             <form action="#" method="post">
                 {% csrf_token %}
-    {#            <table>#}
                     {{ form.as_p }}
-    {#            </table>#}
                 <div class="vertical-center">
                     <button type="submit" class="big-orange-button">Wyślij</button>
                 </div>

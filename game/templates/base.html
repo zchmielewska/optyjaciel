@@ -37,6 +37,13 @@
                     <li {% if path_name == "matches" %} class="checked" {% endif %}>
                         <a href="{% url "matches" %}">Twoi optyjaciele</a>
                     </li>
+                    <li {% if path_name == "message-inbox" or path_name == "message-outbox" or path_name == "message-write" or path_name == "message-read" %} class="checked" {% endif %}>
+                        {% if no_messages > 0 %}
+                            <a href="{% url "message-inbox" %}"><strong>wiadomości [{{ no_messages }}]</strong></a>
+                        {% else %}
+                            <a href="{% url "message-inbox" %}">wiadomości</a>
+                        {% endif %}
+                    </li>
                     <li {% if path_name == "suggest" %} class="checked" {% endif %}>
                         <a href="{% url "suggest" %}">zaproponuj pytanie</a>
                     </li>

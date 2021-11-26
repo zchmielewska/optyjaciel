@@ -64,7 +64,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'game.contexts.path_name'
+                'game.contexts.path_name',
+                'game.contexts.no_messages',
             ],
         },
     },

@@ -1,0 +1,40 @@
+{%  extends "base.html" %}
+
+{% load static %}
+{% block head %}
+{% endblock %}
+
+{%  block content %}
+    <div class="box">
+        {% if no_matches > 0 %}
+            {% if form.login.errors %}
+              <ol>
+              {% for err in form.login.errors %}
+                <li>
+                  <strong>
+                    {{ err|escape }}
+                  </strong>
+                </li>
+              {% endfor %}
+              </ol>
+            {% endif %}
+
+            <form action="#" method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="vertical-center">
+                    <button type="submit" class="big-orange-button">Wyślij</button>
+                </div>
+            </form>
+        {% else %}
+            <div style="text-align: center; width: 100%; margin: 36px;">
+                <span style="font-size: 1.5em;">
+                    Na razie nie masz żadnego optyjaciela.<br>
+                </span>
+                <span style="font-size: 1.2em;">
+                    Wiadomości można wysyłać do optyjaciół. Możesz zdobyć optyjaciela poprzez udział w grze.
+                </span>
+            </div>
+        {%  endif %}
+    </div>
+{% endblock %}
