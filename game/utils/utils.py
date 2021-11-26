@@ -4,7 +4,7 @@ import django.utils.timezone
 import django.db
 import game.models
 import random
-
+from django.contrib.auth.models import User
 
 def get_current_quiz():
     """
@@ -259,21 +259,35 @@ def conjugate_points(number):
     return result
 
 
-def get_matches(user):
+def get_users_previous_quizes(user):
     # Current game is ignored
     current_quiz = get_current_quiz()
 
     # User might have participated only in few historical quizes
     answers = game.models.Answer.objects.filter(user=user)
     quiz_questions = [answer.quiz_question for answer in answers]
-    quizes = []
+    quizes = set()
     for quiz_question in quiz_questions:
-        if quiz_question.quiz not in quizes and quiz_question.quiz != current_quiz:
-            quizes.append(quiz_question.quiz)
+        if quiz_question.quiz != current_quiz:
+            quizes.add(quiz_question.quiz)
 
-    matches = []
+    return quizes
+
+
+def get_matches_context(user):
+    quizes = get_users_previous_quizes(user)
+    matches_context = []
     for quiz in quizes:
         match = game.utils.utils.get_match_context(quiz, user, nest=False)
-        matches.append(match)
+        matches_context.append(match)
+    return matches_context
 
+
+def get_matches_queryset(user):
+    quizes = get_users_previous_quizes(user)
+    matched_users_ids = set()
+    for quiz in quizes:
+        match = game.models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+        matched_users_ids.add(match.matched_user_id)
+    matches = User.objects.filter(pk__in=matched_users_ids)
     return matches

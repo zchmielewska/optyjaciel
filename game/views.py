@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
+from django.forms import modelformset_factory
 from django.http import HttpResponse, Http404, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
@@ -88,7 +89,7 @@ class CompatibilityView(View):
 class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        matches = game.utils.utils.get_matches(user)
+        matches = game.utils.utils.get_matches_context(user)
         return render(request, "previous_matches.html", {"matches": matches})
 
 
@@ -169,32 +170,45 @@ class LogoutView(View):
         return redirect("rules")
 
 
-class MessageListView(LoginRequiredMixin, View):
+class MessageInboxView(LoginRequiredMixin, View):
     def get(self, request):
-        messages_in = Message.objects.filter(to_user=request.user)
-        messages_out = Message.objects.filter(from_user=request.user)
+        messages_in = Message.objects.filter(to_user=request.user).order_by("-sent_at")
+        return render(request, "message_inbox.html", {"messages_in": messages_in})
+
+
+class MessageOutboxView(LoginRequiredMixin, View):
+    def get(self, request):
+        messages_out = Message.objects.filter(from_user=request.user).order_by("-sent_at")
+        return render(request, "message_outbox.html", {"messages_out": messages_out})
+
+
+class MessageWriteView(LoginRequiredMixin, View):
+    MeesageFormSet = modelformset_factory(Message, fields=("to_user", "title", "body"))
+
+    def get(self, request):
+        matches = game.utils.utils.get_matches_queryset(request.user)
+        form = MessageForm()
+        form.fields["to_user"].queryset = matches
+        no_matches = matches.count()
         ctx = {
-            "messages_in": messages_in,
-            "messages_out": messages_out,
+            "form": form,
+            "no_matches": no_matches,
         }
-        return render(request, "message_list.html", ctx)
+        return render(request, "message_write.html", ctx)
 
-
-class MessageWriteView(LoginRequiredMixin, FormView):
-    template_name = "message_write.html"
-    form_class = MessageForm
-
-    def form_valid(self, form):
-        to_user = form.cleaned_data.get("to_user")
-        title = form.cleaned_data.get("title")
-        body = form.cleaned_data.get("body")
-        Message.objects.create(
-            from_user=self.request.user,
-            to_user=to_user,
-            title=title,
-            body=body,
-        )
-        return redirect("message-list")
+    def post(self, request):
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            to_user = form.cleaned_data.get("to_user")
+            title = form.cleaned_data.get("title")
+            body = form.cleaned_data.get("body")
+            Message.objects.create(
+                from_user=self.request.user,
+                to_user=to_user,
+                title=title,
+                body=body,
+            )
+            return redirect("message-outbox")
 
 
 class MessageReadView(LoginRequiredMixin, View):

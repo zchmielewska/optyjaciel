@@ -1,23 +1,48 @@
 /* List messages */
 
+.new-msg {
+    background-color: #fff;
+    font-weight: bold;
+}
+
+.in-out {
+    display: flex;
+    width: 100%;
+    margin-top: 18px;
+}
+
+.in, .out {
+    display: block;
+    flex-grow: 1;
+    text-align: center;
+    padding: 12px;
+    background-color: #d9d9d9;
+}
+
+.in_or_out {
+    background-color: rgba(0, 60, 97, 0.7);
+    color: #fff;
+}
+
 .table {
     margin-bottom: 36px;
+    background-color: #eee;
 }
 
 .table-row {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
-    border-top: 1px #d9d9d9 solid;
-    background-color: #eee;
+    border-bottom: 1px #d9d9d9 solid;
+
 }
 
 .table-row:hover {
     background-color: rgba(245, 180, 76, 0.5);
 }
 
-.new-msg {
-    background-color: #fff;
-    font-weight: bold;
+
+.table-row:first-child {
+    border-top: 3px solid rgba(0, 60, 97, 0.7);
 }
 
 .table-row:last-child {
@@ -27,6 +52,7 @@
 .table-cell {
     padding: 8px;
 }
+
 
 /* Read message */
 

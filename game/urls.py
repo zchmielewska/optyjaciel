@@ -12,7 +12,8 @@ urlpatterns = [
     path('zarejestruj/', RegisterView.as_view(), name="register"),
     path('zaloguj/', LoginView.as_view(), name="login"),
     path('wyloguj/', LogoutView.as_view(), name="logout"),
-    path('wiadomosci/', MessageListView.as_view(), name="message-list"),
+    path('wiadomosci/odebrane/', MessageInboxView.as_view(), name="message-inbox"),
+    path('wiadomosci/wyslane/', MessageOutboxView.as_view(), name="message-outbox"),
     path('wiadomosci/utworz/', MessageWriteView.as_view(), name="message-write"),
     path('wiadomosci/czytaj/<int:message_id>', MessageReadView.as_view(), name="message-read"),
 ]
