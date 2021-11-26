@@ -13,12 +13,15 @@
 
     <div class="down">
         {% if match.exists %}
-            <div>
+            <div style="margin-bottom: 24px;">
                 <span style="font-size: 1.4em;"><strong>{{ match.score }}</strong></span><br>
                 <span style="font-size: 1em; color: #333; text-transform: uppercase;">{{ match.points }}</span>
             </div>
-            <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="small-blue-button">
+            <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="blue-button">
                 kompatybilność
+            </a>
+            <a href="{% url "message-write" match.matched_user.id %}" class="blue-button">
+                wiadomość
             </a>
         {% else %}
             <div>
@@ -28,8 +31,4 @@
             <div class="no-match">Brak optyjaciela ze względu na nieparzystą liczbę graczy.</div>
         {% endif %}
     </div>
-
-
-    <p>{{ test }}</p>
-
 </div>

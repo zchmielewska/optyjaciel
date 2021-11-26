@@ -123,19 +123,6 @@ body {
     background-color: rgba(245, 180, 76, 1);
 }
 
-.small-blue-button {
-    padding: 12px;
-    margin-top: 24px;
-    display: inline-block;
-    width: auto;
-    border-radius: 24px;
-    background-color: rgba(0, 60, 97, 0.7);
-    color: #fff;
-}
-
-.small-blue-button:hover {
-    background-color: rgba(0, 60, 97, 1);
-}
 
 .vertical-center {
     display: flex;

@@ -37,10 +37,9 @@ def match(scores):
     # Solver
     solution_found = model.solve()
     if solution_found == -1:
-        result = null
+        result = None
     else:
         for key, value in x.items():
             result[key[0], key[1]] = x[key].value()
 
     return result
-

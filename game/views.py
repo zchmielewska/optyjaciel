@@ -1,21 +1,13 @@
-import pandas as pd
-from django.urls import reverse_lazy
-
-import game.utils.solver
-import game.utils.transform
-import game.utils.utils
-import django.utils.timezone
-from .forms import *
-from .models import *
+from game import forms, models
+from game.utils import transform, utils
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.forms import modelformset_factory
-from django.http import HttpResponse, Http404, QueryDict
+from django.http import Http404, QueryDict
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.generic import FormView, CreateView
+from django.views.generic import FormView
 
 
 class RulesView(View):
@@ -26,8 +18,8 @@ class RulesView(View):
 class GameView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        quiz = game.utils.utils.get_current_quiz()
-        played = len(Match.objects.filter(quiz=quiz, user=user)) > 0
+        quiz = utils.get_current_quiz()
+        played = len(models.Match.objects.filter(quiz=quiz, user=user)) > 0
 
         if not played:
             quiz_questions = quiz.quizquestion_set.order_by("question_index")
@@ -37,8 +29,8 @@ class GameView(LoginRequiredMixin, View):
             }
             return render(request, 'game_quiz.html', ctx)
         else:
-            ctx = game.utils.utils.get_match_context(quiz, user)
-            ctx["remaining_time_in_week"] = game.utils.utils.get_remaining_time_in_week()
+            ctx = utils.get_match_context(quiz, user)
+            ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
             return render(request, "game_match.html", ctx)
 
     def post(self, request):
@@ -46,26 +38,26 @@ class GameView(LoginRequiredMixin, View):
         post = QueryDict.dict(request.POST)
         post.pop("csrfmiddlewaretoken")
         quiz_id = post.pop("quiz_id")
-        quiz = Quiz.objects.get(id=quiz_id)
+        quiz = models.Quiz.objects.get(id=quiz_id)
 
+        # Saving answers and recalculation of matches must happen simultaneously
         with transaction.atomic():
-            # Add user's answers to db
             for key, value in post.items():
-                Answer.objects.create(
+                models.Answer.objects.create(
                     user=request.user,
                     quiz_question_id=key,
                     answer=value
                 )
-            game.utils.transform.recalculate_and_save_matches(quiz)
+            transform.recalculate_and_save_matches(quiz)
 
-        ctx = game.utils.utils.get_match_context(quiz, user)
-        ctx["remaining_time_in_week"] = game.utils.utils.get_remaining_time_in_week()
+        ctx = utils.get_match_context(quiz, user)
+        ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
         return render(request, "game_match.html", ctx)
 
 
 class CompatibilityView(View):
     def get(self, request, quiz_id, user1_id, user2_id):
-        quiz = Quiz.objects.get(id=quiz_id)
+        quiz = models.Quiz.objects.get(id=quiz_id)
         user1 = User.objects.get(id=user1_id)
         user2 = User.objects.get(id=user2_id)
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
@@ -73,8 +65,8 @@ class CompatibilityView(View):
         elements = []
         for quiz_question in quiz_questions:
             question = quiz_question.question.question
-            answer1 = game.utils.utils.get_text_answer(quiz_question, user1)
-            answer2 = game.utils.utils.get_text_answer(quiz_question, user2)
+            answer1 = utils.get_text_answer(quiz_question, user1)
+            answer2 = utils.get_text_answer(quiz_question, user2)
             elements.append((question, answer1, answer2))
 
         ctx = {
@@ -89,13 +81,13 @@ class CompatibilityView(View):
 class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        matches = game.utils.utils.get_matches_context(user)
+        matches = utils.get_matches_context(user)
         return render(request, "previous_matches.html", {"matches": matches})
 
 
 class SuggestionView(LoginRequiredMixin, FormView):
     template_name = "suggest.html"
-    form_class = SuggestionForm
+    form_class = forms.SuggestionForm
     success_url = "/"
 
     def form_valid(self, form):
@@ -105,7 +97,7 @@ class SuggestionView(LoginRequiredMixin, FormView):
         option3 = form.cleaned_data.get("option3")
         option4 = form.cleaned_data.get("option4")
 
-        Suggestion.objects.create(
+        models.Suggestion.objects.create(
             question=question,
             option1=option1,
             option2=option2,
@@ -124,11 +116,11 @@ class ThanksView(View):
 
 class RegisterView(View):
     def get(self, request):
-        form = RegisterForm()
+        form = forms.RegisterForm()
         return render(request, "register.html", {"form": form})
 
     def post(self, request):
-        form = RegisterForm(request.POST)
+        form = forms.RegisterForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
@@ -145,11 +137,11 @@ class RegisterView(View):
 
 class LoginView(View):
     def get(self, request):
-        form = LoginForm()
+        form = forms.LoginForm()
         return render(request, "login.html", {"form": form})
 
     def post(self, request):
-        form = LoginForm(request.POST)
+        form = forms.LoginForm(request.POST)
         if form.is_valid():
             username = form.cleaned_data["username"]
             password = form.cleaned_data["password"]
@@ -172,22 +164,25 @@ class LogoutView(View):
 
 class MessageInboxView(LoginRequiredMixin, View):
     def get(self, request):
-        messages_in = Message.objects.filter(to_user=request.user).order_by("-sent_at")
+        messages_in = models.Message.objects.filter(to_user=request.user).order_by("-sent_at")
         return render(request, "message_inbox.html", {"messages_in": messages_in})
 
 
 class MessageOutboxView(LoginRequiredMixin, View):
     def get(self, request):
-        messages_out = Message.objects.filter(from_user=request.user).order_by("-sent_at")
+        messages_out = models.Message.objects.filter(from_user=request.user).order_by("-sent_at")
         return render(request, "message_outbox.html", {"messages_out": messages_out})
 
 
 class MessageWriteView(LoginRequiredMixin, View):
-    MeesageFormSet = modelformset_factory(Message, fields=("to_user", "title", "body"))
-
-    def get(self, request):
-        matches = game.utils.utils.get_matches_queryset(request.user)
-        form = MessageForm()
+    def get(self, request, to_user_id=0):
+        if to_user_id == 0:
+            matches = utils.get_matches_queryset(request.user)
+            form = forms.MessageForm()
+        else:
+            match = User.objects.get(id=to_user_id)
+            matches = User.objects.filter(id=match.id)
+            form = forms.MessageForm(initial={"to_user": match})
         form.fields["to_user"].queryset = matches
         no_matches = matches.count()
         ctx = {
@@ -197,12 +192,12 @@ class MessageWriteView(LoginRequiredMixin, View):
         return render(request, "message_write.html", ctx)
 
     def post(self, request):
-        form = MessageForm(request.POST)
+        form = forms.MessageForm(request.POST)
         if form.is_valid():
             to_user = form.cleaned_data.get("to_user")
             title = form.cleaned_data.get("title")
             body = form.cleaned_data.get("body")
-            Message.objects.create(
+            models.Message.objects.create(
                 from_user=self.request.user,
                 to_user=to_user,
                 title=title,
@@ -213,7 +208,7 @@ class MessageWriteView(LoginRequiredMixin, View):
 
 class MessageReadView(LoginRequiredMixin, View):
     def get(self, request, message_id):
-        message = Message.objects.get(id=message_id)
+        message = models.Message.objects.get(id=message_id)
 
         if request.user == message.to_user:
             msg_type = "in"

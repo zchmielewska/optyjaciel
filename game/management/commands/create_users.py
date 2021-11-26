@@ -1,9 +1,6 @@
-import random
-import game.utils.transform
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from faker import Faker
-from game.models import *
 
 
 faker = Faker("pl_PL")

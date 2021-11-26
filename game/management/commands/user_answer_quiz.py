@@ -1,7 +1,7 @@
 import random
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from game.models import *
+from game import models
 
 
 class Command(BaseCommand):
@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         user = User.objects.get(id=options["user_id"])
-        quiz = Quiz.objects.get(id=options["quiz_id"])
+        quiz = models.Quiz.objects.get(id=options["quiz_id"])
         for i in range(10):
             quiz_question = quiz.quizquestion_set.all()[i]
-            Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 4))
+            models.Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 4))

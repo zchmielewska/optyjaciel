@@ -1,10 +1,10 @@
 import arrow
-import datetime
 import django.utils.timezone
 import django.db
 import game.models
 import random
 from django.contrib.auth.models import User
+
 
 def get_current_quiz():
     """

@@ -1,7 +1,7 @@
+import game.models
 from django.contrib import admin
-from game.models import *
 
 
-admin.site.register(Quiz)
-admin.site.register(Question)
-admin.site.register(QuizQuestion)
+admin.site.register(game.models.Quiz)
+admin.site.register(game.models.Question)
+admin.site.register(game.models.QuizQuestion)

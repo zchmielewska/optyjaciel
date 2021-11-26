@@ -1,12 +1,11 @@
+import game.models
 from django import forms
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
-from game.models import *
 
 
 class SuggestionForm(forms.ModelForm):
     class Meta:
-        model = Suggestion
+        model = game.models.Suggestion
         exclude = ["user"]
 
 
