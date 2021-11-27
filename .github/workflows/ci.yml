@@ -1,0 +1,46 @@
+name: tests
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.9]
+
+    services:
+      postgres:
+        image: postgres:12.6
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: github_actions
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+        ports:
+          - 5432:5432
+
+    env:
+      DEBUG: True
+      SECRET_KEY: 'eflx3hv4b7x5-2f1##fbulvw1dhve(+frl(_*gmuh8##@m-na7'
+      DATABASE_NAME: 'github_actions'
+      DATABASE_USER: 'postgres'
+      DATABASE_PASSWORD: 'postgres'
+      DATABASE_HOST: 'localhost'
+      DATABASE_PORT: 5432
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install python dependencies
+      run: |
+        python -m pip install -r requirements.txt
+    - name: Automated tests
+      run: |
+        python -m pip install pytest-django
+        pytest

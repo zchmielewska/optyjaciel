@@ -1,6 +1,7 @@
 import pytest
 from django.utils.timezone import now
 from game.utils import utils
+from game import models
 
 
 def test_conjugate_days():
@@ -50,15 +51,22 @@ def test_conjugate_points():
 
 
 @pytest.mark.django_db
-def test_get_or_create_quiz_gets_quiz():
-    pass
-
-
-@pytest.mark.django_db
-def test_get_or_create_quiz_creates_quiz_when_doesnt_exists(questions):
+def test_get_or_create_quiz_returns_current_quiz(current_quiz):
     year, week, day = now().isocalendar()
+    test = models.Quiz.objects.all()
     quiz = utils.get_or_create_quiz(year=year, week=week)
     assert quiz.id == 1
     assert quiz.year == year
     assert quiz.week == week
 
+
+@pytest.mark.django_db
+def test_testing():
+    no_quizes = models.Quiz.objects.count()
+    assert no_quizes == 0
+
+
+@pytest.mark.django_db
+def test_testing2(current_quiz):
+    no_quizes = models.Quiz.objects.count()
+    assert no_quizes == 1

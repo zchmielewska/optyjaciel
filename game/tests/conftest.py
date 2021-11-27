@@ -1,4 +1,5 @@
 import pytest
+from django.utils.timezone import now
 from game import models
 
 
@@ -20,4 +21,5 @@ def questions(count=10):
 @pytest.fixture()
 def current_quiz():
     year, week, day = now().isocalendar()
-    pass
+    quiz = models.Quiz.objects.create(year=year, week=week)
+    return quiz
