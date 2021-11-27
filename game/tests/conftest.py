@@ -28,6 +28,19 @@ def current_quiz():
 
 
 @pytest.fixture()
-def user():
-    user = User.objects.create(username="jankowalski", password="1234")
-    return user
+def users(count=1):
+    users = []
+    for _ in range(count):
+        user = User.objects.create(username="jankowalski", password="1234")
+        users.append(user)
+    return users
+
+
+@pytest.fixture()
+def answers(current_quiz, users):
+    answers = []
+    for i in range(10):
+        quiz_question = quiz.quizquestion_set.all()[i]
+        answer = models.Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 4))
+        answers.append(answer)
+    return answers

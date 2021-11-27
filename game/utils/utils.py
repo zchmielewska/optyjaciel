@@ -5,7 +5,7 @@ import django.db
 import random
 
 from game import models
-
+from game.utils import utils
 
 def create_ten_questions():
     """
@@ -213,8 +213,8 @@ def calculate_score(quiz, user1, user2):
     quiz_questions = quiz.quizquestion_set.order_by("question_index")
     score = 0
     for quiz_question in quiz_questions:
-        answer1 = game.models.Answer.objects.get(user=user1, quiz_question=quiz_question)
-        answer2 = game.models.Answer.objects.get(user=user2, quiz_question=quiz_question)
+        answer1 = models.Answer.objects.get(user=user1, quiz_question=quiz_question)
+        answer2 = models.Answer.objects.get(user=user2, quiz_question=quiz_question)
         if answer1.answer == answer2.answer:
             score += 1
 
@@ -317,7 +317,7 @@ def get_users_previous_quizes(user):
     current_quiz = get_or_create_quiz()
 
     # User might have participated only in few historical quizes
-    answers = game.models.Answer.objects.filter(user=user)
+    answers = models.Answer.objects.filter(user=user)
     quiz_questions = [answer.quiz_question for answer in answers]
     quizes = set()
     for quiz_question in quiz_questions:
@@ -331,7 +331,7 @@ def get_matches_context(user):
     quizes = get_users_previous_quizes(user)
     matches_context = []
     for quiz in quizes:
-        match = game.utils.utils.get_match_context(quiz, user, nest=False)
+        match = utils.get_match_context(quiz, user, nest=False)
         matches_context.append(match)
     return matches_context
 
@@ -340,7 +340,7 @@ def get_matches_queryset(user):
     quizes = get_users_previous_quizes(user)
     matched_users_ids = set()
     for quiz in quizes:
-        match = game.models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+        match = models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
         matched_users_ids.add(match.matched_user_id)
     matches = User.objects.filter(pk__in=matched_users_ids)
     return matches

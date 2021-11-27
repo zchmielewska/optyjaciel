@@ -1,8 +1,9 @@
 import pandas as pd
 import numpy as np
 
-import game.models
+from game import models
 from game.utils import solver
+
 
 def get_answers(quiz):
     """
@@ -38,11 +39,17 @@ def answers_to_scores_matrix(answers):
     """
     Calculates the scores matrix based on the answers table.
     Scores matrix has the dimension of the number of users.
-    Values in the matrix are the number of questions to which users answers in the same way.
+    Values in the matrix are the number of questions to which users answered in the same way.
 
-    :param answers: table with answers
-    :return: matrix with scores
+    :param answers: pandas data frame with answers
+    :return: numpy 2d array with scores
     """
+    if not len(answers.columns) == 10:
+        raise ValueError("Answers table must have 10 columns.")
+
+    if not len(answers.index) > 0:
+        raise ValueError("Answers table must have at least 1 row.")
+
     n = len(answers.index)
     scores = np.zeros((n, n))
 

@@ -3,6 +3,16 @@ import pulp
 
 
 def match(scores):
+    """
+    Matches users into pairs based on the scores matrix.
+    Scores matrix contains the number of points for each pair of users.
+    Match matrix contains zero-one values. The value of one means a match between two users.
+    Each row of the match matrix can have value of one maximally once.
+    The aim of optimization is maximization of points in the whole group.
+
+    :param scores: matrix with scores
+    :return: matrix with matches
+    """
     n = len(scores)
     result = np.zeros((n, n))
     possible_matches = [pm for pm in pulp.permutation(range(n), 2)]
@@ -35,7 +45,8 @@ def match(scores):
         model += sum(x[(i, j)] for i in range(n) for j in range(n) if i != j) == n-1, "Maximal_number_of_matches"
 
     # Solver
-    solution_found = model.solve()
+    # solution_found = model.solve()
+    solution_found = model.solve(pulp.PULP_CBC_CMD(msg=False))
     if solution_found == -1:
         result = None
     else:

@@ -133,12 +133,14 @@ class RegisterView(View):
 
             username_is_taken = username in User.objects.values_list("username", flat=True)
             if username_is_taken:
-                form.add_error("username", "Ta nazwa użytkownika jest już zajęta :-(")
+                form.add_error("username", "Ta nazwa użytkownika jest już zajęta.")
                 return render(request, "register.html", {"form": form})
 
             user = User.objects.create_user(username=username, email=None, password=password)
             login(request, user)
             return redirect("rules")
+        else:
+            return render(request, "register.html", {"form": form})
 
 
 class LoginView(View):
@@ -160,6 +162,8 @@ class LoginView(View):
             else:
                 form.add_error("username", "Nieprawidłowa nazwa użytkownika lub hasło.")
                 return render(request, "login.html", {"form": form})
+        else:
+            return render(request, "login.html", {"form": form})
 
 
 class LogoutView(View):
@@ -197,7 +201,7 @@ class MessageWriteView(LoginRequiredMixin, View):
         }
         return render(request, "message_write.html", ctx)
 
-    def post(self, request):
+    def post(self, request, to_user_id=0):
         form = forms.MessageForm(request.POST)
         if form.is_valid():
             to_user = form.cleaned_data.get("to_user")

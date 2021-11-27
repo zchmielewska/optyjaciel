@@ -1,20 +1,13 @@
 from django.utils.timezone import now
 import datetime
+import numpy as np
+import pandas as pd
 import pytest
 
+from game.utils import solver
+from game.utils import transform
 from game.utils import utils
 from game import models
-
-
-def test_conjugate_points():
-    assert utils.conjugate_points(0) == "punktów"
-    assert utils.conjugate_points(1) == "punkt"
-    assert utils.conjugate_points(2) == "punkty"
-    assert utils.conjugate_points(5) == "punktów"
-    with pytest.raises(ValueError):
-        utils.conjugate_points(-1)
-    with pytest.raises(ValueError):
-        utils.conjugate_points(11)
 
 
 @pytest.mark.django_db
@@ -119,6 +112,55 @@ def test_get_remaining_time_in_week():
     assert utils.get_remaining_time_in_week(datetime.datetime(2021, 11, 26, 23, 45)) == "2 dni, 14 minut"
 
 
-# @pytest.mark.django_db
-# def test_get_match_context(current_quiz, user):
-#     assert utils.get_match_context(current_quiz, user, nest=False) == {"exists": False, "quiz": current_quiz}
+def test_conjugate_points():
+    assert utils.conjugate_points(0) == "punktów"
+    assert utils.conjugate_points(1) == "punkt"
+    assert utils.conjugate_points(2) == "punkty"
+    assert utils.conjugate_points(5) == "punktów"
+    with pytest.raises(ValueError):
+        utils.conjugate_points(-1)
+    with pytest.raises(ValueError):
+        utils.conjugate_points(11)
+
+
+def test_answers_to_scores_matrix():
+    a1 = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    a2 = [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]
+    a3 = [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
+    s1 = np.array([10])
+    s2 = np.array([[10, 3], [3, 10]])
+    s3 = np.array([[10, 3, 0], [3, 10, 2], [0, 2, 10]])
+    assert transform.answers_to_scores_matrix(pd.DataFrame([a1])) == s1
+    assert (transform.answers_to_scores_matrix(pd.DataFrame([a1, a2])) == s2).all()
+    assert (transform.answers_to_scores_matrix(pd.DataFrame([a1, a2, a3])) == s3).all()
+
+    a4 = [1, 2, 3]
+    with pytest.raises(ValueError):
+        transform.answers_to_scores_matrix(pd.DataFrame([a4]))
+
+    with pytest.raises(ValueError):
+        transform.answers_to_scores_matrix(pd.DataFrame([]))
+
+
+def test_match():
+    s1 = np.array([10])
+    m1 = np.array([0])
+    assert solver.match(s1) == m1
+
+    s2 = np.array([[10, 3], [3, 10]])
+    m2 = np.array([[0, 1], [1, 0]])
+    assert (solver.match(s2) == m2).all()
+
+    s3 = np.array([
+        [10, 7, 8, 2],
+        [7, 10, 3, 4],
+        [8, 3, 10, 6],
+        [2, 4, 6, 10]
+    ])
+    m3 = np.array([
+        [0, 1, 0, 0],
+        [1, 0, 0, 0],
+        [0, 0, 0, 1],
+        [0, 0, 1, 0]
+    ])
+    assert (solver.match(s3) == m3).all()
