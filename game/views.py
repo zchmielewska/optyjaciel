@@ -11,15 +11,21 @@ from django.views.generic import FormView
 
 
 class RulesView(View):
+    """The description of the game's rules."""
     def get(self, request):
         return render(request, "rules.html")
 
 
 class GameView(LoginRequiredMixin, View):
+    """
+    The game for the current week.
+    If the user hasn't played yet, returns the quiz for the current week.
+    If the user has already played, returns the current match.
+    """
     def get(self, request):
         user = request.user
         quiz = utils.get_or_create_quiz()
-        played = len(models.Match.objects.filter(quiz=quiz, user=user)) > 0
+        played = models.Match.objects.filter(quiz=quiz, user=user).count() > 0
 
         if not played:
             quiz_questions = quiz.quizquestion_set.order_by("question_index")

@@ -10,7 +10,7 @@
     <div class="box">
         <form method="post">
         {% csrf_token %}
-            {% for quiz_question in quiz_questions %}
+        {% for quiz_question in quiz_questions %}
             <div class="question-set">
                 <div class="question-container" id="{{ quiz_question.id }}" data-counter="{{ forloop.counter }}">
                     <div class="question-number">[{{ forloop.counter }}/10]</div>
@@ -21,28 +21,25 @@
                         <input type="radio" name="{{ quiz_question.id }}" value="1" required>
                         <div>{{ quiz_question.question.option1 }}</div>
                     </label>
-
                     <label class="lbl">
                         <input type="radio" name="{{ quiz_question.id }}" value="2">
                         <div>{{ quiz_question.question.option2 }}</div>
                     </label>
-
                     <label class="lbl">
                         <input type="radio" name="{{ quiz_question.id }}" value="3">
                         <div>{{ quiz_question.question.option3 }}</div>
                     </label>
-
                     <label class="lbl">
                         <input type="radio" name="{{ quiz_question.id }}" value="4">
                         <div>{{ quiz_question.question.option4 }}</div>
                     </label>
                 </div>
             </div>
-            {%  endfor %}
-            <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
-            <div class="vertical-center">
-                <button type="submit" class="big-orange-button">Wyślij</button>
-            </div>
+        {%  endfor %}
+        <input type="hidden" name="quiz_id" value="{{ quiz.id }}">
+        <div class="vertical-center">
+            <button type="submit" class="big-orange-button">Wyślij</button>
+        </div>
         </form>
     </div>
 {%  endblock %}

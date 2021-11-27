@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
-import game.models
-import game.utils.solver
 
+import game.models
+from game.utils import solver
 
 def get_answers(quiz):
     """
@@ -89,7 +89,7 @@ def recalculate_and_save_matches(quiz):
     """
     answers, users_id = get_answers(quiz)
     scores = answers_to_scores_matrix(answers)
-    match_matrix = game.utils.solver.match(scores)
+    match_matrix = solver.match(scores)
     match_table = match_matrix_to_match_table(match_matrix, users_id)
 
     for index, row in match_table.iterrows():

@@ -1,18 +1,101 @@
-import arrow
-import django.db
-import game.models
-import random
 from django.contrib.auth.models import User
 from django.utils.timezone import now
+import arrow
+import django.db
+import random
+
 from game import models
 
 
-def get_or_create_quiz(year, week):
+def create_ten_questions():
+    """
+    Adds ten questions to the DB.
+    Quizes and questions should be managed manually by administrator of the app.
+    However, if this work hasn't been done, the app should not crash.
+    For app to work independently (without human interaction), it needs at least 10 questions in the DB.
+
+    :return: list of question objects
+    """
+    data = [
+        {'question': 'Jaką porę roku lubisz najbardziej?', 'option1': 'lato', 'option2': 'jesień',
+         'option3': 'zima', 'option4': 'wiosna'},
+        {'question': 'Ulubiony kolor?', 'option1': 'czerwony', 'option2': 'zielony',
+         'option3': 'niebieski', 'option4': 'żółty'},
+        {'question': 'Najsilniejszy superbohater?', 'option1': 'Superman', 'option2': 'Wonder Woman',
+         'option3': 'Batman', 'option4': 'Spider-man'},
+        {'question': 'Najsmaczniejsza potrawa?', 'option1': 'pizza', 'option2': 'sałatka',
+         'option3': 'sushi', 'option4': 'zupa pomidorowa'},
+        {'question': 'Najbardziej wciągający serial?', 'option1': 'przyjaciele', 'option2': 'teoria wielkiego podrywu',
+         'option3': 'gra o tron', 'option4': 'głowa rodziny'},
+        {'question': 'Jakie masz lub chciał(a)byś mieć zwierzę?', 'option1': 'kot', 'option2': 'pies',
+         'option3': 'rybki', 'option4': 'papuga'},
+        {'question': 'Jaki sport uprawiasz albo oglądasz?', 'option1': 'piłka nożna', 'option2': 'tenis',
+         'option3': 'pływanie', 'option4': 'jazda na nartach'},
+        {'question': 'Ulubiony smak lodów?', 'option1': 'czekoladowe', 'option2': 'waniliowe',
+         'option3': 'truskawkowe', 'option4': 'pistacjowe'},
+        {'question': 'Gdzie najchętniej spędzasz czas?', 'option1': 'plaża', 'option2': 'las',
+         'option3': 'miasto', 'option4': 'góry'},
+        {'question': 'Ulubiona gra planszowa?', 'option1': 'szachy', 'option2': 'monopol',
+         'option3': 'scrabble', 'option4': 'jenga'}
+    ]
+
+    questions = []
+    for datum in data:
+        question = models.Question.objects.create(**datum)
+        questions.append(question)
+
+    return questions
+
+
+def create_random_quiz(year, week):
+    """
+    Creates a quiz and populates it with random questions.
+    The function tries to use questions that weren't yet used in other quizes.
+    If that's not possible, it populates the quiz with questions already used in other quizes.
+
+    :param year: integer, year of the quiz
+    :param week: integer, week of the quiz
+    :return: quiz object
+    """
+    with django.db.transaction.atomic():
+        quiz = models.Quiz.objects.create(year=year, week=week)
+
+        # There must be at least 10 questions in db to create a quiz
+        n_questions = models.Question.objects.count()
+        if n_questions < 10:
+            create_ten_questions()
+
+        # Some questions might not have been yet used
+        unused = models.Question.objects.filter(quizquestion__isnull=True).distinct()
+        used = models.Question.objects.filter(quizquestion__isnull=False).distinct()
+        n_unused = len(unused)
+
+        # Quiz should have as many unused questions as possible
+        if n_unused >= 10:
+            questions = random.sample(list(unused), 10)
+        elif n_unused >= 1:
+            questions = list(unused) + random.sample(list(used), 10 - n_unused)
+        else:
+            questions = random.sample(list(used), 10)
+
+        # Add questions to the quiz
+        for i in range(10):
+            models.QuizQuestion.objects.create(
+                quiz=quiz,
+                question=questions[i],
+                question_index=i+1,
+            )
+    return quiz
+
+
+def get_or_create_quiz(year=None, week=None):
     """
     Retrieves quiz for the specific week.
     If arguments are not provided, the current week is retrieved.
     If the quiz doesn't exist, it creates it and populates with random questions.
 
+    :param year: integer, year for which quiz is retrieved or created
+    :param week: week, year for which quiz is retrieved or created
     :return: quiz object
     """
     if not (year and week):
@@ -26,158 +109,6 @@ def get_or_create_quiz(year, week):
         return quizes.first()
     elif no_quizes == 0:
         return create_random_quiz(year, week)
-
-
-def get_remaining_time_in_week():
-    """
-    Creates a string that informs about time to the end of week.
-    Time is presented as number of days, hours in minutes.
-    String is in Polish and respects conjugation rules.
-    Example: 5 dni, 6 godzin i 27 minut
-
-    :return: string
-    """
-    now = arrow.get(django.utils.timezone.now())
-    week_end = now.ceil('week')
-    diff = week_end - now
-
-    days_count = diff.days
-    hours_count = diff.seconds//3600
-    minutes_count = (diff.seconds//60) % 60
-
-    days_text = f"{days_count} {conjugate_days(days_count)}"
-    hours_text = f"{hours_count} {conjugate_hours(hours_count)}"
-    minutes_text = f"{minutes_count} {conjugate_minutes(minutes_count)}"
-
-    result = ""
-    if days_text:
-        result += days_text
-        if hours_text or minutes_text:
-            result += ", "
-
-    if hours_text:
-        result += hours_text
-        if minutes_text:
-            result += " i " + minutes_text
-
-    return result
-
-
-def get_match_context(quiz, user, nest=True):
-    """
-    Prepares context for the match template.
-    The nest flag is used so that the function can be used for two views:
-        - view for single match (for the current game),
-        - view for multiple matches (for the historical games).
-
-    :param quiz: quiz object
-    :param user: user object
-    :param nest: boolean, should the context be included in an additional dictionary?
-    :return: context for the match template
-    """
-    match = game.models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
-
-    if not match.matched_user:
-        inner_data = {
-            "exists": False,
-            "quiz": quiz
-        }
-        context = {"match": inner_data} if nest else inner_data
-    else:
-        matched_user = match.matched_user
-        score = game.utils.utils.calculate_score(quiz, user, matched_user)
-        points = game.utils.utils.conjugate_points(score)
-        inner_data = {
-            "exists": True,
-            "quiz": quiz,
-            "user": user,
-            "matched_user": matched_user,
-            "score": score,
-            "points": points,
-        }
-        context = {"match": inner_data} if nest else inner_data
-    return context
-
-
-def get_text_answer(quiz_question, user):
-    """
-    Retrieves an answer of the user for the given quiz question.
-    An answer is returned as a text (rather than number)
-
-    :param quiz_question: quiz_question object
-    :param user: user object
-    :return: string
-    """
-    answer_object = game.models.Answer.objects.get(user=user, quiz_question=quiz_question)
-    answer = answer_object.answer
-
-    if answer == 1:
-        result = quiz_question.question.option1
-    elif answer == 2:
-        result = quiz_question.question.option2
-    elif answer == 3:
-        result = quiz_question.question.option3
-    else:
-        result = quiz_question.question.option4
-
-    return result
-
-
-def create_random_quiz(year, week):
-    """
-    Creates a quiz and populates it with random questions.
-    The function tries to use questions that weren't yet used in other quizes.
-    If that's not possible, it populates the quiz with questions already used in other quizes.
-
-    :param year: year of the quiz
-    :param week: week of the quiz
-    :return: quiz object
-    """
-    with django.db.transaction.atomic():
-        quiz = game.models.Quiz.objects.create(year=year, week=week)
-
-        # Some questions might not have been yet used
-        unused = game.models.Question.objects.filter(quizquestion__isnull=True).distinct()
-        used = game.models.Question.objects.filter(quizquestion__isnull=False).distinct()
-
-        n = len(unused)
-
-        # Quiz should have as many unused questions as possible
-        if n >= 10:
-            questions = random.sample(list(unused), 10)
-        elif n >= 1:
-            questions = list(unused) + random.sample(list(used), 10-n)
-        else:
-            questions = random.sample(list(used), 10)
-
-        # Add questions to the quiz
-        for i in range(10):
-            game.models.QuizQuestion.objects.create(
-                quiz=quiz,
-                question=questions[i],
-                question_index=i+1,
-            )
-    return quiz
-
-
-def calculate_score(quiz, user1, user2):
-    """
-    Calculates the number of questions for which two users answered in the same way.
-
-    :param quiz: quiz object
-    :param user1: first user object
-    :param user2: second user object
-    :return: integer
-    """
-    quiz_questions = quiz.quizquestion_set.order_by("question_index")
-    score = 0
-    for quiz_question in quiz_questions:
-        answer1 = game.models.Answer.objects.get(user=user1, quiz_question=quiz_question)
-        answer2 = game.models.Answer.objects.get(user=user2, quiz_question=quiz_question)
-        if answer1.answer == answer2.answer:
-            score += 1
-
-    return score
 
 
 def conjugate_days(days_count):
@@ -238,6 +169,127 @@ def conjugate_minutes(minutes_count):
     else:
         raise ValueError("Number of minutes must be between 1 and 60.")
     return minutes_text
+
+
+def get_remaining_time_in_week(moment=None):
+    """
+    Creates a string that informs about the time until the end of the week in Polish language.
+    Time is presented as number of days, hours and minutes.
+    If no argument is passed, the function uses the current moment.
+    Output example: 5 dni, 6 godzin i 27 minut
+
+    :return: string
+    """
+    if not moment:
+        moment = now()
+
+    arrow_moment = arrow.get(moment)
+    week_end = arrow_moment.ceil('week')
+    diff = week_end - arrow_moment
+
+    days_count = diff.days
+    hours_count = diff.seconds//3600
+    minutes_count = (diff.seconds//60) % 60
+
+    days_text = f"{days_count} {conjugate_days(days_count)}" if days_count > 0 else None
+    hours_text = f"{hours_count} {conjugate_hours(hours_count)}" if hours_count > 0 else None
+    minutes_text = f"{minutes_count} {conjugate_minutes(minutes_count)}" if minutes_count > 0 else None
+
+    result = minutes_text
+    result = hours_text + " i " + result if hours_text else result
+    result = days_text + ", " + result if days_text else result
+    return result
+
+
+def calculate_score(quiz, user1, user2):
+    """
+    Calculates the number of questions for which two users answered in the same way.
+
+    :param quiz: quiz object
+    :param user1: first user object
+    :param user2: second user object
+    :return: integer
+    """
+    quiz_questions = quiz.quizquestion_set.order_by("question_index")
+    score = 0
+    for quiz_question in quiz_questions:
+        answer1 = game.models.Answer.objects.get(user=user1, quiz_question=quiz_question)
+        answer2 = game.models.Answer.objects.get(user=user2, quiz_question=quiz_question)
+        if answer1.answer == answer2.answer:
+            score += 1
+
+    return score
+
+
+def get_match_context(quiz, user, nest=True):
+    """
+    Prepares context for the match template.
+
+    The nest flag is used so that the function can be used for two views:
+        - view for single match (for the current game),
+        - view for multiple matches (for the previous games).
+
+    The context contains all variables used within the template:
+        - exists - does the match exist,
+        - quiz - for which quiz is the match,
+        - user - logged-in user object,
+        - matched_user - match user object,
+        - score - number of points,
+        - points - conjugated word points.
+
+    If there is no match (due to uneven number of participants), only 'exists' and 'quiz' are included in the context.
+
+    :param quiz: quiz object
+    :param user: user object
+    :param nest: boolean, should the context be included in an additional dictionary?
+    :return: context for the match template
+    """
+    match = models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+
+    if not match.matched_user:
+        inner_data = {
+            "exists": False,
+            "quiz": quiz
+        }
+        context = {"match": inner_data} if nest else inner_data
+    else:
+        matched_user = match.matched_user
+        score = calculate_score(quiz, user, matched_user)
+        points = conjugate_points(score)
+        inner_data = {
+            "exists": True,
+            "quiz": quiz,
+            "user": user,
+            "matched_user": matched_user,
+            "score": score,
+            "points": points,
+        }
+        context = {"match": inner_data} if nest else inner_data
+    return context
+
+
+def get_text_answer(quiz_question, user):
+    """
+    Retrieves an answer of the user for the given quiz question.
+    An answer is returned as a text (rather than number)
+
+    :param quiz_question: quiz_question object
+    :param user: user object
+    :return: string
+    """
+    answer_object = game.models.Answer.objects.get(user=user, quiz_question=quiz_question)
+    answer = answer_object.answer
+
+    if answer == 1:
+        result = quiz_question.question.option1
+    elif answer == 2:
+        result = quiz_question.question.option2
+    elif answer == 3:
+        result = quiz_question.question.option3
+    else:
+        result = quiz_question.question.option4
+
+    return result
 
 
 def conjugate_points(points_count):

@@ -1,5 +1,7 @@
 import pytest
+from django.contrib.auth.models import User
 from django.utils.timezone import now
+
 from game import models
 
 
@@ -23,3 +25,9 @@ def current_quiz():
     year, week, day = now().isocalendar()
     quiz = models.Quiz.objects.create(year=year, week=week)
     return quiz
+
+
+@pytest.fixture()
+def user():
+    user = User.objects.create(username="jankowalski", password="1234")
+    return user

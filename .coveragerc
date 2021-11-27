@@ -1,0 +1,9 @@
+[run]
+include =
+    ./optyjaciel/*
+    ./game/*
+omit =
+    ./game/migrations/*
+    ./game/management/*
+    *__init__*
+    *test*
