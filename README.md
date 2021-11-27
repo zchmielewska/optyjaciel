@@ -1,3 +1,5 @@
+![status](https://github.com/zchmielewska/optyjaciel/actions/workflows/ci.yml/badge.svg)
+
 # optyjaciel
 
 Optyjaciel to internetowa **gra towarzyska**.
