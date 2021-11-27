@@ -87,6 +87,19 @@ DATABASES = {
     }
 }
 
+# DB configuration used for github workflow
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+           'ENGINE': 'django.db.backends.postgresql_psycopg2',
+           'NAME': 'github_actions',
+           'USER': "postgres",
+           'PASSWORD': "postgres",
+           'HOST': 'localhost',
+           'PORT': 5432,
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
