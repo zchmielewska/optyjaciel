@@ -14,7 +14,7 @@ def get_answers(quiz):
     The list contains users ids in the same order as the table.
     For example, the answers in the first row were given by the user with id located in the first element of the list.
 
-    :param quiz:
+    :param quiz: quiz object for which answers are retriever
     :return: table with answers, list with users ids
     """
     answers_list = []

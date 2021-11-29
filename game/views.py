@@ -1,13 +1,15 @@
-from game import forms, models
-from game.utils import transform, utils
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404, QueryDict
 from django.shortcuts import render, redirect
+from django.utils.timezone import now
 from django.views import View
 from django.views.generic import FormView
+
+from game import forms, models
+from game.utils import db_control, transform, utils
 
 
 class RulesView(View):
@@ -24,7 +26,8 @@ class GameView(LoginRequiredMixin, View):
     """
     def get(self, request):
         user = request.user
-        quiz = utils.get_or_create_quiz()
+        year, week, day = now().isocalendar()
+        quiz = db_control.get_quiz(year=year, week=week)
         played = models.Match.objects.filter(quiz=quiz, user=user).count() > 0
 
         if not played:
@@ -35,7 +38,7 @@ class GameView(LoginRequiredMixin, View):
             }
             return render(request, 'game_quiz.html', ctx)
         else:
-            ctx = utils.get_match_context(quiz, user)
+            ctx = db_control.get_match_context(quiz, user)
             ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
             ctx["previous_game"] = False
             return render(request, "game_match.html", ctx)
@@ -57,7 +60,7 @@ class GameView(LoginRequiredMixin, View):
                 )
             transform.recalculate_and_save_matches(quiz)
 
-        ctx = utils.get_match_context(quiz, user)
+        ctx = db_control.get_match_context(quiz, user)
         ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
         return render(request, "game_match.html", ctx)
 
@@ -72,8 +75,8 @@ class CompatibilityView(View):
         elements = []
         for quiz_question in quiz_questions:
             question = quiz_question.question.question
-            answer1 = utils.get_text_answer(quiz_question, user1)
-            answer2 = utils.get_text_answer(quiz_question, user2)
+            answer1 = db_control.get_text_answer(quiz_question, user1)
+            answer2 = db_control.get_text_answer(quiz_question, user2)
             elements.append((question, answer1, answer2))
 
         ctx = {
@@ -89,7 +92,7 @@ class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         ctx = {
-            "matches": utils.get_matches_context(user),
+            "matches": db_control.get_matches_context(user),
             "previous_game": True
         }
         return render(request, "previous_matches.html", ctx)
@@ -191,7 +194,7 @@ class MessageOutboxView(LoginRequiredMixin, View):
 class MessageWriteView(LoginRequiredMixin, View):
     def get(self, request, to_user_id=0):
         if to_user_id == 0:
-            matches = utils.get_matches_queryset(request.user)
+            matches = db_control.get_matches_queryset(request.user)
             form = forms.MessageForm()
         else:
             match = User.objects.get(id=to_user_id)
