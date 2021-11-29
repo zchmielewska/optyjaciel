@@ -10,4 +10,7 @@ Następnie wszyscy uczestnicy są łączeni w pary. Łączenie przebiega tak, ab
 
 ---
 
-Gra dostępna jest pod adresem [optyjaciel.herokuapp.com](https://optyjaciel.herokuapp.com/).
+
+[<img src="https://user-images.githubusercontent.com/4399111/143677598-73069724-1b6b-4a5f-b491-c9b91472d962.png">](https://optyjaciel.herokuapp.com/)
+
+
