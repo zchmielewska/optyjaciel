@@ -7,6 +7,7 @@ import random
 from game import models
 from game.utils import utils
 
+
 def create_ten_questions():
     """
     Adds ten questions to the DB.
@@ -319,10 +320,12 @@ def get_users_previous_quizes(user):
     # User might have participated only in few historical quizes
     answers = models.Answer.objects.filter(user=user)
     quiz_questions = [answer.quiz_question for answer in answers]
-    quizes = set()
+    quizes = []
     for quiz_question in quiz_questions:
-        if quiz_question.quiz != current_quiz:
-            quizes.add(quiz_question.quiz)
+        if quiz_question.quiz != current_quiz and quiz_question.quiz not in quizes:
+            quizes.append(quiz_question.quiz)
+
+    quizes.sort(key=lambda x: (x.year, x.week), reverse=True)
 
     return quizes
 

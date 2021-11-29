@@ -8,6 +8,7 @@
 
 {%  block content %}
     <div class="box">
+        <h3>Runda: {{ quiz.year }}_{{ quiz.week }}</h3>
         <form method="post">
         {% csrf_token %}
         {% for quiz_question in quiz_questions %}
