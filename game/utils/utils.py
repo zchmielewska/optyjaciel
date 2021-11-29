@@ -314,6 +314,13 @@ def conjugate_points(points_count):
 
 
 def get_users_previous_quizes(user):
+    """
+    Returns a list of quiz objects in which the user has participated.
+    The list is ordered in reverse-chronological order (newest first).
+
+    :param user: user object
+    :return: list of quiz objects
+    """
     # Current game is ignored
     current_quiz = get_or_create_quiz()
 
