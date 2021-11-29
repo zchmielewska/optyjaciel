@@ -20,9 +20,11 @@
             <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="blue-button">
                 kompatybilność
             </a>
+            {% if previous_game %}
             <a href="{% url "message-write" match.matched_user.id %}" class="blue-button">
                 wiadomość
             </a>
+            {% endif %}
         {% else %}
             <div>
                 <span style="font-size: 1.4em;"><strong>0</strong></span><br>

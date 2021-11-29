@@ -37,6 +37,7 @@ class GameView(LoginRequiredMixin, View):
         else:
             ctx = utils.get_match_context(quiz, user)
             ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
+            ctx["previous_game"] = False
             return render(request, "game_match.html", ctx)
 
     def post(self, request):
@@ -87,8 +88,11 @@ class CompatibilityView(View):
 class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        matches = utils.get_matches_context(user)
-        return render(request, "previous_matches.html", {"matches": matches})
+        ctx = {
+            "matches": utils.get_matches_context(user),
+            "previous_game": True
+        }
+        return render(request, "previous_matches.html", ctx)
 
 
 class SuggestionView(LoginRequiredMixin, FormView):

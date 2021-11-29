@@ -101,4 +101,4 @@ def recalculate_and_save_matches(quiz):
 
     for index, row in match_table.iterrows():
         matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
-        game.models.Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
+        models.Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)

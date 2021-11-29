@@ -278,7 +278,7 @@ def get_text_answer(quiz_question, user):
     :param user: user object
     :return: string
     """
-    answer_object = game.models.Answer.objects.get(user=user, quiz_question=quiz_question)
+    answer_object = models.Answer.objects.get(user=user, quiz_question=quiz_question)
     answer = answer_object.answer
 
     if answer == 1:
