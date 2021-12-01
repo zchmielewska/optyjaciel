@@ -39,12 +39,11 @@ class GameView(LoginRequiredMixin, View):
             return render(request, 'game_quiz.html', ctx)
         else:
             ctx = db_control.get_match_context(quiz, user)
-            ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
             ctx["previous_game"] = False
+            ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
             return render(request, "game_match.html", ctx)
 
     def post(self, request):
-        user = request.user
         post = QueryDict.dict(request.POST)
         post.pop("csrfmiddlewaretoken")
         quiz_id = post.pop("quiz_id")
@@ -59,13 +58,11 @@ class GameView(LoginRequiredMixin, View):
                     answer=value
                 )
             transform.recalculate_and_save_matches(quiz)
-
-        ctx = db_control.get_match_context(quiz, user)
-        ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
-        return render(request, "game_match.html", ctx)
+        return redirect("game")
 
 
-class CompatibilityView(View):
+class CompatibilityView(LoginRequiredMixin, View):
+    """Juxtaposition of answers of two users for the given quiz."""
     def get(self, request, quiz_id, user1_id, user2_id):
         quiz = models.Quiz.objects.get(id=quiz_id)
         user1 = User.objects.get(id=user1_id)
@@ -89,16 +86,24 @@ class CompatibilityView(View):
 
 
 class MatchesView(LoginRequiredMixin, View):
+    """Matches from all previous games."""
     def get(self, request):
         user = request.user
+        quizes = db_control.get_previous_quizes(user)
+        matches_context = []
+        for quiz in quizes:
+            match_context = db_control.get_match_context(quiz, user, nest=False)
+            matches_context.append(match_context)
+
         ctx = {
-            "matches": db_control.get_matches_context(user),
+            "matches": matches_context,
             "previous_game": True
         }
         return render(request, "previous_matches.html", ctx)
 
 
 class SuggestionView(LoginRequiredMixin, FormView):
+    """Form to send the suggestion for question."""
     template_name = "suggest.html"
     form_class = forms.SuggestionForm
     success_url = "/"
@@ -118,7 +123,6 @@ class SuggestionView(LoginRequiredMixin, FormView):
             option4=option4,
             user=self.request.user,
         )
-
         return redirect("thanks")
 
 
@@ -128,6 +132,7 @@ class ThanksView(View):
 
 
 class RegisterView(View):
+    """Form to create a new account."""
     def get(self, request):
         form = forms.RegisterForm()
         return render(request, "register.html", {"form": form})
@@ -151,6 +156,7 @@ class RegisterView(View):
 
 
 class LoginView(View):
+    """Form to log in."""
     def get(self, request):
         form = forms.LoginForm()
         return render(request, "login.html", {"form": form})
@@ -174,12 +180,14 @@ class LoginView(View):
 
 
 class LogoutView(View):
+    """Form to log out."""
     def get(self, request):
         logout(request)
         return redirect("rules")
 
 
 class MessageInboxView(LoginRequiredMixin, View):
+    """List of received messages."""
     def get(self, request):
         messages_in = models.Message.objects.filter(to_user=request.user).order_by("-sent_at")
         return render(request, "message_inbox.html", {"messages_in": messages_in})
@@ -192,6 +200,11 @@ class MessageOutboxView(LoginRequiredMixin, View):
 
 
 class MessageWriteView(LoginRequiredMixin, View):
+    """
+    Form to write a message.
+    If to_user_id is set to 0, then the list of available recipients contains all previous matches.
+    Otherwise, the list contains only one user implied by the id.
+    """
     def get(self, request, to_user_id=0):
         if to_user_id == 0:
             matches = db_control.get_matches_queryset(request.user)
@@ -224,6 +237,7 @@ class MessageWriteView(LoginRequiredMixin, View):
 
 
 class MessageReadView(LoginRequiredMixin, View):
+    """Content of the message."""
     def get(self, request, message_id):
         message = models.Message.objects.get(id=message_id)
 
@@ -234,6 +248,7 @@ class MessageReadView(LoginRequiredMixin, View):
         else:
             raise Http404("Wiadomość nie istnieje.")
 
+        # Mark message as read
         if msg_type == "in" and message.new:
             message.new = False
             message.save()

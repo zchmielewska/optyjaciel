@@ -25,15 +25,10 @@ class DbControl00Test(TestCase):
 class DbControl01Test(TestCase):
     fixtures = ["01.json"]
 
-    def test_fixture(self):
-        self.assertEqual(models.Quiz.objects.count(), 1)
-        quiz = models.Quiz.objects.first()
-        self.assertEqual(quiz.questions.count(), 0)
-
     def test_fill_quiz(self):
         quiz = models.Quiz.objects.first()
         self.assertEqual(quiz.questions.count(), 0)
-        filled_quiz = db_control.fill_quiz_with_questions(quiz)
+        filled_quiz = db_control.fill_with_questions(quiz)
         self.assertEqual(filled_quiz.questions.count(), 10)
 
     def test_get_quiz(self):
@@ -46,14 +41,6 @@ class DbControl01Test(TestCase):
 # DB contains 1 quiz + 2 users
 class DbControl02Test(TestCase):
     fixtures = ["02.json"]
-
-    def test_fixture(self):
-        self.assertEqual(models.Quiz.objects.count(), 1)
-        self.assertEqual(models.Question.objects.count(), 10)
-        quiz = models.Quiz.objects.first()
-        self.assertEqual(quiz.questions.count(), 10)
-        self.assertEqual(User.objects.count(), 2)
-        self.assertEqual(models.Answer.objects.count(), 20)
 
     def test_calculate_score(self):
         quiz = models.Quiz.objects.get(pk=1)
@@ -82,15 +69,9 @@ class DbControl02Test(TestCase):
 class DbControl03Test(TestCase):
     fixtures = ["03.json"]
 
-    def test_fixture(self):
-        self.assertEqual(models.Quiz.objects.count(), 3)
-        self.assertEqual(User.objects.count(), 1)
-        self.assertEqual(models.QuizQuestion.objects.count(), 30)
-        self.assertEqual(models.Answer.objects.count(), 20)
-
     def test_get_users_previous_quizes(self):
         user = User.objects.get(pk=1)
-        previous_quizes = db_control.get_users_previous_quizes(user)
+        previous_quizes = db_control.get_previous_quizes(user)
         self.assertEqual(len(previous_quizes), 2)
 
         # Quizes are sorted in chronologically (newest first)
@@ -104,4 +85,42 @@ class DbControl03Test(TestCase):
         for i in range(10):
             quiz_question = current_quiz.quizquestion_set.all()[i]
             models.Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 4))
-        self.assertEqual(db_control.get_users_previous_quizes(user), previous_quizes)
+        self.assertEqual(db_control.get_previous_quizes(user), previous_quizes)
+
+
+# DB contains 2 quizes + 2 users and matches
+class DbControl04Test(TestCase):
+    fixtures = ["04.json"]
+
+    def test_get_match_context(self):
+        quiz1 = models.Quiz.objects.get(pk=1)
+        user1 = User.objects.get(pk=1)
+        context1 = {
+            "exists": True,
+            "quiz": quiz1,
+            "user": user1,
+            "matched_user": User.objects.get(pk=2),
+            "score": 3,
+            "points": "punkty",
+        }
+        self.assertEqual(db_control.get_match_context(quiz1, user1, nest=False), context1)
+        self.assertEqual(db_control.get_match_context(quiz1, user1), {"match": context1})
+
+        quiz2 = models.Quiz.objects.get(pk=2)
+        context2 = {
+            "exists": False,
+            "quiz": quiz2,
+        }
+        self.assertEqual(db_control.get_match_context(quiz2, user1, nest=False), context2)
+        self.assertEqual(db_control.get_match_context(quiz2, user1), {"match": context2})
+
+
+# DB contains 4 quizes + 4 users and matches
+class DbControl05Test(TestCase):
+    fixtures = ["05.json"]
+
+    def test_get_matches_queryset(self):
+        user = User.objects.get(pk=1)
+        quizes = models.Quiz.objects.all()
+        matches_queryset = User.objects.filter(pk__in=[2, 3])
+        self.assertEqual(list(db_control.get_matches_queryset(user, quizes)), list(matches_queryset))

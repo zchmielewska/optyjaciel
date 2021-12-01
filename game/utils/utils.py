@@ -1,11 +1,5 @@
 import arrow
-import django.db
-import random
-from django.contrib.auth.models import User
 from django.utils.timezone import now
-
-from game import models
-from game.utils import utils
 
 
 def conjugate_days(days_count):
@@ -16,9 +10,9 @@ def conjugate_days(days_count):
     :return: string
     """
     if days_count == 1:
-        days_text = f"dzień"
+        days_text = "dzień"
     elif 2 <= days_count <= 7:
-        days_text = f"dni"
+        days_text = "dni"
     else:
         raise ValueError("Count of days must be between 1 and 7.")
     return days_text
@@ -32,11 +26,11 @@ def conjugate_hours(hours_count):
     :return: string
     """
     if hours_count == 1:
-        hours_text = f"godzina"
+        hours_text = "godzina"
     elif 2 <= hours_count <= 4 or 22 <= hours_count <= 24:
-        hours_text = f"godziny"
+        hours_text = "godziny"
     elif 5 <= hours_count <= 21:
-        hours_text = f"godzin"
+        hours_text = "godzin"
     else:
         raise ValueError("Number of hours must be between 1 and 24.")
     return hours_text
@@ -50,19 +44,19 @@ def conjugate_minutes(minutes_count):
     :return: string
     """
     if minutes_count == 1:
-        minutes_text = f"minuta"
+        minutes_text = "minuta"
     elif 2 <= minutes_count <= 4 or \
             22 <= minutes_count <= 24 or \
             32 <= minutes_count <= 34 or \
             42 <= minutes_count <= 44 or \
             52 <= minutes_count <= 54:
-        minutes_text = f"minuty"
+        minutes_text = "minuty"
     elif 5 <= minutes_count <= 21 or \
             25 <= minutes_count <= 31 or \
             35 <= minutes_count <= 41 or \
             45 <= minutes_count <= 51 or \
             55 <= minutes_count <= 60:
-        minutes_text = f"minut"
+        minutes_text = "minut"
     else:
         raise ValueError("Number of minutes must be between 1 and 60.")
     return minutes_text
@@ -116,4 +110,3 @@ def conjugate_points(points_count):
     else:
         raise ValueError("Number of points must be between 0 and 10.")
     return result
-

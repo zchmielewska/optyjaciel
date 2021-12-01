@@ -1,7 +1,5 @@
-import django.db
 import random
 from django.contrib.auth.models import User
-
 from django.utils.timezone import now
 
 from game import models
@@ -48,7 +46,7 @@ def create_ten_questions():
     return questions
 
 
-def fill_quiz_with_questions(quiz):
+def fill_with_questions(quiz):
     """
     Fills quiz with questions (if they are not present).
     Tries to use as many questions that weren't used in other quizes as possible.
@@ -110,7 +108,7 @@ def get_quiz(year, week):
 
     # Quiz must have 10 questions but staff could manually add less
     if not quiz.questions.count() == 10:
-        fill_quiz_with_questions(quiz)
+        fill_with_questions(quiz)
 
     return quiz
 
@@ -159,7 +157,7 @@ def get_text_answer(quiz_question, user):
     return result
 
 
-def get_users_previous_quizes(user):
+def get_previous_quizes(user):
     """
     Returns a list of quiz objects in which the user has participated.
     The list is ordered in reverse-chronological order (newest first).
@@ -190,15 +188,15 @@ def get_match_context(quiz, user, nest=True):
 
     The nest flag is used so that the function can be used for two views:
         - view for single match (for the current game),
-        - view for multiple matches (for the previous games).
+        - view for multiple matches (for the previous games) - used within a loop.
 
     The context contains all variables used within the template:
         - exists - does the match exist,
         - quiz - for which quiz is the match,
-        - user - logged-in user object,
-        - matched_user - match user object,
+        - user - logged-in user,
+        - matched_user - user who is a match,
         - score - number of points,
-        - points - conjugated word points.
+        - points - conjugated word "points".
 
     If there is no match (due to uneven number of participants), only 'exists' and 'quiz' are included in the context.
 
@@ -231,17 +229,16 @@ def get_match_context(quiz, user, nest=True):
     return context
 
 
-def get_matches_context(user):
-    quizes = get_users_previous_quizes(user)
-    matches_context = []
-    for quiz in quizes:
-        match = get_match_context(quiz, user, nest=False)
-        matches_context.append(match)
-    return matches_context
+def get_matches_queryset(user, quizes=None):
+    """
+    Returns a queryset of matches from previous quizes.
 
-
-def get_matches_queryset(user):
-    quizes = get_users_previous_quizes(user)
+    :param quizes: list of quizes (all if not specified)
+    :param user: user object
+    :return: queryset of user objects
+    """
+    if not quizes:
+        quizes = get_previous_quizes(user)
     matched_users_ids = set()
     for quiz in quizes:
         match = models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()

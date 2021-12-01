@@ -1,6 +1,5 @@
 import numpy as np
 import pandas as pd
-import pytest
 from django.test import TestCase
 
 from game import models
@@ -106,3 +105,12 @@ class DbControl03Test(TestCase):
         match_table = transform.match_matrix_to_match_table(match_matrix, list_ids)
         df1 = pd.DataFrame([[1, None]], columns=["user", "matched_user"])
         self.assertTrue(match_table.equals(df1))
+
+    def test_recalculate_and_save_matches(self):
+        self.assertEqual(models.Match.objects.count(), 0)
+        quiz1 = models.Quiz.objects.get(pk=1)
+        quiz2 = models.Quiz.objects.get(pk=2)
+        transform.recalculate_and_save_matches(quiz1)
+        self.assertEqual(models.Match.objects.count(), 1)
+        transform.recalculate_and_save_matches(quiz2)
+        self.assertEqual(models.Match.objects.count(), 2)
