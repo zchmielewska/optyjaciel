@@ -1,8 +1,11 @@
 import django.db
 import random
+from django.contrib.auth.models import User
+
 from django.utils.timezone import now
 
 from game import models
+from game.utils import utils
 
 
 def create_ten_questions():
@@ -215,7 +218,7 @@ def get_match_context(quiz, user, nest=True):
     else:
         matched_user = match.matched_user
         score = calculate_score(quiz, user, matched_user)
-        points = conjugate_points(score)
+        points = utils.conjugate_points(score)
         inner_data = {
             "exists": True,
             "quiz": quiz,
@@ -232,7 +235,7 @@ def get_matches_context(user):
     quizes = get_users_previous_quizes(user)
     matches_context = []
     for quiz in quizes:
-        match = utils.get_match_context(quiz, user, nest=False)
+        match = get_match_context(quiz, user, nest=False)
         matches_context.append(match)
     return matches_context
 

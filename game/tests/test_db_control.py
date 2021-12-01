@@ -1,3 +1,4 @@
+import random
 from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils.timezone import now
@@ -91,11 +92,16 @@ class DbControl03Test(TestCase):
         user = User.objects.get(pk=1)
         previous_quizes = db_control.get_users_previous_quizes(user)
         self.assertEqual(len(previous_quizes), 2)
+
+        # Quizes are sorted in chronologically (newest first)
         self.assertEqual(previous_quizes[0], models.Quiz.objects.get(pk=2))
         self.assertEqual(previous_quizes[1], models.Quiz.objects.get(pk=1))
 
+        # Current quiz is not included in the result
         year, week, day = now().isocalendar()
-        new_quiz = db_control.get_quiz(year=year, week=week)
+        current_quiz = db_control.get_quiz(year=year, week=week)
         self.assertEqual(models.Quiz.objects.count(), 4)
-        # TODO user answers new quiz
-        # it doesnt change previous quizes
+        for i in range(10):
+            quiz_question = current_quiz.quizquestion_set.all()[i]
+            models.Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 4))
+        self.assertEqual(db_control.get_users_previous_quizes(user), previous_quizes)

@@ -66,21 +66,25 @@ def match_matrix_to_match_table(match_matrix, users_id):
     Match table contains two columns:
      - user - id of the user,
      - matched_user - id of the user's match.
+    If the user has no match (due to odd number of participants), matched_user is set to None.
 
     :param match_matrix: matrix with boolean values representing matches
-    :param users_id: list of users' ids
+    :param users_id: list of users ids
     :return: table with matches
     """
     data = []
     n = len(users_id)
-    for i in range(n):
-        for j in range(n):
-            if match_matrix[i, j] == 1:
-                data.append([users_id[i], users_id[j]])
-                break
-            else:
-                if j == n-1:
-                    data.append([users_id[i], None])
+    if n == 1:
+        data = [[users_id[0], None]]
+    else:
+        for i in range(n):
+            for j in range(n):
+                if match_matrix[i, j] == 1:
+                    data.append([users_id[i], users_id[j]])
+                    break
+                else:
+                    if j == n-1:
+                        data.append([users_id[i], None])
 
     match_table = pd.DataFrame(data, columns=["user", "matched_user"])
     return match_table
@@ -92,13 +96,17 @@ def recalculate_and_save_matches(quiz):
     Saves new matches.
 
     :param quiz: quiz for which new matches are recalculated
-    :return: None
+    :return: list of created matches
     """
     answers, users_id = get_answers(quiz)
     scores = answers_to_scores_matrix(answers)
     match_matrix = solver.match(scores)
     match_table = match_matrix_to_match_table(match_matrix, users_id)
 
+    matches = []
     for index, row in match_table.iterrows():
         matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
-        models.Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
+        match = models.Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
+        matches.append(match)
+
+    return matches

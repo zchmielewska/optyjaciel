@@ -45,7 +45,6 @@ def match(scores):
         model += sum(x[(i, j)] for i in range(n) for j in range(n) if i != j) == n-1, "Maximal_number_of_matches"
 
     # Solver
-    # solution_found = model.solve()
     solution_found = model.solve(pulp.PULP_CBC_CMD(msg=False))
     if solution_found == -1:
         result = None
