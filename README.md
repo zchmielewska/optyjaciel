@@ -10,7 +10,6 @@ Następnie wszyscy uczestnicy są łączeni w pary. Łączenie przebiega tak, ab
 
 ---
 
+[<img src="https://user-images.githubusercontent.com/4399111/144314802-b7133a1f-0e63-4d52-8426-46f4697ab9bc.png">](https://optyjaciel.herokuapp.com/)
 
-[<img src="https://user-images.githubusercontent.com/4399111/143677598-73069724-1b6b-4a5f-b491-c9b91472d962.png">](https://optyjaciel.herokuapp.com/)
-
-
+[<img src="https://user-images.githubusercontent.com/4399111/144314811-b61be14b-3bed-4d9e-ada2-101db0f32a1c.png">](https://optyjaciel.herokuapp.com/)
