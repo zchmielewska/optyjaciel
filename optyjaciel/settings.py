@@ -11,7 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import django_heroku
 import os
+from dotenv import load_dotenv
 from pathlib import Path
+
+# Take environment variables from .env
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-k(er)of28z_u_%sf4+2d!ikj&ut2=(bv9%-@h&$b=u$zb=e4)%'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -79,11 +83,11 @@ WSGI_APPLICATION = 'optyjaciel.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'NAME': 'optyjaciel',
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'USER': 'postgres',
-        'PASSWORD': 'coderslab',
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
     }
 }
 

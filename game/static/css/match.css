@@ -35,6 +35,7 @@
     background-color: #fff;
     border-radius: 0 0 25px 25px;
     box-shadow: rgba(149, 157, 165, 0.2) 0 8px 24px;
+    min-height: 200px;
 }
 
 .previous-matches {
