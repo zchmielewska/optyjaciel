@@ -26,7 +26,9 @@
                     <div class="table-cell">{{ message.sent_at }}</div>
                 </a>
             {% empty %}
-                <div style="padding: 16px;">Brak wiadomości</div>
+                <div class="table-row no-msg">
+                    <div class="table-cell">Brak wiadomości</div>
+                </div>
             {% endfor %}
         </div>
     </div>

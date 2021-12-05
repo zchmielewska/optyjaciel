@@ -1,5 +1,4 @@
 /* List messages */
-
 .new-msg {
     background-color: #fff;
     font-weight: bold;
@@ -40,6 +39,9 @@
     background-color: rgba(245, 180, 76, 0.5);
 }
 
+.no-msg:hover {
+    background-color: #eee;
+}
 
 .table-row:first-child {
     border-top: 3px solid rgba(0, 60, 97, 0.7);
