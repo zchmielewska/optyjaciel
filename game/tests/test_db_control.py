@@ -7,8 +7,9 @@ from game import models
 from game.utils import db_control
 
 
-# DB is empty
 class DbControl00Test(TestCase):
+    # DB is empty
+
     def test_create_ten_questions(self):
         db_control.create_ten_questions()
         questions = models.Question.objects.all()
@@ -21,8 +22,8 @@ class DbControl00Test(TestCase):
         self.assertEqual(quiz.questions.count(), 10)
 
 
-# DB contains 1 quiz
 class DbControl01Test(TestCase):
+    # DB contains 1 quiz
     fixtures = ["01.json"]
 
     def test_fill_quiz(self):
@@ -38,8 +39,8 @@ class DbControl01Test(TestCase):
         self.assertEqual(quiz.questions.count(), 10)
 
 
-# DB contains 1 quiz + 2 users
 class DbControl02Test(TestCase):
+    # DB contains 1 quiz + 2 users
     fixtures = ["02.json"]
 
     def test_calculate_score(self):
@@ -65,8 +66,8 @@ class DbControl02Test(TestCase):
         self.assertEqual(db_control.get_text_answer(quiz_question4, user2), "O4")
 
 
-# DB contains 3 quizes + 1 user who answered to 2 quizes
 class DbControl03Test(TestCase):
+    # DB contains 3 quizes + 1 user who answered to 2 quizes
     fixtures = ["03.json"]
 
     def test_get_users_previous_quizes(self):
@@ -88,8 +89,8 @@ class DbControl03Test(TestCase):
         self.assertEqual(db_control.get_previous_quizes(user), previous_quizes)
 
 
-# DB contains 2 quizes + 2 users and matches
 class DbControl04Test(TestCase):
+    # DB contains 2 quizes + 2 users and matches
     fixtures = ["04.json"]
 
     def test_get_match_context(self):
@@ -115,8 +116,8 @@ class DbControl04Test(TestCase):
         self.assertEqual(db_control.get_match_context(quiz2, user1), {"match": context2})
 
 
-# DB contains 4 quizes + 4 users and matches
 class DbControl05Test(TestCase):
+    # DB contains 4 quizes + 4 users and matches
     fixtures = ["05.json"]
 
     def test_get_matches_queryset(self):

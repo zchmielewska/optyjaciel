@@ -66,6 +66,9 @@ class CompatibilityView(LoginRequiredMixin, View):
     def get(self, request, quiz_id, user1_id, user2_id):
         quiz = models.Quiz.objects.get(id=quiz_id)
         user1 = User.objects.get(id=user1_id)
+        if user1 != request.user:
+            raise Http404("Can't show compatibility of other users.")
+
         user2 = User.objects.get(id=user2_id)
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
 
