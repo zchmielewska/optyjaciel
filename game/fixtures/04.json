@@ -37,6 +37,7 @@
 
   {"model": "auth.User", "pk": 1, "fields": {"username":  "user_a"}},
   {"model": "auth.User", "pk": 2, "fields": {"username":  "user_b"}},
+  {"model": "auth.User", "pk": 3, "fields": {"username":  "user_c"}},
 
   {"model": "game.answer", "pk": 1, "fields": {"user": 1, "quiz_question": 1, "answer": 1}},
   {"model": "game.answer", "pk": 2, "fields": {"user": 1, "quiz_question": 2, "answer": 1}},

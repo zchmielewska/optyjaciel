@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404, QueryDict
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.timezone import now
 from django.views import View
 from django.views.generic import FormView
@@ -26,8 +26,7 @@ class GameView(LoginRequiredMixin, View):
     """
     def get(self, request):
         user = request.user
-        year, week, day = now().isocalendar()
-        quiz = db_control.get_quiz(year=year, week=week)
+        quiz = db_control.get_current_quiz()
         played = models.Match.objects.filter(quiz=quiz, user=user).count() > 0
 
         if not played:
@@ -64,12 +63,19 @@ class GameView(LoginRequiredMixin, View):
 class CompatibilityView(LoginRequiredMixin, View):
     """Juxtaposition of answers of two users for the given quiz."""
     def get(self, request, quiz_id, user1_id, user2_id):
-        quiz = models.Quiz.objects.get(id=quiz_id)
-        user1 = User.objects.get(id=user1_id)
+        quiz = get_object_or_404(models.Quiz, pk=quiz_id)
+        user1 = get_object_or_404(User, pk=user1_id)
+        user2 = get_object_or_404(User, pk=user2_id)
+
+        if not db_control.user_participated_in_quiz(user1, quiz):
+            raise Http404("User hasn't participated in this quiz.")
+
+        if not db_control.user_participated_in_quiz(user2, quiz):
+            raise Http404("Matched user hasn't participated in this quiz.")
+
         if user1 != request.user:
             raise Http404("Can't show compatibility of other users.")
 
-        user2 = User.objects.get(id=user2_id)
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
 
         elements = []
@@ -92,7 +98,7 @@ class MatchesView(LoginRequiredMixin, View):
     """Matches from all previous games."""
     def get(self, request):
         user = request.user
-        quizes = db_control.get_previous_quizes(user)
+        quizes = db_control.list_quizes(user)
         matches_context = []
         for quiz in quizes:
             match_context = db_control.get_match_context(quiz, user, nest=False)

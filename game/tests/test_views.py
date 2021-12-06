@@ -59,6 +59,61 @@ class TestGame(TestCase):
         self.assertEqual(no_matches, 1)
 
 
+class TestCompatibility(TestCase):
+    fixtures = ["04.json"]
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/kompatybilnosc/1/1/2/")
+        self.assertEqual(response.status_code, 302)
+
+        user_a = User.objects.get(pk=1)
+        self.client.force_login(user_a)
+        response = self.client.get("/kompatybilnosc/1/1/2/")
+        self.assertEqual(response.status_code, 200)
+
+        response = self.client.get("/kompatybilnosc/1/2/1/")
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.get("/kompatybilnosc/1/1/3/")
+        self.assertEqual(response.status_code, 404)
+
+        response = self.client.get("/kompatybilnosc/999/1/2/")
+        self.assertEqual(response.status_code, 404)
+
+
+class TestMatches(TestCase):
+    fixtures = ["04.json"]
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/optyjaciele/")
+        self.assertEqual(response.status_code, 302)
+
+        user1 = User.objects.get(pk=1)
+        user2 = User.objects.get(pk=2)
+        self.client.force_login(user1)
+        response = self.client.get("/optyjaciele/")
+        matches = response.context.get("matches")
+        self.assertEqual(len(matches), 2)
+
+        match1 = matches[0]
+        self.assertEqual(match1.get("quiz").id, 2)
+        self.assertFalse(match1.get("exists"))
+
+        match2 = matches[1]
+        self.assertEqual(match2.get("quiz").id, 1)
+        self.assertTrue(match2.get("exists"))
+        self.assertEqual(match2.get("user"), user1)
+        self.assertEqual(match2.get("matched_user"), user2)
+        self.assertEqual(match2.get("score"), 3)
+        self.assertEqual(match2.get("points"), "punkty")
+
+
 class TestSuggestion(TestCase):
     def setUp(self):
         self.client = Client()
@@ -95,22 +150,60 @@ class TestSuggestion(TestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class TestCompatibility(TestCase):
-    # DB contains 2 quizes + 2 users and matches
-    fixtures = ["04.json"]
-
+class TestThanks(TestCase):
     def setUp(self):
         self.client = Client()
 
     def test_get(self):
-        response = self.client.get("/kompatybilnosc/1/1/2/")
+        response = self.client.get("/dziekuje/")
+        self.assertEqual(response.status_code, 200)
+
+
+class TestRegister(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/zarejestruj/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_post(self):
+        response = self.client.post("/zarejestruj/", {"username": "test", "password": "test"})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(User.objects.count(), 1)
+
+        User.objects.create(username="xyz")
+        self.assertEqual(User.objects.count(), 2)
+        response = self.client.post("/zarejestruj/", {"username": "xyz", "password": "test"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(User.objects.count(), 2)
+
+
+class TestLogin(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/zaloguj/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_post(self):
+        response = self.client.post("/zaloguj/", {"username": "test", "password": "test"})
+        self.assertEqual(response.status_code, 200)
+
+        User.objects.create_user(username="test", password="test")
+        response = self.client.post("/zaloguj/", {"username": "test", "password": "test"})
         self.assertEqual(response.status_code, 302)
 
-        user_a = User.objects.get(pk=1)
-        self.client.force_login(user_a)
-        response = self.client.get("/kompatybilnosc/1/1/2/")
-        self.assertEqual(response.status_code, 200)
-        response = self.client.get("/kompatybilnosc/1/2/1/")
-        self.assertEqual(response.status_code, 404)
 
-        #TODO zakaz manipulowania przy quiz_id i user2_id
+class TestLogout(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/wyloguj/")
+        self.assertEqual(response.status_code, 302)
+
+
+class TestMessageInbox(TestCase):
+    pass
