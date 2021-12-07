@@ -1,0 +1,98 @@
+/* List messages */
+
+.new-msg {
+    background-color: #fff;
+    font-weight: bold;
+}
+
+.in-out {
+    display: flex;
+    width: 100%;
+    margin-top: 18px;
+}
+
+.in, .out {
+    display: block;
+    flex-grow: 1;
+    text-align: center;
+    padding: 12px;
+    background-color: #d9d9d9;
+}
+
+.in_or_out {
+    background-color: rgba(0, 60, 97, 0.7);
+    color: #fff;
+}
+
+.table {
+    margin-bottom: 36px;
+    background-color: #eee;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    border-bottom: 1px #d9d9d9 solid;
+
+}
+
+.table-row:hover {
+    background-color: rgba(245, 180, 76, 0.5);
+}
+
+
+.table-row:first-child {
+    border-top: 3px solid rgba(0, 60, 97, 0.7);
+}
+
+.table-row:last-child {
+    border-bottom: 1px #d9d9d9 solid;
+}
+
+.table-cell {
+    padding: 8px;
+}
+
+
+/* Read message */
+
+.msg-container {
+    display: grid;
+    width: 80%;
+    margin: 16px auto;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto;
+    grid-template-areas:
+        "from_to_user sent_at"
+        "title        title"
+        "body         body";
+}
+
+.from-to-user {
+    grid-area: from_to_user;
+    padding: 8px;
+    font-size: 0.8em;
+    color: #333;
+}
+
+.sent-at {
+    grid-area: sent_at;
+    justify-self: right;
+    padding: 8px;
+    font-size: 0.8em;
+    color: #333;
+}
+
+.title {
+    grid-area: title;
+    font-size: 1.2em;
+    border-top: 1px solid #d9d9d9;
+    text-align: center;
+    padding-top: 12px;
+    font-weight: bold;
+}
+
+.body {
+    grid-area: body;
+    padding: 12px;
+}

@@ -1,0 +1,23 @@
+table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+/*table tr:hover {*/
+/*    background-color: rgba(245, 180,76, 0.1);*/
+/*}*/
+
+.good {
+    background-color: rgba(245, 180,76, 0.3)
+}
