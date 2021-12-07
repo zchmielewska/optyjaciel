@@ -23,6 +23,7 @@ class TestGame(TestCase):
     def test_get(self):
         response = self.client.get("/runda/")
         self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zaloguj/?next=/runda/")
 
         user = User.objects.create(username='testuser')
         self.client.force_login(user)
@@ -68,6 +69,7 @@ class TestCompatibility(TestCase):
     def test_get(self):
         response = self.client.get("/kompatybilnosc/1/1/2/")
         self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zaloguj/?next=/kompatybilnosc/1/1/2/")
 
         user_a = User.objects.get(pk=1)
         self.client.force_login(user_a)
@@ -93,6 +95,7 @@ class TestMatches(TestCase):
     def test_get(self):
         response = self.client.get("/optyjaciele/")
         self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zaloguj/?next=/optyjaciele/")
 
         user1 = User.objects.get(pk=1)
         user2 = User.objects.get(pk=2)
@@ -121,6 +124,7 @@ class TestSuggestion(TestCase):
     def test_get(self):
         response = self.client.get("/zaproponuj-pytanie/")
         self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zaloguj/?next=/zaproponuj-pytanie/")
 
         user = User.objects.create(username='testuser')
         self.client.force_login(user)
@@ -206,4 +210,130 @@ class TestLogout(TestCase):
 
 
 class TestMessageInbox(TestCase):
-    pass
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/wiadomosci/odebrane/")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zaloguj/?next=/wiadomosci/odebrane/")
+
+        user1 = User.objects.create_user(username="test1", password="test1")
+        self.client.force_login(user1)
+        response = self.client.get("/wiadomosci/odebrane/")
+        self.assertEqual(response.status_code, 200)
+        messages_in = response.context.get("messages_in")
+        self.assertEqual(messages_in.count(), 0)
+
+        user2 = User.objects.create_user(username="test2", password="test2")
+        models.Message.objects.create(from_user=user2, to_user=user1, title="tytuł", body="treść")
+        response = self.client.get("/wiadomosci/odebrane/")
+        messages_in = response.context.get("messages_in")
+        self.assertEqual(messages_in.count(), 1)
+
+
+class TestMessageOutbox(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/wiadomosci/wyslane/")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zaloguj/?next=/wiadomosci/wyslane/")
+
+        user1 = User.objects.create_user(username="test1", password="test1")
+        self.client.force_login(user1)
+        response = self.client.get("/wiadomosci/wyslane/")
+        self.assertEqual(response.status_code, 200)
+        messages_out = response.context.get("messages_out")
+        self.assertEqual(messages_out.count(), 0)
+
+        user2 = User.objects.create_user(username="test2", password="test2")
+        models.Message.objects.create(from_user=user1, to_user=user2, title="tytuł", body="treść")
+        response = self.client.get("/wiadomosci/wyslane/")
+        messages_out = response.context.get("messages_out")
+        self.assertEqual(messages_out.count(), 1)
+
+
+class TestMessageWrite(TestCase):
+    fixtures = ["04.json"]
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/wiadomosci/utworz/")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/zaloguj/?next=/wiadomosci/utworz/")
+
+        user_a = User.objects.get(pk=1)
+        user_b = User.objects.get(pk=2)
+        self.client.force_login(user_a)
+        response = self.client.get("/wiadomosci/utworz/")
+        self.assertEqual(response.status_code, 200)
+        to_user = response.context.get("form").fields["to_user"].queryset
+        self.assertEqual(to_user.count(), 1)
+        self.assertEqual(to_user.first(), user_b)
+
+        response = self.client.get("/wiadomosci/utworz/2/")
+        self.assertEqual(response.status_code, 200)
+        to_user = response.context.get("form").fields["to_user"].queryset
+        self.assertEqual(to_user.count(), 1)
+        self.assertEqual(to_user.first(), user_b)
+
+        response = self.client.get("/wiadomosci/utworz/999/")
+        self.assertEqual(response.status_code, 404)
+
+    def test_post(self):
+        user_a = User.objects.get(pk=1)
+        user_b = User.objects.get(pk=2)
+        self.client.force_login(user_a)
+        self.assertEqual(models.Message.objects.count(), 0)
+        data = {
+            "to_user": user_b.id,
+            "title": "tytuł",
+            "body": "treść"
+        }
+        response = self.client.post("/wiadomosci/utworz/", data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(models.Message.objects.count(), 1)
+
+
+class TestMessageRead(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        user1 = User.objects.create_user(username="test1", password="test1")
+        self.client.force_login(user1)
+        self.assertEqual(models.Message.objects.count(), 0)
+        response = self.client.get("/wiadomosci/czytaj/1/")
+        self.assertEqual(response.status_code, 404)
+
+        user2 = User.objects.create_user(username="test2", password="test2")
+        msg1 = models.Message.objects.create(
+            from_user=user1,
+            to_user=user2,
+            title="tytuł1",
+            body="treść1",
+        )
+        self.assertTrue(msg1.new)
+        self.assertEqual(models.Message.objects.count(), 1)
+        response = self.client.get(f"/wiadomosci/czytaj/{msg1.id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context.get("msg_type"), "out")
+        self.assertTrue(msg1.new)
+
+        msg2 = models.Message.objects.create(
+            from_user=user2,
+            to_user=user1,
+            title="tytuł2",
+            body="treść2",
+        )
+        self.assertTrue(msg2.new)
+        self.assertEqual(models.Message.objects.count(), 2)
+        response = self.client.get(f"/wiadomosci/czytaj/{msg2.id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context.get("msg_type"), "in")
+        self.assertFalse(models.Message.objects.get(id=msg2.id).new)
+
