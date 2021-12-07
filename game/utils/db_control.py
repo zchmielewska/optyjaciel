@@ -113,6 +113,17 @@ def get_quiz(year, week):
     return quiz
 
 
+def get_current_quiz():
+    """
+    Retrieves quiz for the current week.
+
+    :return: quiz object
+    """
+    year, week, day = now().isocalendar()
+    quiz = get_quiz(year=year, week=week)
+    return quiz
+
+
 def calculate_score(quiz, user1, user2):
     """
     Calculates the number of questions for which two users answered in the same way.
@@ -157,28 +168,34 @@ def get_text_answer(quiz_question, user):
     return result
 
 
-def get_previous_quizes(user):
+def remove_current_quiz(quizes):
+    year, week, day = now().isocalendar()
+    current_quiz = get_quiz(year=year, week=week)
+    if current_quiz in quizes:
+        quizes.remove(current_quiz)
+    return quizes
+
+
+def list_quizes(user, previous=True):
     """
     Returns a list of quiz objects in which the user has participated.
     The list is ordered in reverse-chronological order (newest first).
 
+    :param previous: exclude the current quiz
     :param user: user object
     :return: list of quiz objects
     """
-    # Current game gets ignored
-    year, week, day = now().isocalendar()
-    current_quiz = get_quiz(year=year, week=week)
-
-    # User might have participated only in few historical quizes
+    # User doesn't have to participate in all quizes
     answers = models.Answer.objects.filter(user=user)
     quiz_questions = [answer.quiz_question for answer in answers]
-    quizes = []
-    for quiz_question in quiz_questions:
-        if quiz_question.quiz != current_quiz and quiz_question.quiz not in quizes:
-            quizes.append(quiz_question.quiz)
+    all_quizes = [quiz_question.quiz for quiz_question in quiz_questions]
+    quizes = list(set(all_quizes))  # only unique quizes
+
+    # If previous is set, current game gets ignored
+    if previous:
+        quizes = remove_current_quiz(quizes)
 
     quizes.sort(key=lambda x: (x.year, x.week), reverse=True)
-
     return quizes
 
 
@@ -229,19 +246,49 @@ def get_match_context(quiz, user, nest=True):
     return context
 
 
-def get_matches_queryset(user, quizes=None):
+def get_matches_queryset(user, quizes=None, previous=True):
     """
-    Returns a queryset of matches from previous quizes.
+    Returns a queryset of matches from quizes.
 
-    :param quizes: list of quizes (all if not specified)
     :param user: user object
+    :param quizes: subset of quizes (all, if not specified)
+    :param previous: exclude the current quiz
     :return: queryset of user objects
     """
     if not quizes:
-        quizes = get_previous_quizes(user)
+        quizes = list_quizes(user)
+
+    if previous:
+        quizes = remove_current_quiz(quizes)
+
     matched_users_ids = set()
     for quiz in quizes:
         match = models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
         matched_users_ids.add(match.matched_user_id)
     matches = User.objects.filter(pk__in=matched_users_ids)
     return matches
+
+
+def user_participated_in_quiz(user, quiz):
+    """
+    Checks if user has participated in a quiz.
+
+    :param user: user object
+    :param quiz: quiz object
+    :return: boolean
+    """
+    quizes = list_quizes(user, previous=False)
+    return quiz in quizes
+
+
+def user_is_match_with(user1, user2):
+    """
+    Checks if two users are matches in any of the quizes.
+
+    :param user1: user object
+    :param user2: user object
+    :return: boolean
+    """
+    matches = get_matches_queryset(user1, previous=False)
+    result = user2 in matches
+    return result

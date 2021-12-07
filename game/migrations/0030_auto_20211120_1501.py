@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name='QuizQuestionSet',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('question_set_index', models.PositiveIntegerField(validators=[game.models.validate_less_or_equal_to_ten])),
+                ('question_set_index', models.PositiveIntegerField()),
                 ('question_set', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='game.questionset')),
                 ('quiz', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='game.quiz')),
             ],

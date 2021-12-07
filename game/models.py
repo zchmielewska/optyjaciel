@@ -3,16 +3,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 
 
-def validate_less_or_equal_to_ten(value):
-    if value > 10:
-        raise ValidationError(f"{value} should be in range from 1 to 10.")
-
-
-def validate_less_or_equal_to_four(value):
-    if value > 4:
-        raise ValidationError(f"{value} should be in range from 1 to 4.")
-
-
 class Question(models.Model):
     question = models.CharField(max_length=256)
     option1 = models.CharField(max_length=256)
@@ -39,7 +29,7 @@ class Quiz(models.Model):
 class QuizQuestion(models.Model):
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    question_index = models.PositiveIntegerField(validators=[validate_less_or_equal_to_ten])
+    question_index = models.PositiveIntegerField()
 
     class Meta:
         unique_together = ("quiz", "question_index")
@@ -51,7 +41,7 @@ class QuizQuestion(models.Model):
 class Answer(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quiz_question = models.ForeignKey(QuizQuestion, on_delete=models.CASCADE)
-    answer = models.PositiveIntegerField(validators=[validate_less_or_equal_to_ten])
+    answer = models.PositiveIntegerField()
 
     class Meta:
         unique_together = ("user", "quiz_question")

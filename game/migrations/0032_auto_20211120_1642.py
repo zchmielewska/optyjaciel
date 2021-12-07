@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='answer',
             name='answer',
-            field=models.PositiveIntegerField(validators=[game.models.validate_less_or_equal_to_ten]),
+            field=models.PositiveIntegerField(),
         ),
         migrations.AlterUniqueTogether(
             name='answer',

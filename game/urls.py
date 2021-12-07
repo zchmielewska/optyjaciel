@@ -14,6 +14,7 @@ urlpatterns = [
     path('wyloguj/', views.LogoutView.as_view(), name="logout"),
     path('wiadomosci/odebrane/', views.MessageInboxView.as_view(), name="message-inbox"),
     path('wiadomosci/wyslane/', views.MessageOutboxView.as_view(), name="message-outbox"),
-    path('wiadomosci/utworz/<int:to_user_id>', views.MessageWriteView.as_view(), name="message-write"),
-    path('wiadomosci/czytaj/<int:message_id>', views.MessageReadView.as_view(), name="message-read"),
+    path('wiadomosci/utworz/', views.MessageWriteView.as_view(), name="message-write"),
+    path('wiadomosci/utworz/<int:to_user_id>/', views.MessageWriteView.as_view(), name="message-write"),
+    path('wiadomosci/czytaj/<int:message_id>/', views.MessageReadView.as_view(), name="message-read"),
 ]

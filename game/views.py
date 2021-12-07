@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404, QueryDict
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.timezone import now
 from django.views import View
 from django.views.generic import FormView
@@ -26,8 +26,7 @@ class GameView(LoginRequiredMixin, View):
     """
     def get(self, request):
         user = request.user
-        year, week, day = now().isocalendar()
-        quiz = db_control.get_quiz(year=year, week=week)
+        quiz = db_control.get_current_quiz()
         played = models.Match.objects.filter(quiz=quiz, user=user).count() > 0
 
         if not played:
@@ -64,9 +63,19 @@ class GameView(LoginRequiredMixin, View):
 class CompatibilityView(LoginRequiredMixin, View):
     """Juxtaposition of answers of two users for the given quiz."""
     def get(self, request, quiz_id, user1_id, user2_id):
-        quiz = models.Quiz.objects.get(id=quiz_id)
-        user1 = User.objects.get(id=user1_id)
-        user2 = User.objects.get(id=user2_id)
+        quiz = get_object_or_404(models.Quiz, pk=quiz_id)
+        user1 = get_object_or_404(User, pk=user1_id)
+        user2 = get_object_or_404(User, pk=user2_id)
+
+        if not db_control.user_participated_in_quiz(user1, quiz):
+            raise Http404("User hasn't participated in this quiz.")
+
+        if not db_control.user_participated_in_quiz(user2, quiz):
+            raise Http404("Matched user hasn't participated in this quiz.")
+
+        if user1 != request.user:
+            raise Http404("Can't show compatibility of other users.")
+
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
 
         elements = []
@@ -89,7 +98,7 @@ class MatchesView(LoginRequiredMixin, View):
     """Matches from all previous games."""
     def get(self, request):
         user = request.user
-        quizes = db_control.get_previous_quizes(user)
+        quizes = db_control.list_quizes(user)
         matches_context = []
         for quiz in quizes:
             match_context = db_control.get_match_context(quiz, user, nest=False)
@@ -174,9 +183,7 @@ class LoginView(View):
                 return redirect(url_next)
             else:
                 form.add_error("username", "Nieprawidłowa nazwa użytkownika lub hasło.")
-                return render(request, "login.html", {"form": form})
-        else:
-            return render(request, "login.html", {"form": form})
+        return render(request, "login.html", {"form": form})
 
 
 class LogoutView(View):
@@ -202,15 +209,18 @@ class MessageOutboxView(LoginRequiredMixin, View):
 class MessageWriteView(LoginRequiredMixin, View):
     """
     Form to write a message.
-    If to_user_id is set to 0, then the list of available recipients contains all previous matches.
+    If no to_user_id is provided, then the list of available recipients contains all previous matches.
     Otherwise, the list contains only one user implied by the id.
     """
-    def get(self, request, to_user_id=0):
-        if to_user_id == 0:
+    def get(self, request, to_user_id=None):
+        if not to_user_id:
             matches = db_control.get_matches_queryset(request.user)
             form = forms.MessageForm()
         else:
-            match = User.objects.get(id=to_user_id)
+            match = get_object_or_404(User, pk=to_user_id)
+            if not db_control.user_is_match_with(request.user, match):
+                raise Http404("User can only write to their matches.")
+
             matches = User.objects.filter(id=match.id)
             form = forms.MessageForm(initial={"to_user": match})
         form.fields["to_user"].queryset = matches
@@ -221,7 +231,7 @@ class MessageWriteView(LoginRequiredMixin, View):
         }
         return render(request, "message_write.html", ctx)
 
-    def post(self, request, to_user_id=0):
+    def post(self, request):
         form = forms.MessageForm(request.POST)
         if form.is_valid():
             to_user = form.cleaned_data.get("to_user")
@@ -233,14 +243,13 @@ class MessageWriteView(LoginRequiredMixin, View):
                 title=title,
                 body=body,
             )
-            return redirect("message-outbox")
+        return redirect("message-outbox")
 
 
 class MessageReadView(LoginRequiredMixin, View):
     """Content of the message."""
     def get(self, request, message_id):
-        message = models.Message.objects.get(id=message_id)
-
+        message = get_object_or_404(models.Message, pk=message_id)
         if request.user == message.to_user:
             msg_type = "in"
         elif request.user == message.from_user:
