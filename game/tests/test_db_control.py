@@ -77,7 +77,7 @@ class DbControl03Test(TestCase):
     # DB contains 3 quizes with questions + 1 user who answered to 2 quizes
     fixtures = ["03.json"]
 
-    def test_get_list_quizes(self):
+    def test_list_quizes(self):
         user = User.objects.get(pk=1)
         previous_quizes = db_control.list_quizes(user)
         self.assertEqual(len(previous_quizes), 2)
