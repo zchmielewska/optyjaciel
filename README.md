@@ -8,6 +8,8 @@ Gra odbywa się w rundach. Każda runda trwa jeden tydzień (od poniedziałku do
 
 Następnie wszyscy uczestnicy są łączeni w pary. Łączenie przebiega tak, aby suma punktów była jak największa. Punkty przyznawane są wtedy, gdy dwie osoby odpowiedzą tak samo na dane pytanie. Połączeni uczestnicy stają się **optyjaciółmi**.
 
+Aplikacja jest dostępna pod adresem: [optyjaciel.herokuapp.com](https://optyjaciel.herokuapp.com/)
+
 ---
 
 [<img src="https://user-images.githubusercontent.com/4399111/144314802-b7133a1f-0e63-4d52-8426-46f4697ab9bc.png">](https://optyjaciel.herokuapp.com/)
