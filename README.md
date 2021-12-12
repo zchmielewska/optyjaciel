@@ -13,6 +13,6 @@ Aplikacja jest dostępna pod adresem: [www.optyjaciel.pl](https://www.optyjaciel
 
 ---
 
-[<img src="https://user-images.githubusercontent.com/4399111/144314802-b7133a1f-0e63-4d52-8426-46f4697ab9bc.png">](https://optyjaciel.herokuapp.com/)
+[<img src="https://user-images.githubusercontent.com/4399111/144314802-b7133a1f-0e63-4d52-8426-46f4697ab9bc.png">](https://www.optyjaciel.pl/)
 
-[<img src="https://user-images.githubusercontent.com/4399111/144314811-b61be14b-3bed-4d9e-ada2-101db0f32a1c.png">](https://optyjaciel.herokuapp.com/)
+[<img src="https://user-images.githubusercontent.com/4399111/144314811-b61be14b-3bed-4d9e-ada2-101db0f32a1c.png">](https://www.optyjaciel.pl/)
