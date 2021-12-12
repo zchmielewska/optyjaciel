@@ -1,4 +1,3 @@
-import pytest
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 from django.utils.timezone import now
@@ -336,4 +335,3 @@ class TestMessageRead(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context.get("msg_type"), "in")
         self.assertFalse(models.Message.objects.get(id=msg2.id).new)
-

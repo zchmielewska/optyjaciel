@@ -4,7 +4,6 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404, QueryDict
 from django.shortcuts import render, redirect, get_object_or_404
-from django.utils.timezone import now
 from django.views import View
 from django.views.generic import FormView
 
@@ -44,19 +43,15 @@ class GameView(LoginRequiredMixin, View):
 
     def post(self, request):
         post = QueryDict.dict(request.POST)
-        post.pop("csrfmiddlewaretoken")
-        quiz_id = post.pop("quiz_id")
-        quiz = models.Quiz.objects.get(id=quiz_id)
+        quiz = models.Quiz.objects.get(id=post.get("quiz_id"))
+        quiz_questions = quiz.quizquestion_set.order_by("question_index")
+        answers = [models.Answer(user=request.user, quiz_question_id=qq.id, answer=post.get(str(qq.id)))
+                   for qq in quiz_questions]
 
-        # Saving answers and recalculation of matches must happen simultaneously
         with transaction.atomic():
-            for key, value in post.items():
-                models.Answer.objects.create(
-                    user=request.user,
-                    quiz_question_id=key,
-                    answer=value
-                )
+            models.Answer.objects.bulk_create(answers)
             transform.recalculate_and_save_matches(quiz)
+
         return redirect("game")
 
 

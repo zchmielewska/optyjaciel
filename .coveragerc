@@ -3,7 +3,15 @@ include =
     ./optyjaciel/*
     ./game/*
 omit =
-    ./game/migrations/*
+    ./game/admin.py
+    ./game/apps.py
+    ./game/contexts.py
+    ./game/forms.py
     ./game/management/*
+    ./game/migrations/*
+    ./game/models.py
+    ./game/urls.py
+    ./optyjaciel/settings.py
+    ./optyjaciel/urls.py
     *__init__*
     *test*
