@@ -226,7 +226,7 @@ class MessageWriteView(LoginRequiredMixin, View):
         }
         return render(request, "message_write.html", ctx)
 
-    def post(self, request):
+    def post(self, request, to_user_id=None):
         form = forms.MessageForm(request.POST)
         if form.is_valid():
             to_user = form.cleaned_data.get("to_user")
