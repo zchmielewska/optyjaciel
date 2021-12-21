@@ -32,7 +32,6 @@ h2 {
     text-align: center;
 }
 
-
 label {
     color: #333;
 }
@@ -41,21 +40,9 @@ input {
     width: 100%;
 }
 
-
 .vertical-center {
     display: flex;
     justify-content: center;
-}
-
-@media only screen and (max-width: 768px) {
-    .container {
-        align-items: flex-start;
-        align-content: flex-start;
-    }
-
-    .logo {
-        text-align: center;
-    }
 }
 
 .blue {
