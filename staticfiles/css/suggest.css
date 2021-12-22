@@ -1,0 +1,12 @@
+.suggest-form {
+    width: 80%;
+    margin: 0 auto;
+}
+
+input[type=text] {
+    width: 100%;
+}
+
+label {
+    color: #333;
+}
