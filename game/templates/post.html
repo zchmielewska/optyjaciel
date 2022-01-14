@@ -1,0 +1,12 @@
+{%  extends "base.html" %}
+
+{% block subtitle %}{{ post.title }}{% endblock %}
+
+{%  block content %}
+    <div class="box high-line" style="line-height: 200%;">
+        <h1 style="font-size: 1.2em;">{{ post.title }}</h1>
+        <p>{{ post.date|date:'Y-m-d' }}</p>
+        <h2 style="font-size: 1em;">{{ post.header|safe }}</h2>
+        <h3 style="font-size: 1em; font-weight: normal;">{{ post.content|safe }}</h3>
+    </div>
+{% endblock %}

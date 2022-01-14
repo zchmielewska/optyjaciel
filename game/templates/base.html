@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Optyjaciel to internetowa gra towarzyska, w której możesz poznać nowych
     znajomych i przyjaciół. W grze zostaniesz dobrany w parę na podstawie Twoich zainteresowań i preferencji.">
-    <meta name="keywords" content="gra towarzyska, przyjaciele, znajomi, zabawa">
+    <meta name="keywords" content="gra towarzyska, przyjaciele, znajomi, zabawa, portal społecznościowy">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cookie">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu">
@@ -48,6 +48,9 @@
                     </li>
                     <li {% if path_name == "suggest" %} class="checked" {% endif %}>
                         <a href="{% url "suggest" %}">zaproponuj pytanie</a>
+                    </li>
+                    <li {% if path_name == "blog" or path_name == "post" %} class="checked" {% endif %}>
+                        <a href="{% url "blog" %}">blog</a>
                     </li>
                 </ul>
             </div>

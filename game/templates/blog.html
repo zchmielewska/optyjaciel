@@ -1,0 +1,16 @@
+{%  extends "base.html" %}
+
+{% block subtitle %}blog{% endblock %}
+
+{%  block content %}
+
+    {% for post in posts %}
+        <div class="box">
+            <h2 style="font-size: 1em;">{{ post.title|safe }}</h2>
+            <p>{{ post.date|date:'Y-m-d' }}</p>
+            <h3 style="font-size: 1em; font-weight: normal;">{{ post.header|safe }}</h3>
+            <div class="vertical-center"><a href="{% url "post" post.slug %}">czytaj więcej</a></div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
