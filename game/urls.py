@@ -17,4 +17,6 @@ urlpatterns = [
     path('wiadomosci/utworz/', views.MessageWriteView.as_view(), name="message-write"),
     path('wiadomosci/utworz/<int:to_user_id>/', views.MessageWriteView.as_view(), name="message-write"),
     path('wiadomosci/czytaj/<int:message_id>/', views.MessageReadView.as_view(), name="message-read"),
+    path('blog/', views.BlogView.as_view(), name="blog"),
+    path("blog/<slug>", views.PostView.as_view(), name="post"),
 ]
