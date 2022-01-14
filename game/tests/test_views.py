@@ -335,3 +335,24 @@ class TestMessageRead(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context.get("msg_type"), "in")
         self.assertFalse(models.Message.objects.get(id=msg2.id).new)
+
+
+class TestBlog(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/blog/")
+        self.assertEqual(response.status_code, 200)
+
+
+class TestPost(TestCase):
+    fixtures = ["06.json"]
+
+    def setUp(self):
+        self.client = Client()
+
+    def test_get(self):
+        response = self.client.get("/blog/ddd")
+        self.assertEqual(response.status_code, 200)
+
