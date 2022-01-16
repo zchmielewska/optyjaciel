@@ -1,6 +1,6 @@
 {%  extends "base.html" %}
 
-{% block subtitle %}twoi optyjaciele{% endblock %}
+{% block title %}optyjaciel | twoi optyjaciele{% endblock %}
 
 {% load static %}
 {% block head %}
@@ -8,7 +8,7 @@
 {% endblock %}
 
 {%  block content %}
-    <div class="information">Twoi optyjaciele z poprzednich rund</div>
+    <div class="information"><h2>Twoi optyjaciele z poprzednich rund</h2></div>
     <div class="previous-matches">
         {% for match in matches %}
             {% include "single_match.html" %}

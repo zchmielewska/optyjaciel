@@ -3,6 +3,11 @@
     text-align: center;
 }
 
+.information h2 {
+    font-size: inherit;
+    margin: 0;
+}
+
 .card {
     display: flex;
     flex-direction: column;

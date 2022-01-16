@@ -4,11 +4,11 @@
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/compatibility.css' %}">
 {% endblock %}
-{% block subtitle %}kompatybilność{% endblock %}
+{% block title %}optyjaciel | kompatybilność{% endblock %}
 
 {%  block content %}
     <div class="box">
-        <h3>Runda: {{ quiz.year }}_{{ quiz.week }}</h3>
+        <h2 style="font-size: 1.17em;">Kompatybilność w rundzie {{ quiz.year }}_{{ quiz.week }}</h2>
         <table>
             <tr>
                 <th>#</th>

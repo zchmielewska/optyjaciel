@@ -5,11 +5,13 @@
     <link rel="stylesheet" href="{% static 'css/suggest.css' %}">
 {% endblock %}
 
-{% block subtitle %}zaproponuj pytanie{% endblock %}
+{% block title %}optyjaciel | zaproponuj pytanie{% endblock %}
 
 {%  block content %}
     <div class="box">
-        <div style="text-align: center;">Zaproponuj swoje pytanie do kolejnych rund gry</div>
+        <div style="text-align: center;">
+            <h2 style="font-size: inherit; margin: 0;">Zaproponuj swoje pytanie do kolejnych rund gry</h2>
+        </div>
 
         {% if form.login.errors %}
           <ol>

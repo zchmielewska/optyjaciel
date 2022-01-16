@@ -19,6 +19,11 @@ div.question {
     flex-grow: 2;
 }
 
+div.question h3 {
+    font-size: inherit;
+    margin: 0;
+}
+
 div.options-container {
     width: 100%;
     display: flex;

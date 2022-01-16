@@ -5,18 +5,18 @@
     <link rel="stylesheet" href="{% static 'css/game_quiz.css' %}">
     <script src="{% static 'js/app.js' %}" type="text/javascript"></script>
 {% endblock %}
-{% block subtitle %}aktualna runda | gra{% endblock %}
+{% block title %}optyjaciel | aktualna runda | gra{% endblock %}
 
 {%  block content %}
     <div class="box">
-        <h3>Runda: {{ quiz.year }}_{{ quiz.week }}</h3>
+        <h2 style="font-size: 1.17em;">Runda: {{ quiz.year }}_{{ quiz.week }}</h2>
         <form method="post">
         {% csrf_token %}
         {% for quiz_question in quiz_questions %}
             <div class="question-set">
                 <div class="question-container" id="{{ quiz_question.id }}" data-counter="{{ forloop.counter }}">
                     <div class="question-number">[{{ forloop.counter }}/10]</div>
-                    <div class="question">{{ quiz_question.question.question }}</div>
+                    <div class="question"><h3>{{ quiz_question.question.question }}</h3></div>
                 </div>
                 <div class="options-container">
                     <label class="lbl">
