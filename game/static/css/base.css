@@ -114,24 +114,33 @@ body {
 /* blog post */
 .post {
     line-height: 200%;
+    width: 90%;
+    margin: 0 auto;
 }
 
-.post h1 {
+.post > h1 {
     font-size: 1.2em;
 }
 
-.post h2 {
+.post .post-header {
     font-size: 1em;
+    font-weight: bold;
+    text-align: justify;
+    margin-bottom: 24px;
 }
 
-.post h3 {
+.post .post-content {
     font-size: 1em;
     font-weight: normal;
 }
 
-.post h3 a {
+.post .post-content a {
     color: blue;
     text-decoration: underline;
+}
+
+.post .post-content h2 {
+    font-size: 1.17em;
 }
 
 
