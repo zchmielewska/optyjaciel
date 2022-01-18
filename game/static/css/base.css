@@ -111,6 +111,30 @@ body {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+/* blog post */
+.post {
+    line-height: 200%;
+}
+
+.post h1 {
+    font-size: 1.2em;
+}
+
+.post h2 {
+    font-size: 1em;
+}
+
+.post h3 {
+    font-size: 1em;
+    font-weight: normal;
+}
+
+.post h3 a {
+    color: blue;
+    text-decoration: underline;
+}
+
+
 .big-orange-button {
     background-color: rgba(245, 180, 76, 0.9);
     border: none;
