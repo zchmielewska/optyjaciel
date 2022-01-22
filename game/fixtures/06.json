@@ -1,8 +1,7 @@
 [
   {"model": "game.post", "pk": 1, "fields": {
     "title": "aaa",
-    "header": "bbb",
-    "content": "ccc",
+    "body": "ccc",
     "slug": "ddd",
     "date": "2022-01-12"
     }
