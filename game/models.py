@@ -77,8 +77,7 @@ class Message(models.Model):
 
 class Post(models.Model):
     title = models.CharField(max_length=250)
-    header = models.TextField()
-    content = models.TextField()
+    body = models.TextField()
     slug = models.SlugField(max_length=250, unique=True)
     date = models.DateField()
     active = models.BooleanField(default=False)

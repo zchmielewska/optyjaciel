@@ -122,24 +122,17 @@ body {
     font-size: 1.2em;
 }
 
-.post .post-header {
-    font-size: 1em;
-    font-weight: bold;
-    text-align: justify;
-    margin-bottom: 24px;
-}
-
-.post .post-content {
+.post .post-body {
     font-size: 1em;
     font-weight: normal;
 }
 
-.post .post-content a {
+.post .post-body a {
     color: blue;
     text-decoration: underline;
 }
 
-.post .post-content h2 {
+.post .post-body h2 {
     font-size: 1.17em;
 }
 

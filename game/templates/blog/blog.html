@@ -9,7 +9,7 @@
             <h2 style="font-size: 1em;">{{ post.title|safe }}</h2>
             <p>{{ post.date|date:'Y-m-d' }}</p>
             <h3 style="font-size: 1em; font-weight: normal; line-height: 200%; text-align: justify">
-                {{ post.header|safe }}
+                {{ post.body|truncatewords:30|safe|linebreaks }}
             </h3>
             <div class="vertical-center"><a href="{% url "post" post.slug %}">czytaj więcej</a></div>
         </div>

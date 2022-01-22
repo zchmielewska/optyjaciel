@@ -7,8 +7,7 @@
         <div class="post">
             <h1 style="">{{ post.title }}</h1>
             <p>{{ post.date|date:'Y-m-d' }}</p>
-            <div class="post-header">{{ post.header|safe }}</div>
-            <div class="post-content">{{ post.content|safe }}</div>
+            <div class="post-body">{{ post.body|safe|linebreaks }}</div>
         </div>
     </div>
 {% endblock %}
