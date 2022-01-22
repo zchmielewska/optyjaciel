@@ -10,7 +10,7 @@ class Question(models.Model):
     option4 = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"[{self.id}] {self.question} ({self.option1}, {self.option2}, {self.option3}, {self.option4})"
+        return f"[{self.id}] {self.question}"
 
 
 class Quiz(models.Model):
@@ -84,7 +84,7 @@ class Post(models.Model):
     active = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ('-date',)
+        ordering = ("-date",)
 
     def __str__(self):
         return self.title
