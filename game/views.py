@@ -139,7 +139,7 @@ class RegisterView(View):
     """Form to create a new account."""
     def get(self, request):
         form = forms.RegisterForm()
-        return render(request, "register.html", {"form": form})
+        return render(request, "join/register.html", {"form": form})
 
     def post(self, request):
         form = forms.RegisterForm(request.POST)
@@ -150,20 +150,20 @@ class RegisterView(View):
             username_is_taken = username in User.objects.values_list("username", flat=True)
             if username_is_taken:
                 form.add_error("username", "Ta nazwa użytkownika jest już zajęta.")
-                return render(request, "register.html", {"form": form})
+                return render(request, "join/register.html", {"form": form})
 
             user = User.objects.create_user(username=username, email=None, password=password)
             login(request, user)
             return redirect("rules")
         else:
-            return render(request, "register.html", {"form": form})
+            return render(request, "join/register.html", {"form": form})
 
 
 class LoginView(View):
     """Form to log in."""
     def get(self, request):
         form = forms.LoginForm()
-        return render(request, "login.html", {"form": form})
+        return render(request, "join/login.html", {"form": form})
 
     def post(self, request):
         form = forms.LoginForm(request.POST)
@@ -178,7 +178,7 @@ class LoginView(View):
                 return redirect(url_next)
             else:
                 form.add_error("username", "Nieprawidłowa nazwa użytkownika lub hasło.")
-        return render(request, "login.html", {"form": form})
+        return render(request, "join/login.html", {"form": form})
 
 
 class LogoutView(View):
@@ -192,13 +192,13 @@ class MessageInboxView(LoginRequiredMixin, View):
     """List of received messages."""
     def get(self, request):
         messages_in = models.Message.objects.filter(to_user=request.user).order_by("-sent_at")
-        return render(request, "message_inbox.html", {"messages_in": messages_in})
+        return render(request, "message/message_inbox.html", {"messages_in": messages_in})
 
 
 class MessageOutboxView(LoginRequiredMixin, View):
     def get(self, request):
         messages_out = models.Message.objects.filter(from_user=request.user).order_by("-sent_at")
-        return render(request, "message_outbox.html", {"messages_out": messages_out})
+        return render(request, "message/message_outbox.html", {"messages_out": messages_out})
 
 
 class MessageWriteView(LoginRequiredMixin, View):
@@ -224,7 +224,7 @@ class MessageWriteView(LoginRequiredMixin, View):
             "form": form,
             "no_matches": no_matches,
         }
-        return render(request, "message_write.html", ctx)
+        return render(request, "message/message_write.html", ctx)
 
     def post(self, request, to_user_id=None):
         form = forms.MessageForm(request.POST)
@@ -261,7 +261,7 @@ class MessageReadView(LoginRequiredMixin, View):
             "msg_type": msg_type,
             "message": message,
         }
-        return render(request, "message_read.html", ctx)
+        return render(request, "message/message_read.html", ctx)
 
 
 class BlogView(View):
@@ -270,10 +270,10 @@ class BlogView(View):
             posts = models.Post.objects.all()
         else:
             posts = models.Post.objects.filter(active=True)
-        return render(request, "blog.html", {"posts": posts})
+        return render(request, "blog/blog.html", {"posts": posts})
 
 
 class PostView(View):
     def get(self, request, slug):
         post = get_object_or_404(models.Post, slug=slug)
-        return render(request, "post.html", {"post": post})
+        return render(request, "blog/post.html", {"post": post})
