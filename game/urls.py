@@ -8,8 +8,6 @@ sitemaps = {
     "posts": PostSitemap,
 }
 
-app_name = "game"
-
 urlpatterns = [
     path("", views.RulesView.as_view(), name="rules"),
     path("runda/", views.GameView.as_view(), name="game"),
