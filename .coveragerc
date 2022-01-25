@@ -10,6 +10,7 @@ omit =
     ./game/management/*
     ./game/migrations/*
     ./game/models.py
+    ./game/sitemaps.py
     ./game/urls.py
     ./optyjaciel/settings.py
     ./optyjaciel/urls.py
