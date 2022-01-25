@@ -7,7 +7,7 @@
     {% for post in posts %}
         <div class="box">
             <h2 style="font-size: 1em;">{{ post.title|safe }}</h2>
-            <p>{{ post.date|date:'Y-m-d' }}</p>
+            <p>{{ post.created|date:'Y-m-d' }}</p>
             <h3 style="font-size: 1em; font-weight: normal; line-height: 200%; text-align: justify">
                 {{ post.body|truncatewords_html:50|safe|linebreaks }}
             </h3>

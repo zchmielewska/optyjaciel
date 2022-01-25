@@ -6,7 +6,7 @@
     <div class="box">
         <div class="post">
             <h1 style="">{{ post.title }}</h1>
-            <p>{{ post.date|date:'Y-m-d' }}</p>
+            <p>{{ post.created|date:'Y-m-d' }}</p>
             <div class="post-body">{{ post.body|safe|linebreaks }}</div>
         </div>
     </div>

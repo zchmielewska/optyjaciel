@@ -79,11 +79,12 @@ class Post(models.Model):
     title = models.CharField(max_length=250)
     body = models.TextField()
     slug = models.SlugField(max_length=250, unique=True)
-    date = models.DateField()
+    created = models.DateField(auto_now_add=True)
+    updated = models.DateField(auto_now=True)
     active = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ("-date",)
+        ordering = ("-created",)
 
     def __str__(self):
         return self.title
