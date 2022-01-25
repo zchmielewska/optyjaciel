@@ -3,7 +3,8 @@
     "title": "aaa",
     "body": "ccc",
     "slug": "ddd",
-    "date": "2022-01-12"
+    "created": "2022-01-12",
+    "updated": "2022-01-12"
     }
   }
 ]
