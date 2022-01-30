@@ -22,7 +22,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(game.models.Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "slug", "created", "active")
+    list_display = ("title", "slug", "created", "updated", "active")
     prepopulated_fields = {"slug": ("title",)}
 
 
