@@ -15,9 +15,10 @@ body {
 }
 
 .logo {
-    text-align: center;
-    font-size: 5em;
     font-family: "Cookie", serif;
+    font-size: 5em;
+    font-weight: bold;
+    text-align: center;
 }
 
 
@@ -28,7 +29,9 @@ body {
     border-top: 2px solid rgba(245, 180,76, 1);
 }
 
-h2 {
+h1 {
+    font-size: 1.5em;
+    margin: 0;
     text-align: center;
 }
 

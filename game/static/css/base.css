@@ -47,9 +47,10 @@ body {
 }
 
 .logo {
-    text-align: center;
-    font-size: 5em;
     font-family: "Cookie", serif;
+    font-size: 5em;
+    font-weight: bold;
+    text-align: center;
 }
 
 /* Container embraces menu and content */
@@ -92,11 +93,6 @@ body {
     color: #fff;
 }
 
-.menu h1 {
-    margin: 0;
-    font-size: 1em;
-}
-
 .content {
     flex-grow: 2;
     border-top: 2px solid rgba(245, 180,76, 1);
@@ -136,7 +132,6 @@ body {
     font-size: 1.17em;
 }
 
-
 .big-orange-button {
     background-color: rgba(245, 180, 76, 0.9);
     border: none;
@@ -153,7 +148,6 @@ body {
 .big-orange-button:hover {
     background-color: rgba(245, 180, 76, 1);
 }
-
 
 .vertical-center {
     display: flex;
