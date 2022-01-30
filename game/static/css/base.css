@@ -93,6 +93,11 @@ body {
     color: #fff;
 }
 
+.menu h1 {
+    margin: 0;
+    font-size: 1em;
+}
+
 .content {
     flex-grow: 2;
     border-top: 2px solid rgba(245, 180,76, 1);
