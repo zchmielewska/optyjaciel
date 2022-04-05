@@ -16,26 +16,16 @@ def create_ten_questions():
     :return: list with 10 question objects
     """
     data = [
-        {'question': 'Jaką porę roku lubisz najbardziej?', 'option1': 'lato', 'option2': 'jesień',
-         'option3': 'zima', 'option4': 'wiosna'},
-        {'question': 'Ulubiony kolor?', 'option1': 'czerwony', 'option2': 'zielony',
-         'option3': 'niebieski', 'option4': 'żółty'},
-        {'question': 'Najsilniejszy superbohater?', 'option1': 'Superman', 'option2': 'Wonder Woman',
-         'option3': 'Batman', 'option4': 'Spider-man'},
-        {'question': 'Najsmaczniejsza potrawa?', 'option1': 'pizza', 'option2': 'sałatka',
-         'option3': 'sushi', 'option4': 'zupa pomidorowa'},
-        {'question': 'Najbardziej wciągający serial?', 'option1': 'przyjaciele', 'option2': 'teoria wielkiego podrywu',
-         'option3': 'gra o tron', 'option4': 'głowa rodziny'},
-        {'question': 'Jakie masz lub chciał(a)byś mieć zwierzę?', 'option1': 'kot', 'option2': 'pies',
-         'option3': 'rybki', 'option4': 'papuga'},
-        {'question': 'Jaki sport uprawiasz albo oglądasz?', 'option1': 'piłka nożna', 'option2': 'tenis',
-         'option3': 'pływanie', 'option4': 'jazda na nartach'},
-        {'question': 'Ulubiony smak lodów?', 'option1': 'czekoladowe', 'option2': 'waniliowe',
-         'option3': 'truskawkowe', 'option4': 'pistacjowe'},
-        {'question': 'Gdzie najchętniej spędzasz czas?', 'option1': 'plaża', 'option2': 'las',
-         'option3': 'miasto', 'option4': 'góry'},
-        {'question': 'Ulubiona gra planszowa?', 'option1': 'szachy', 'option2': 'monopol',
-         'option3': 'scrabble', 'option4': 'jenga'}
+        {'question': 'Pora roku', 'option1': 'lato', 'option2': 'zima'},
+        {'question': 'Czas', 'option1': 'przeszłość', 'option2': 'przyszłość'},
+        {'question': 'Mój charakter', 'option1': 'ekstrawertyk', 'option2': 'introwertyk'},
+        {'question': 'Wakacje', 'option1': 'w górach', 'option2': 'nad morzem'},
+        {'question': 'Do pływania', 'option1': 'basen', 'option2': 'jezioro'},
+        {'question': 'Zwierzę domowe', 'option1': 'kot', 'option2': 'pies'},
+        {'question': 'Czas wolny', 'option1': 'impreza', 'option2': 'wieczór w domu'},
+        {'question': 'Przedmiot szkolny', 'option1': 'matematyka', 'option2': 'język polski'},
+        {'question': 'Superbohater', 'option1': 'batman', 'option2': 'superman'},
+        {'question': 'Dom magii', 'option1': 'Gryfindor', 'option2': 'Slytherin'}
     ]
 
     questions = []
@@ -155,17 +145,7 @@ def get_text_answer(quiz_question, user):
     """
     answer_object = models.Answer.objects.get(user=user, quiz_question=quiz_question)
     answer = answer_object.answer
-
-    if answer == 1:
-        result = quiz_question.question.option1
-    elif answer == 2:
-        result = quiz_question.question.option2
-    elif answer == 3:
-        result = quiz_question.question.option3
-    else:
-        result = quiz_question.question.option4
-
-    return result
+    return quiz_question.question.option1 if answer == 1 else quiz_question.question.option2
 
 
 def remove_current_quiz(quizes):

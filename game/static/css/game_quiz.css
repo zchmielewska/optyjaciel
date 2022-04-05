@@ -1,6 +1,6 @@
 div.question-set {
     border: 1px dashed #d9d9d9;
-    margin-bottom: 12px;
+    margin-bottom: 36px;
 }
 
 div.question-container {
@@ -8,19 +8,11 @@ div.question-container {
     padding: 12px;
 }
 
-div.question-number {
-    color: #a5a3a8;
-}
-
 div.question {
     display: block;
-    text-align: center;
-    font-size: 1.2em;
+    font-size: 0.8em;
     flex-grow: 2;
-}
-
-div.question h3 {
-    font-size: inherit;
+    color: #a5a3a8;
     margin: 0;
 }
 
@@ -34,6 +26,7 @@ div.options-container {
 .lbl {
     display: block;
     width: 48%;
+    font-size: 1.2em;
 }
 
 /* Hide radio */
@@ -47,7 +40,7 @@ div.options-container {
     margin-bottom: 16px;
     padding: 16px;
     cursor: pointer;
-    border: 1px solid #d9d9d9;
+    border: 1px solid rgba(245, 180, 76, 1);
     border-radius: 2px;
 }
 

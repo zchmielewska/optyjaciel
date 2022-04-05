@@ -48,7 +48,7 @@ class Transform02Test(TestCase):
         quiz = models.Quiz.objects.get(pk=1)
         answers, list_ids = transform.get_answers(quiz)
         df = pd.DataFrame([[1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                           [1, 2, 3, 4, 1, 2, 3, 4, 1, 2]],
+                           [1, 2, 1, 2, 1, 2, 1, 2, 1, 2]],
                           columns=["answer" + str(i + 1) for i in range(10)])
         self.assertTrue(answers.equals(df))
         self.assertEqual(list_ids, [1, 2])
@@ -58,8 +58,8 @@ class Transform02Test(TestCase):
         answers, list_ids = transform.get_answers(quiz)
         scores = transform.answers_to_scores_matrix(answers)
         m = np.array([
-            [10, 3],
-            [3, 10]
+            [10, 5],
+            [5, 10]
         ])
         self.assertTrue((scores == m).all())
 

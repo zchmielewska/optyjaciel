@@ -15,8 +15,7 @@
         {% for quiz_question in quiz_questions %}
             <div class="question-set">
                 <div class="question-container" id="{{ quiz_question.id }}" data-counter="{{ forloop.counter }}">
-                    <div class="question-number">[{{ forloop.counter }}/10]</div>
-                    <div class="question"><h3>{{ quiz_question.question.question }}</h3></div>
+                    <div class="question">[{{ forloop.counter }}/10] {{ quiz_question.question.question }}</div>
                 </div>
                 <div class="options-container">
                     <label class="lbl">
@@ -26,14 +25,6 @@
                     <label class="lbl">
                         <input type="radio" name="{{ quiz_question.id }}" value="2">
                         <div>{{ quiz_question.question.option2 }}</div>
-                    </label>
-                    <label class="lbl">
-                        <input type="radio" name="{{ quiz_question.id }}" value="3">
-                        <div>{{ quiz_question.question.option3 }}</div>
-                    </label>
-                    <label class="lbl">
-                        <input type="radio" name="{{ quiz_question.id }}" value="4">
-                        <div>{{ quiz_question.question.option4 }}</div>
                     </label>
                 </div>
             </div>

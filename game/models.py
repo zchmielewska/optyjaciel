@@ -1,17 +1,14 @@
 from django.conf import settings
 from django.db import models
-from django.urls import reverse
 
 
 class Question(models.Model):
     question = models.CharField(max_length=256)
     option1 = models.CharField(max_length=256)
     option2 = models.CharField(max_length=256)
-    option3 = models.CharField(max_length=256)
-    option4 = models.CharField(max_length=256)
 
     def __str__(self):
-        return f"[{self.id}] {self.question}"
+        return f"{self.question}"
 
 
 class Quiz(models.Model):
@@ -58,13 +55,11 @@ class Suggestion(models.Model):
     question = models.CharField(max_length=256, verbose_name="pytanie")
     option1 = models.CharField(max_length=256, verbose_name="Odpowiedź 1")
     option2 = models.CharField(max_length=256, verbose_name="Odpowiedź 2")
-    option3 = models.CharField(max_length=256, verbose_name="Odpowiedź 3")
-    option4 = models.CharField(max_length=256, verbose_name="Odpowiedź 4")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     suggested_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.question} ({self.option1}, {self.option2}, {self.option3}, {self.option4}) od {self.user}"
+        return f"{self.question} ({self.option1}, {self.option2} od {self.user}"
 
 
 class Message(models.Model):

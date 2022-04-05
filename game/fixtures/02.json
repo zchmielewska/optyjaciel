@@ -1,16 +1,16 @@
 [
   {"model": "game.quiz", "pk": 1, "fields": {"year": 1990, "week": 1}},
 
-  {"model": "game.question", "pk": 1, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 2, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 3, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 4, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 5, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 6, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 7, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 8, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 9, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
-  {"model": "game.question", "pk": 10, "fields": {"question": "Q?", "option1": "O1", "option2": "O2", "option3": "O3", "option4": "O4"}},
+  {"model": "game.question", "pk": 1, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 2, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 3, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 4, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 5, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 6, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 7, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 8, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 9, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
+  {"model": "game.question", "pk": 10, "fields": {"question": "Q?", "option1": "O1", "option2": "O2"}},
 
   {"model": "game.quizquestion", "pk": 1, "fields": {"quiz": 1, "question": 1, "question_index": 1}},
   {"model": "game.quizquestion", "pk": 2, "fields": {"quiz": 1, "question": 2, "question_index": 2}},
@@ -39,12 +39,12 @@
 
   {"model": "game.answer", "pk": 12, "fields": {"user": 2, "quiz_question": 1, "answer": 1}},
   {"model": "game.answer", "pk": 13, "fields": {"user": 2, "quiz_question": 2, "answer": 2}},
-  {"model": "game.answer", "pk": 14, "fields": {"user": 2, "quiz_question": 3, "answer": 3}},
-  {"model": "game.answer", "pk": 11, "fields": {"user": 2, "quiz_question": 4, "answer": 4}},
+  {"model": "game.answer", "pk": 14, "fields": {"user": 2, "quiz_question": 3, "answer": 1}},
+  {"model": "game.answer", "pk": 11, "fields": {"user": 2, "quiz_question": 4, "answer": 2}},
   {"model": "game.answer", "pk": 15, "fields": {"user": 2, "quiz_question": 5, "answer": 1}},
   {"model": "game.answer", "pk": 16, "fields": {"user": 2, "quiz_question": 6, "answer": 2}},
-  {"model": "game.answer", "pk": 17, "fields": {"user": 2, "quiz_question": 7, "answer": 3}},
-  {"model": "game.answer", "pk": 18, "fields": {"user": 2, "quiz_question": 8, "answer": 4}},
+  {"model": "game.answer", "pk": 17, "fields": {"user": 2, "quiz_question": 7, "answer": 1}},
+  {"model": "game.answer", "pk": 18, "fields": {"user": 2, "quiz_question": 8, "answer": 2}},
   {"model": "game.answer", "pk": 19, "fields": {"user": 2, "quiz_question": 9, "answer": 1}},
   {"model": "game.answer", "pk": 20, "fields": {"user": 2, "quiz_question": 10, "answer": 2}}
 ]

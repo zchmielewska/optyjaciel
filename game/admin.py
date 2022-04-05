@@ -22,7 +22,7 @@ class MessageAdmin(admin.ModelAdmin):
 
 @admin.register(game.models.Question)
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ("id", "question", "option1", "option2", "option3", "option4")
+    list_display = ("id", "question", "option1", "option2")
 
 
 @admin.register(game.models.QuizQuestion)
@@ -39,5 +39,5 @@ class QuizAdmin(admin.ModelAdmin):
 
 @admin.register(game.models.Suggestion)
 class SuggestionAdmin(admin.ModelAdmin):
-    list_display = ("user", "question", "option1", "option2", "option3", "option4", "suggested_at")
+    list_display = ("user", "question", "option1", "option2", "suggested_at")
     ordering = ("-suggested_at",)
