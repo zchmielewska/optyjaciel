@@ -1,5 +1,4 @@
 ![status](https://github.com/zchmielewska/optyjaciel/actions/workflows/ci.yml/badge.svg)
-[![codecov](https://codecov.io/gh/zchmielewska/optyjaciel/branch/main/graph/badge.svg)](https://codecov.io/gh/zchmielewska/optyjaciel)
 
 # optyjaciel
 
