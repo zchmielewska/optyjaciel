@@ -47,11 +47,3 @@ jobs:
       run: |
         python -m pip install pytest-django
         pytest
-    - name: Coverage
-      run: |
-        pip install pytest-cov
-        pytest --cov
-    - name: "Upload coverage to Codecov"
-      uses: codecov/codecov-action@v1
-      with:
-        fail_ci_if_error: true
