@@ -13,18 +13,18 @@ class Command(BaseCommand):
     help = "Populate db with fake answers"
 
     def add_arguments(self, parser):
-        parser.add_argument("answers_count", type=int)
+        parser.add_argument("count", type=int)
 
     def handle(self, *args, **options):
-        count = options["answers_count"]
+        count = options["count"]
 
         # There is a maximal number of new answers that can be added
-        no_of_quizes = models.Quiz.objects.count()
-        no_of_answers = models.Answer.objects.count() / 10
-        no_of_users = User.objects.count()
-        max_no_of_new_answers = no_of_users * no_of_quizes - no_of_answers
+        num_quizes = models.Quiz.objects.count()
+        num_answers = models.Answer.objects.count() / 10
+        num_users = User.objects.count()
+        max_num_answers = num_users * num_quizes - num_answers
 
-        count = max_no_of_new_answers if count > max_no_of_new_answers else count
+        count = max_num_answers if count > max_num_answers else count
 
         counter = 0
         while counter < count:
@@ -40,7 +40,7 @@ class Command(BaseCommand):
             # If user hasn't answered then let's populate answers
             for i in range(10):
                 quiz_question = random_quiz.quizquestion_set.all()[i]
-                models.Answer.objects.create(user=random_user, quiz_question=quiz_question, answer=random.randint(1, 4))
+                models.Answer.objects.create(user=random_user, quiz_question=quiz_question, answer=random.randint(1, 2))
 
             # After each set of answers, there are new matches
             transform.recalculate_and_save_matches(random_quiz)

@@ -10,10 +10,10 @@ class Command(BaseCommand):
     help = "Populate db with fake users"
 
     def add_arguments(self, parser):
-        parser.add_argument('users_count', type=int)
+        parser.add_argument("count", type=int)
 
     def handle(self, *args, **options):
-        for _ in range(options["users_count"]):
+        for _ in range(options["count"]):
             username = faker.profile()["username"]
             password = faker.password()
             User.objects.create_user(username=username, password=password)
