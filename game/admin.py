@@ -20,12 +20,6 @@ class MessageAdmin(admin.ModelAdmin):
     ordering = ("-sent_at",)
 
 
-@admin.register(game.models.Post)
-class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "slug", "created", "updated", "active")
-    prepopulated_fields = {"slug": ("title",)}
-
-
 @admin.register(game.models.Question)
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ("id", "question", "option1", "option2", "option3", "option4")

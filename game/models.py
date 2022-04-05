@@ -74,21 +74,3 @@ class Message(models.Model):
     title = models.CharField(max_length=1024)
     body = models.TextField()
     new = models.BooleanField(default=True)
-
-
-class Post(models.Model):
-    title = models.CharField(max_length=250)
-    body = models.TextField()
-    slug = models.SlugField(max_length=250, unique=True)
-    created = models.DateField(auto_now_add=True)
-    updated = models.DateField(auto_now=True)
-    active = models.BooleanField(default=False)
-
-    class Meta:
-        ordering = ("-created",)
-
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse("post", args=[self.slug])

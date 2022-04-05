@@ -71,16 +71,6 @@
                     {% else %}
                         <li><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
                     {% endif %}
-
-                    {% if path_name == "blog" or path_name == "post" %}
-                        {% if path_name == "blog" %}
-                            <li class="checked"><a href="{% url "blog" %}"><h1>blog</h1></a></li>
-                        {% else %}
-                            <li class="checked"><a href="{% url "blog" %}">blog</a></li>
-                        {% endif %}
-                    {% else %}
-                        <li><a href="{% url "blog" %}">blog</a></li>
-                    {% endif %}
                 </ul>
             </div>
 

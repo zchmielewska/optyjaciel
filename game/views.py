@@ -262,18 +262,3 @@ class MessageReadView(LoginRequiredMixin, View):
             "message": message,
         }
         return render(request, "message/message_read.html", ctx)
-
-
-class BlogView(View):
-    def get(self, request):
-        if request.user.is_superuser:
-            posts = models.Post.objects.all()
-        else:
-            posts = models.Post.objects.filter(active=True)
-        return render(request, "blog/blog.html", {"posts": posts})
-
-
-class PostView(View):
-    def get(self, request, slug):
-        post = get_object_or_404(models.Post, slug=slug)
-        return render(request, "blog/post.html", {"post": post})

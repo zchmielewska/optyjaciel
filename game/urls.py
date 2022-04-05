@@ -2,11 +2,6 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path
 
 from game import views
-from game.sitemaps import PostSitemap
-
-sitemaps = {
-    "posts": PostSitemap,
-}
 
 urlpatterns = [
     path("", views.RulesView.as_view(), name="rules"),
@@ -24,7 +19,4 @@ urlpatterns = [
     path("wiadomosci/utworz/", views.MessageWriteView.as_view(), name="message-write"),
     path("wiadomosci/utworz/<int:to_user_id>/", views.MessageWriteView.as_view(), name="message-write"),
     path("wiadomosci/czytaj/<int:message_id>/", views.MessageReadView.as_view(), name="message-read"),
-    path("blog/", views.BlogView.as_view(), name="blog"),
-    path("blog/<slug>", views.PostView.as_view(), name="post"),
-    path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sietemaps.views.sitemap")
 ]
