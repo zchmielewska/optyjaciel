@@ -1,0 +1,17 @@
+{%  extends "registration/account.html" %}
+
+{% block title %}optyjaciel | utwórz konto{% endblock %}
+
+{% block content %}
+
+    <h1>Utwórz konto</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ user_form.as_p }}
+        <div class="vertical-center">
+            <input type="submit" value="Utwórz moje konto">
+        </div>
+    </form>
+
+{% endblock %}

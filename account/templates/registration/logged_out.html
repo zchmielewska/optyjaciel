@@ -1,11 +1,11 @@
 {%  extends "registration/account.html" %}
 
-{% block title %}optyjaciel | zaloguj się{% endblock %}
+{% block title %}optyjaciel | wyloguj się{% endblock %}
 
 {% block content %}
 
-<h1>Wylogowanie</h1>
-
-<p>Zostałeś wylogowany. Możesz <a href="{% url "login" %}">zalogować się</a> ponownie.</p>
+    <h1>Wylogowanie</h1>
+    <p>Zostałeś wylogowany.</p>
+    <p>Możesz <a href="{% url "account:login" %}" class="blue">zalogować się</a> ponownie.</p>
 
 {% endblock %}

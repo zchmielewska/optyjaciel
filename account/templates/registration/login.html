@@ -4,20 +4,23 @@
 
 {% block content %}
 
-<h1>Zaloguj się</h1>
+    <h1>Zaloguj się</h1>
 
-{% if form.login.errors %}
-    {% for err in form.login.errors %}
-        {{ err|escape }}
-    {% endfor %}
-{% endif %}
+    {% if form.login.errors %}
+        {% for err in form.login.errors %}
+            {{ err|escape }}
+        {% endfor %}
+    {% endif %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <div class="vertical-center"><button type="submit">Zaloguj</button></div>
-    <br>
-    Nie masz jeszcze konta? <a href="{% url "register" %}" class="blue"><u>Zarejestruj się.</u></a>
-</form>
+    <form action="{% url "account:login" %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <div class="vertical-center">
+            <button type="submit">Zaloguj</button>
+        </div>
+        <p>Zapomniane hasło? <a href="{% url "account:password_reset" %}" class="blue">Zresetuj swoje hasło.</a></p>
+        <p>Nie masz jeszcze konta? <a href="{% url "account:register" %}" class="blue"><u>Zarejestruj się.</u></a></p>
+    </form>
 
 {% endblock %}

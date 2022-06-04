@@ -1,0 +1,11 @@
+{%  extends "registration/account.html" %}
+
+{% block title %}optyjaciel | konto utworzone{% endblock %}
+
+{% block content %}
+
+    <h1>Witaj!</h1>
+    <p>Witaj <b>{{ new_user.first_name }}</b>!</p>
+    <p>Twoje konto zostało utworzone. Teraz możesz się <a href="{% url "account:login" %}">zalogować</a>.</p>
+
+{% endblock %}
