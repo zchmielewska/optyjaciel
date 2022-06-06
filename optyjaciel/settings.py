@@ -170,5 +170,10 @@ EMAIL_USE_SSL = (os.getenv("EMAIL_USE_SSL") == "True")
 DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER")
 
 
+# Redirect to https
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT") == "True"
+
+
 # Configure Django App for Heroku.
 django_heroku.settings(locals())
