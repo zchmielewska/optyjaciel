@@ -1,4 +1,5 @@
 from django.shortcuts import render
+
 from django.views import View
 from account.forms import UserRegistrationForm
 
@@ -16,3 +17,4 @@ class RegisterView(View):
             new_user.save()
             return render(request, "account/register_done.html", {"new_user": new_user})
         return render(request, "account/register.html", {"user_form": user_form})
+
