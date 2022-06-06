@@ -135,59 +135,6 @@ class ThanksView(View):
         return render(request, "thanks.html")
 
 
-class RegisterView(View):
-    """Form to create a new account."""
-    def get(self, request):
-        form = forms.RegisterForm()
-        return render(request, "join/register.html", {"form": form})
-
-    def post(self, request):
-        form = forms.RegisterForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-
-            username_is_taken = username in User.objects.values_list("username", flat=True)
-            if username_is_taken:
-                form.add_error("username", "Ta nazwa użytkownika jest już zajęta.")
-                return render(request, "join/register.html", {"form": form})
-
-            user = User.objects.create_user(username=username, email=None, password=password)
-            login(request, user)
-            return redirect("rules")
-        else:
-            return render(request, "join/register.html", {"form": form})
-
-
-class LoginView(View):
-    """Form to log in."""
-    def get(self, request):
-        form = forms.LoginForm()
-        return render(request, "join/login.html", {"form": form})
-
-    def post(self, request):
-        form = forms.LoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
-            user = authenticate(username=username, password=password)
-
-            if user is not None:
-                login(request, user)
-                url_next = request.GET.get("next", "/")
-                return redirect(url_next)
-            else:
-                form.add_error("username", "Nieprawidłowa nazwa użytkownika lub hasło.")
-        return render(request, "join/login.html", {"form": form})
-
-
-class LogoutView(View):
-    """Form to log out."""
-    def get(self, request):
-        logout(request)
-        return redirect("rules")
-
-
 class MessageInboxView(LoginRequiredMixin, View):
     """List of received messages."""
     def get(self, request):

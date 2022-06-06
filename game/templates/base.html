@@ -23,9 +23,9 @@
         <div class="top-bar">
             <div class="top-bar-container">
                 {% if request.user.username %}
-                    <strong>{{ request.user.username }}</strong> | <a href="{% url "logout" %}">wyloguj się</a>
+                    <strong>{{ request.user.username }}</strong> | <a href="{% url "account:logout" %}">wyloguj się</a>
                 {% else %}
-                    <a href="{% url "login" %}">zaloguj się</a>
+                    <a href="{% url "account:login" %}">zaloguj się</a>
                 {% endif %}
             </div>
         </div>

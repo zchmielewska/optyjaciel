@@ -1,0 +1,25 @@
+{%  extends "registration/account.html" %}
+
+{% block title %}optyjaciel | zaloguj się{% endblock %}
+
+{% block content %}
+    <h1>Zaloguj się</h1>
+
+    {% if form.login.errors %}
+        {% for err in form.login.errors %}
+            {{ err|escape }}
+        {% endfor %}
+    {% endif %}
+
+    <form action="{% url "account:login" %}" method="post" style="margin-bottom: 24px;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="hidden" name="next" value="{{ next }}" />
+        <div class="vertical-center">
+            <button type="submit" class="button blue-button">Zaloguj się</button>
+        </div>
+    </form>
+
+    <p class="label">Nie masz jeszcze konta? <a href="{% url "account:register" %}" class="blue-link">Zarejestruj się.</a></p>
+    <p class="label">Zapomniane hasło? <a href="{% url "account:password_reset" %}" class="blue-link">Zresetuj swoje hasło.</a></p>
+{% endblock %}
