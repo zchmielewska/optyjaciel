@@ -40,6 +40,7 @@ body {
 }
 
 .top-bar-container {
+    max-width: 1024px;
     width: 90%;
     margin: 0 auto;
     text-align: right;
@@ -53,9 +54,14 @@ body {
     text-align: center;
 }
 
+.logo:hover {
+    color: #003c61;
+}
+
 /* Container embraces menu and content */
 .container {
     min-height: 100%;
+    max-width: 1024px;
     width: 90%;
     margin: 0 auto 24px auto;
     display: flex;
