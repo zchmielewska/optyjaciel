@@ -25,6 +25,10 @@ body {
     text-align: center;
 }
 
+.logo:hover {
+    color: #003c61;
+}
+
 .content {
     max-width: 512px;
     width: 90%;

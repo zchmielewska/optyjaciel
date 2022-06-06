@@ -15,7 +15,9 @@
 </head>
 <body>
     <div class="container">
-        <div class="vertical-center" style="margin: 36px 0 36px 0;"><span class="logo">optyjaciel</span></div>
+        <div class="vertical-center" style="margin: 36px 0 36px 0;">
+            <a href="{% url "account:login" %}"><span class="logo">optyjaciel</span></a>
+        </div>
         <div class="content">
             {% block content %}{% endblock %}
         </div>
