@@ -116,15 +116,11 @@ class SuggestionView(LoginRequiredMixin, FormView):
         question = form.cleaned_data.get("question")
         option1 = form.cleaned_data.get("option1")
         option2 = form.cleaned_data.get("option2")
-        option3 = form.cleaned_data.get("option3")
-        option4 = form.cleaned_data.get("option4")
 
         models.Suggestion.objects.create(
             question=question,
             option1=option1,
             option2=option2,
-            option3=option3,
-            option4=option4,
             user=self.request.user,
         )
         return redirect("thanks")
