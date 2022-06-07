@@ -32,6 +32,9 @@ DEBUG = (os.getenv("DEBUG") == 'True')
 
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
+ADMIN_NAME = os.getenv("ADMIN_NAME")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")
+ADMINS = ((ADMIN_NAME, ADMIN_EMAIL), )
 
 # Application definition
 SITE_ID = 1
@@ -174,6 +177,10 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT") == "True"
 
+
+# Async tasks
+CELERY_BROKER_URL = os.getenv("CLOUDAMQP_URL")
+CELERY_BROKER_POOL_LIMIT = 1
 
 # Configure Django App for Heroku.
 django_heroku.settings(locals())

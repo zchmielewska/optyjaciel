@@ -24,4 +24,5 @@ urlpatterns = [
     path("message/read/<int:message_id>/", views.MessageReadView.as_view(), name="message-read"),
     path("blog/<slug>", views.PostView.as_view(), name="post"),
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sietemaps.views.sitemap"),
+    path("test/", views.TestView.as_view(), name="test"),
 ]
