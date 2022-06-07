@@ -1,14 +1,15 @@
-from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http import Http404, QueryDict
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import FormView
 
 from game import forms, models
 from game.utils import db_control, transform, utils
+from .tasks import send_something_to_me
 
 
 class RulesView(View):
@@ -211,3 +212,9 @@ class PostView(View):
     def get(self, request, slug):
         post = get_object_or_404(models.Post, slug=slug)
         return render(request, "post.html", {"post": post})
+
+
+class TestView(View):
+    def get(self, request):
+        send_something_to_me.delay()
+        return redirect(reverse_lazy("rules"))
