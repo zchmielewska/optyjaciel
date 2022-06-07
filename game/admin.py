@@ -41,3 +41,11 @@ class QuizAdmin(admin.ModelAdmin):
 class SuggestionAdmin(admin.ModelAdmin):
     list_display = ("user", "question", "option1", "option2", "suggested_at")
     ordering = ("-suggested_at",)
+
+
+@admin.register(game.models.Post)
+class PostAdmin(admin.ModelAdmin):
+    list_display = ("title", "created",)
+    ordering = ("-created",)
+    prepopulated_fields = {"slug": ("title",)}
+

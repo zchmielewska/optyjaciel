@@ -69,3 +69,16 @@ class Message(models.Model):
     title = models.CharField(max_length=1024)
     body = models.TextField()
     new = models.BooleanField(default=True)
+
+
+class Post(models.Model):
+    title = models.CharField(max_length=250)
+    body = models.TextField()
+    slug = models.SlugField(max_length=250)
+    created = models.DateField()
+
+    class Meta:
+        ordering = ("-id", )
+
+    def __str__(self):
+        return self.title
