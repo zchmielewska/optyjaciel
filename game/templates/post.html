@@ -1,0 +1,16 @@
+{%  extends "base.html" %}
+
+{% load static %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/rules.css' %}">
+{% endblock %}
+
+{%  block content %}
+
+    <div class="box">
+        <h1>{{ post.title }}</h1>
+        <div>Created: {{ post.created|date:'Y-m-d' }}</div>
+        <div>{{ post.body|safe }}</div>
+    </div>
+
+{% endblock %}

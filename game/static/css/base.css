@@ -40,7 +40,7 @@ body {
 }
 
 .top-bar-container {
-    max-width: 1024px;
+    max-width: 1560px;
     width: 90%;
     margin: 0 auto;
     text-align: right;
@@ -61,7 +61,7 @@ body {
 /* Container embraces menu and content */
 .container {
     min-height: 100%;
-    max-width: 1024px;
+    max-width: 1560px;
     width: 90%;
     margin: 0 auto 24px auto;
     display: flex;

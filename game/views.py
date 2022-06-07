@@ -205,3 +205,9 @@ class MessageReadView(LoginRequiredMixin, View):
             "message": message,
         }
         return render(request, "message/message_read.html", ctx)
+
+
+class PostView(View):
+    def get(self, request, slug):
+        post = get_object_or_404(models.Post, slug=slug)
+        return render(request, "post.html", {"post": post})
