@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 
@@ -86,3 +87,12 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("post", args=[self.slug])
+
+
+def get_username(self):
+    if self.is_active:
+        return self.username
+    return "użytkownik usunięty"
+
+
+User.add_to_class("get_username", get_username)

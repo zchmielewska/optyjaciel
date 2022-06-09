@@ -229,6 +229,7 @@ def get_match_context(quiz, user, nest=True):
 def get_matches_queryset(user, quizes=None, previous=True):
     """
     Returns a queryset of matches from quizes.
+    Includes only active users.
 
     :param user: user object
     :param quizes: subset of quizes (all, if not specified)
@@ -245,7 +246,7 @@ def get_matches_queryset(user, quizes=None, previous=True):
     for quiz in quizes:
         match = models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
         matched_users_ids.add(match.matched_user_id)
-    matches = User.objects.filter(pk__in=matched_users_ids)
+    matches = User.objects.filter(pk__in=matched_users_ids).filter(is_active=True)
     return matches
 
 

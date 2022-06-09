@@ -11,9 +11,9 @@
     <div class="box">
         <div class="msg-container">
             {% if msg_type == "in" %}
-                <div class="from-to-user">Od: {{ message.from_user.username }}</div>
+                <div class="from-to-user">Od: {{ message.from_user.get_username }}</div>
             {% else %}
-                <div class="from-to-user">Do: {{ message.to_user.username }}</div>
+                <div class="from-to-user">Do: {{ message.to_user.get_username }}</div>
             {% endif %}
             <div class="sent-at">{{ message.sent_at }}</div>
             <div class="title">{{ message.title }}</div>

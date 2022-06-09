@@ -1,0 +1,14 @@
+{%  extends "base.html" %}
+
+{% load static %}
+
+{%  block content %}
+    <div class="box">
+        <div class="vertical-center"><h1>Usuń konto</h1></div>
+        <p>Czy na pewno chcesz usunąć swoje konto?</p>
+        <form action="." method="post">
+            {% csrf_token %}
+            <button type="submit" class="button red-button">Tak, usuwam swoje konto</button>
+        </form>
+    </div>
+{% endblock %}

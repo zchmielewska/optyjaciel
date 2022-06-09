@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <p>Masz nową wiadomość od Twojego optyjaciela: <b>{{ user.username }}</b></p>
+    <p>Tytuł wiadomości: <b>{{ msg.title }}</b></p>
+    <p>Odczytaj wiadomość: {{ domain }}{% url "message-read" message_id=msg.id%}</p>
+</body>
+</html>

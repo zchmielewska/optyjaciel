@@ -110,3 +110,11 @@ def conjugate_points(points_count):
     else:
         raise ValueError("Number of points must be between 0 and 10.")
     return result
+
+
+def string_is_integer(value):
+    try:
+        int(value)
+        return True
+    except ValueError:
+        return False
