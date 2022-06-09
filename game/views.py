@@ -12,7 +12,7 @@ from django.views.generic import FormView
 
 from game import forms, models
 from game.utils import db_control, transform, utils
-from .tasks import send_mail_to_user, send_something_to_me
+from .tasks import send_mail_to_user
 
 
 DOMAIN = settings.DEFAULT_DOMAIN
