@@ -7,4 +7,4 @@ class Command(BaseCommand):
     help = "Send random to admin."
 
     def handle(self, *args, **options):
-        send_something_to_me.delay()
+        send_something_to_me()
