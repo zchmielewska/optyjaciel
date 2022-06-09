@@ -31,6 +31,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = (os.getenv("DEBUG") == 'True')
 
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+DEFAULT_DOMAIN = os.getenv("DEFAULT_DOMAIN")
 
 ADMIN_NAME = os.getenv("ADMIN_NAME")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL")

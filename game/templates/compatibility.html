@@ -14,7 +14,13 @@
                 <th>#</th>
                 <th>Pytanie</th>
                 <th>{{ user1.username }}</th>
-                <th>{{ user2.username }}</th>
+                <th>
+                    {% if match.matched_user.is_active %}
+                        {{ user2.username }}
+                    {% else %}
+                        użytkownik usunięty
+                    {% endif %}
+                </th>
             </tr>
 
             {% for element in elements %}

@@ -14,6 +14,12 @@ def send_mail_to_all(subject, plain_message, html_message, from_email=settings.D
 
 
 @shared_task
+def send_mail_to_user(subject, plain_message, html_message, to_email, from_email=settings.DEFAULT_FROM_EMAIL):
+    receivers = [to_email, ]
+    send_mail(subject, plain_message, from_email, receivers, html_message=html_message, fail_silently=False)
+
+
+@shared_task
 def send_something_to_me():
     subject = "Cześć"
     plain_message = "O super, zadziałało!"

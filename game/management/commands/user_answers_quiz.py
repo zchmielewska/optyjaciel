@@ -16,4 +16,4 @@ class Command(BaseCommand):
         quiz = models.Quiz.objects.get(id=options["quiz_id"])
         for i in range(10):
             quiz_question = quiz.quizquestion_set.all()[i]
-            models.Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 4))
+            models.Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 2))

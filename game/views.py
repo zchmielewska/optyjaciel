@@ -1,15 +1,24 @@
+import uuid
+
+from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+from django.contrib.auth.views import logout_then_login
 from django.db import transaction
 from django.http import Http404, QueryDict
 from django.shortcuts import render, redirect, get_object_or_404
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
+from django.utils.html import strip_tags
 from django.views import View
 from django.views.generic import FormView
 
 from game import forms, models
 from game.utils import db_control, transform, utils
-from .tasks import send_something_to_me
+from .tasks import send_mail_to_user, send_something_to_me
+
+
+DOMAIN = settings.DEFAULT_DOMAIN
 
 
 class RulesView(View):
@@ -104,7 +113,7 @@ class MatchesView(LoginRequiredMixin, View):
             "matches": matches_context,
             "previous_game": True
         }
-        return render(request, "previous_matches.html", ctx)
+        return render(request, "matches.html", ctx)
 
 
 class SuggestionView(LoginRequiredMixin, FormView):
@@ -171,17 +180,27 @@ class MessageWriteView(LoginRequiredMixin, View):
         return render(request, "message/message_write.html", ctx)
 
     def post(self, request, to_user_id=None):
+        user = request.user
         form = forms.MessageForm(request.POST)
+
         if form.is_valid():
+            # Create new message
             to_user = form.cleaned_data.get("to_user")
             title = form.cleaned_data.get("title")
             body = form.cleaned_data.get("body")
-            models.Message.objects.create(
+            msg = models.Message.objects.create(
                 from_user=self.request.user,
                 to_user=to_user,
                 title=title,
                 body=body,
             )
+
+            # Inform user by e-mail
+            subject = f"optyjaciel | nowa wiadomość od {user.username}"
+            ctx = {"user": user, "msg": msg, "domain": DOMAIN}
+            html_message = render_to_string("email/new-message.html", ctx)
+            plain_message = strip_tags(html_message)
+            send_mail_to_user.delay(subject, plain_message, html_message, to_email=to_user.email)
         return redirect("message-outbox")
 
 
@@ -208,13 +227,28 @@ class MessageReadView(LoginRequiredMixin, View):
         return render(request, "message/message_read.html", ctx)
 
 
-class PostView(View):
+class BlogPostView(View):
     def get(self, request, slug):
         post = get_object_or_404(models.Post, slug=slug)
-        return render(request, "post.html", {"post": post})
+        return render(request, "blog_post.html", {"post": post})
 
 
-class TestView(View):
+class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
-        send_something_to_me.delay()
-        return redirect(reverse_lazy("rules"))
+        user = request.user
+        return render(request, "profile.html", {"user": user})
+
+
+class ProfileDeleteView(LoginRequiredMixin, View):
+    def get(self, request):
+        return render(request, "profile_delete.html")
+
+    def post(self, request):
+        user = request.user
+        user.username = user.id
+        user.email = ""
+        password = User.objects.make_random_password()
+        user.set_password(password)
+        user.is_active = False
+        user.save()
+        return logout_then_login(request)
