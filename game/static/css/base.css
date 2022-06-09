@@ -14,7 +14,7 @@ html {
 body {
     height: 100%;
     margin: 0;
-    font-family: Ubuntu, sans-serif;
+    font-family: Roboto, Ubuntu, sans-serif;
     background-color: #eee;
     overflow-y : scroll;
 }
@@ -26,6 +26,10 @@ body {
     line-height: 48px;
 }
 
+.top-bar a:hover {
+    color: #F5B44C;
+}
+
 .top-bar-container {
     max-width: 1560px;
     width: 90%;
@@ -34,15 +38,11 @@ body {
     padding-right: 24px;
 }
 
-.top-bar a:hover {
-    color: #F5B44C;
-}
-
 .logo {
     font-family: "Cookie", serif;
     font-size: 5em;
     font-weight: bold;
-    text-align: center;
+    margin: 36px 0 36px 0;
 }
 
 .logo:hover {
@@ -84,14 +84,9 @@ body {
     padding: 8px 16px;
 }
 
-.menu > ul > li > a:hover, .checked{
+.menu > ul > li > a:hover, .checked {
     background-color: rgba(245, 180, 76, 1);
     color: #fff;
-}
-
-.menu h1 {
-    margin: 0;
-    font-size: 1em;
 }
 
 .content {
@@ -113,7 +108,6 @@ body {
     background-color: #d5d6da;
 }
 
-/* Used for text-based content inside of content*/
 .box {
     background-color: #fff;
     padding: 16px;
@@ -122,21 +116,22 @@ body {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
-.big-orange-button {
-    background-color: rgba(245, 180, 76, 0.9);
-    border: none;
-    color: white;
-    padding: 12px 24px;
-    text-align: center;
-    margin-top: 16px;
-    border-radius: 2px;
-    cursor: pointer;
-    width: 33%;
-    font-size: 14px;
+/* match */
+.card {
+    border: 1px dotted #003c61;
+    margin: 24px;
+    padding: 12px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
-.big-orange-button:hover {
-    background-color: rgba(245, 180, 76, 1);
+.card-item1 {
+    flex-grow: 2;
+}
+
+.card-item2 {
+    display: flex;
+    flex-direction: column;
 }
 
 /* buttons */
@@ -150,6 +145,7 @@ body {
     border: 2px solid;
     font-size: 0.8em;
     font-weight: bold;
+    text-align: center;
 }
 
 .green-button {
@@ -179,6 +175,25 @@ body {
     background-color: rgba(66, 66, 66, 0.2);
 }
 
+.blue-button {
+    border-color: rgba(0, 60, 97, 0.75);
+    color: rgba(0, 60, 97, 0.75);
+}
+
+.blue-button:hover {
+    background-color: rgba(0, 60, 97, 0.2);
+}
+
+/* forms */
+input[type=text] {
+    width: 100%;
+}
+
+label {
+    color: #666;
+    font-size: 0.8em;
+}
+
 /* utils */
 .vertical-center {
     display: flex;
@@ -198,12 +213,13 @@ table {
     font-weight: bold;
 }
 
-.blue-reverse {
-    color: #fff;
-    background-color: #003c61;
+.subtitle {
+    font-size: 1.5em;
     font-weight: bold;
 }
 
+
+/* small screens */
 @media only screen and (max-width: 768px) {
     .container {
         flex-wrap: wrap;

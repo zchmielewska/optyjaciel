@@ -1,5 +1,3 @@
-import uuid
-
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -8,7 +6,6 @@ from django.db import transaction
 from django.http import Http404, QueryDict
 from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
-from django.urls import reverse_lazy
 from django.utils.html import strip_tags
 from django.views import View
 from django.views.generic import FormView
@@ -24,7 +21,7 @@ DOMAIN = settings.DEFAULT_DOMAIN
 class RulesView(View):
     """The description of the game's rules."""
     def get(self, request):
-        return render(request, "rules.html")
+        return render(request, "game/rules.html")
 
 
 class GameView(LoginRequiredMixin, View):
@@ -44,12 +41,12 @@ class GameView(LoginRequiredMixin, View):
                 "quiz": quiz,
                 "quiz_questions": quiz_questions,
             }
-            return render(request, 'game_quiz.html', ctx)
+            return render(request, "game/game_quiz.html", ctx)
         else:
             ctx = db_control.get_match_context(quiz, user)
             ctx["previous_game"] = False
             ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
-            return render(request, "game_match.html", ctx)
+            return render(request, "game/game_match.html", ctx)
 
     def post(self, request):
         post = QueryDict.dict(request.POST)
@@ -96,7 +93,7 @@ class CompatibilityView(LoginRequiredMixin, View):
             "user2": user2,
             "elements": elements,
         }
-        return render(request, "compatibility.html", ctx)
+        return render(request, "game/compatibility.html", ctx)
 
 
 class MatchesView(LoginRequiredMixin, View):
@@ -113,12 +110,12 @@ class MatchesView(LoginRequiredMixin, View):
             "matches": matches_context,
             "previous_game": True
         }
-        return render(request, "matches.html", ctx)
+        return render(request, "game/matches.html", ctx)
 
 
 class SuggestionView(LoginRequiredMixin, FormView):
     """Form to send the suggestion for question."""
-    template_name = "suggest.html"
+    template_name = "game/suggest.html"
     form_class = forms.SuggestionForm
     success_url = "/"
 
@@ -138,7 +135,7 @@ class SuggestionView(LoginRequiredMixin, FormView):
 
 class ThanksView(View):
     def get(self, request):
-        return render(request, "thanks.html")
+        return render(request, "game/thanks.html")
 
 
 class MessageInboxView(LoginRequiredMixin, View):
@@ -236,12 +233,12 @@ class BlogPostView(View):
 class ProfileView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
-        return render(request, "profile.html", {"user": user})
+        return render(request, "game/profile.html", {"user": user})
 
 
 class ProfileDeleteView(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "profile_delete.html")
+        return render(request, "game/profile_delete.html")
 
     def post(self, request):
         user = request.user

@@ -12,7 +12,7 @@
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cookie">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu">
+    <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=Roboto&family=Ubuntu&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     {% block head %}{% endblock %}
@@ -23,63 +23,39 @@
         <div class="top-bar">
             <div class="top-bar-container">
                 {% if request.user.username %}
-                <strong><a href="{% url "profile" %}">{{ request.user.username }}</a></strong> | <a href="{% url "account:logout" %}">wyloguj się</a>
+                    <strong><a href="{% url "profile" %}">{{ request.user.username }}</a></strong> | <a href="{% url "account:logout" %}">wyloguj się</a>
                 {% else %}
                     <a href="{% url "account:login" %}">zaloguj się</a>
                 {% endif %}
             </div>
         </div>
 
-        <div class="vertical-center" style="margin: 36px 0 36px 0;">
-            <a href="{% url "rules" %}"><span class="logo">optyjaciel</span></a>
-        </div>
+        <div class="logo vertical-center"><a href="{% url "rules" %}">optyjaciel</a></div>
 
         <div class="container">
             <div class="menu">
                 <ul>
-                    {% if path_name == "rules" %}
-                        <li class="checked"><a href="{% url "rules" %}"><h1>zasady gry</h1></a></li>
-                    {% else %}
-                        <li><a href="{% url "rules" %}">zasady gry</a></li>
-                    {% endif %}
-
-                    {% if path_name == "game" %}
-                        <li class="checked"><a href="{% url "game" %}"><h1>aktualna runda</h1></a></li>
-                    {% else %}
-                        <li ><a href="{% url "game" %}">aktualna runda</a></li>
-                    {% endif %}
-
-                    {% if path_name == "matches" %}
-                        <li class="checked"><a href="{% url "matches" %}"><h1>Twoi optyjaciele</h1></a></li>
-                    {% else %}
-                        <li><a href="{% url "matches" %}">Twoi optyjaciele</a></li>
-                    {% endif %}
+                    <li class="{% if path_name == "rules" %}checked{% endif %}"><a href="{% url "rules" %}">zasady gry</a></li>
+                    <li class="{% if path_name == "game" %}checked{% endif %}"><a href="{% url "game" %}">aktualna runda</a></li>
+                    <li class="{% if path_name == "matches" %}checked{% endif %}"><a href="{% url "matches" %}">Twoi optyjaciele</a></li>
 
                     {% if path_name == "message-inbox" or path_name == "message-outbox" or path_name == "message-write" or path_name == "message-read" %}
-                        {% if no_messages > 0 %}
-                            <li class="checked"><a href="{% url "message-inbox" %}"><strong><h1>wiadomości</h1> [{{ no_messages }}]</strong></a></li>
-                        {% else %}
-                            <li class="checked"><a href="{% url "message-inbox" %}"><h1>wiadomości</h1></a></li>
-                        {% endif %}
+                        <li class="checked">
                     {% else %}
-                        {% if no_messages > 0 %}
-                            <li ><a href="{% url "message-inbox" %}"><strong>wiadomości [{{ no_messages }}]</strong></a></li>
-                        {% else %}
-                            <li ><a href="{% url "message-inbox" %}">wiadomości</a></li>
-                        {% endif %}
+                        <li>
                     {% endif %}
+                        {% if no_messages > 0 %}
+                            <a href="{% url "message-inbox" %}"><strong>wiadomości [{{ no_messages }}]</strong></a></li>
+                        {% else %}
+                            <a href="{% url "message-inbox" %}">wiadomości</a>
+                        {% endif %}
+                    </li>
 
-                    {% if path_name == "suggest" %}
-                        <li class="checked"><a href="{% url "suggest" %}"><h1>zaproponuj pytanie</h1></a></li>
-                    {% else %}
-                        <li><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
-                    {% endif %}
+                    <li class="{% if path_name == "suggest" %}checked{% endif %}"><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
                 </ul>
             </div>
 
-            <div class="content">
-                {% block content %}{% endblock %}
-            </div>
+            <div class="content">{% block content %}{% endblock %}</div>
         </div>
         <div class="push"></div>
     </div>

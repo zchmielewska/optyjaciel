@@ -1,13 +1,10 @@
 {%  extends "base.html" %}
 
 {% load static %}
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/rules.css' %}">
-{% endblock %}
 
 {%  block content %}
-    <div class="box high-line">
-        <h2 class="qa">Na czym polega gra?</h2>
+    <div class="box">
+        <span class="subtitle">Na czym polega gra?</span>
         <p>W każdej rundzie wszyscy gracze odpowiadają na 10 takich samych pytań.
             Następnie gracze są dobierani w pary tak, aby uzyskać jak najwięcej punktów <strong>dla całej grupy graczy</strong>.
             Dobraną parę nazywamy <strong>optyjaciółmi</strong>.
@@ -17,7 +14,7 @@
             Każda runda zawiera 10 pytań, więc jedna para może uzyskać maksymalnie 10 punktów.
         </p>
 
-        <span class="blue-reverse">Ważne!</span> Twoim optyjacielem nie jest osoba, z którą masz najwięcej punktów.
+        <strong>Ważne!</strong> Twoim optyjacielem nie jest osoba, z którą masz najwięcej punktów.
         Jest to osoba, z którą jesteś połączony(a) tak, aby cała grupa miała jak najwięcej punktów.
         Więcej na temat sposobu łączenia w pary znajdziesz w odpowiedzi w kolejnym pytaniu.
 
@@ -27,9 +24,9 @@
         </p>
     </div>
 
-    <div class="box high-line">
-        <h2 class="qa">Jak dobierani są optyjaciele?</h2>
-        <img src="{% static 'img/diagram.png' %}" alt="Przykładowe wyniki z rundy">
+    <div class="box">
+        <span class="subtitle">Jak dobierani są optyjaciele?</span>
+        <img src="{% static 'img/diagram.png' %}" alt="Przykładowe wyniki z rundy" style="float: right;">
         <p>Optyjaciele są łączeni w pary tak, aby uzyskać jak najwięcej punktów wśród wszystkich grających.
             Punkt jest przyznawany zawsze wtedy, gdy dwie osoby odpowiedzą tak samo na pytanie.</p>
 
@@ -46,8 +43,8 @@
             A wynik całej grupy wyniósłby tylko 12 punktów.</p>
     </div>
 
-    <div class="box high-line">
-        <h2 class="qa">Jakie jest prawdopodobieństwo uzyskania 10 punktów?</h2>
+    <div class="box">
+        <span class="subtitle">Jakie jest prawdopodobieństwo uzyskania 10 punktów?</span>
         <p>Prawdopodobieństwo odpowiedzi tak samo na jedno pytanie to 1 do 2.</p>
 
         <p>W przypadku dwóch pytań, prawdopobieństwo odpowiedzi na obydwa tak samo wynosi 1 do 4.</p>

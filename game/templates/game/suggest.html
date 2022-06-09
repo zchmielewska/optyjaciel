@@ -1,0 +1,29 @@
+{%  extends "base.html" %}
+
+{% load static %}
+
+{% block title %}optyjaciel | zaproponuj pytanie{% endblock %}
+
+{%  block content %}
+    <div class="box">
+        Zaproponuj swoje pytanie do kolejnych rund gry:
+
+        {% if form.login.errors %}
+            <ol>
+            {% for err in form.login.errors %}
+                <li><strong>{{ err|escape }}</strong></li>
+            {% endfor %}
+            </ol>
+        {% endif %}
+
+        <div class="suggest-form">
+            <form action="#" method="post">
+                {% csrf_token %}
+                    {{ form.as_p }}
+                <div class="vertical-center">
+                    <button type="submit" class="button blue-button">Wyślij propozycję pytania</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
