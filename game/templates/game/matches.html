@@ -1,0 +1,17 @@
+{%  extends "base.html" %}
+
+{% load static %}
+
+{% block title %}optyjaciel | twoi optyjaciele{% endblock %}
+
+{%  block content %}
+    <div class="box">
+        Twoi optyjaciele z poprzednich rund:
+
+        {% for match in matches %}
+            {% include "game/match.html" %}
+        {% empty %}
+            Jeszcze nie masz żadnych optyjaciół. Optyjaciele pojawią się po zakończonej rundzie, w której weźmiesz udział.
+        {% endfor %}
+    </div>
+{% endblock %}

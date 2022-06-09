@@ -1,0 +1,17 @@
+<div class="card">
+    {% if match.exists %}
+        <div class="card-item1">
+            <p><b>Runda: </b>{{ match.quiz.year }}_{{ match.quiz.week }}</p>
+            <p><b>Użytkownik: </b>{{ match.matched_user.get_username }}</p>
+            <p><b>Wynik: </b>{{ match.score }} {{ match.points }}</p>
+        </div>
+        <div class="card-item2">
+            <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="button blue-button">kompatybilność</a>
+            {% if previous_game and match.matched_user.is_active %}
+                <a href="{% url "message-write" match.matched_user.id %}" class="button blue-button">wiadomość</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>Brak optyjaciela ze względu na nieparzystą liczbę graczy.</p>
+    {% endif %}
+</div>

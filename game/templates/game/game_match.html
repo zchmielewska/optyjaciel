@@ -1,0 +1,12 @@
+{%  extends "base.html" %}
+
+{% load static %}
+
+{% block title %}optyjaciel | aktualna runda | wynik{% endblock %}
+
+{%  block content %}
+    <div class="box">
+        <span>Do końca rundy zostało: <strong>{{ remaining_time_in_week }}</strong>. Obecnie Twoim optyjacielem jest:</span>
+        {% include "game/match.html" %}
+    </div>
+{% endblock %}
