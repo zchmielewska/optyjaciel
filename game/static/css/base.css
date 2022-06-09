@@ -14,7 +14,7 @@ html {
 body {
     height: 100%;
     margin: 0;
-    font-family: Roboto, Ubuntu, sans-serif;
+    font-family: Ubuntu, sans-serif;
     background-color: #eee;
     overflow-y : scroll;
 }
@@ -198,6 +198,10 @@ label {
 .vertical-center {
     display: flex;
     justify-content: center;
+}
+
+.high-line {
+    line-height: 150%;
 }
 
 table {
