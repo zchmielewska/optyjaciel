@@ -227,7 +227,7 @@ class MessageReadView(LoginRequiredMixin, View):
 class BlogPostView(View):
     def get(self, request, slug):
         post = get_object_or_404(models.Post, slug=slug)
-        return render(request, "blog_post.html", {"post": post})
+        return render(request, "game/blog_post.html", {"post": post})
 
 
 class ProfileView(LoginRequiredMixin, View):
