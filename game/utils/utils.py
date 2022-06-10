@@ -1,6 +1,10 @@
 import arrow
+import datetime
+
 from django.utils.timezone import now
 
+from .db_control import get_current_quiz, list_participants, calculate_score
+from game import models
 
 def conjugate_days(days_count):
     """
@@ -62,6 +66,26 @@ def conjugate_minutes(minutes_count):
     return minutes_text
 
 
+def conjugate_points(points_count):
+    """
+    Conjugates number of points (in a range 0 to 10) in Polish language.
+
+    :param points_count: number of points
+    :return: conjugated word
+    """
+    if points_count == 0:
+        result = "punktów"
+    elif points_count == 1:
+        result = "punkt"
+    elif 2 <= points_count <= 4:
+        result = "punkty"
+    elif 5 <= points_count <= 10:
+        result = "punktów"
+    else:
+        raise ValueError("Number of points must be between 0 and 10.")
+    return result
+
+
 def get_remaining_time_in_week(moment=None):
     """
     Creates a string that informs about the time until the end of the week in Polish language.
@@ -92,29 +116,43 @@ def get_remaining_time_in_week(moment=None):
     return result
 
 
-def conjugate_points(points_count):
-    """
-    Conjugates number of points (in a range 0 to 10) in Polish language.
-
-    :param points_count: number of points
-    :return: conjugated word
-    """
-    if points_count == 0:
-        result = "punktów"
-    elif points_count == 1:
-        result = "punkt"
-    elif 2 <= points_count <= 4:
-        result = "punkty"
-    elif 5 <= points_count <= 10:
-        result = "punktów"
-    else:
-        raise ValueError("Number of points must be between 0 and 10.")
-    return result
-
-
 def string_is_integer(value):
     try:
         int(value)
         return True
     except ValueError:
         return False
+
+
+def send_emails_after_game():
+    # Emails should be sent after game
+    today_is_monday = (datetime.datetime.today().weekday() == 0)
+    if not today_is_monday:
+        return None
+
+    # Information is sent on the last week's quiz
+    current_quiz_id = get_current_quiz().id
+    quiz_id = current_quiz_id - 1
+    quiz = models.Quiz.objects.get(id=quiz_id)
+
+    # List of participants ids
+    participants = list_participants(quiz_id)
+
+    # Send e-mails
+    for participant in participants:
+        quiz_name = quiz.year + "_" + quiz.week
+        match = models.Match.objects.filter(quiz=quiz, user=participant).order_by("-matched_at").first()
+        matched_user = match.matched_user_id
+        score = calculate_score(quiz, participant, matched_user)
+        ctx = {
+            "quiz": quiz,
+            "matched_user": matched_user,
+            "score": score,
+        }
+        pass
+
+    # 1. Is today monday?
+    # 2. What was last week's quiz number?
+    # 3. Who played?
+    # 4. Who were their matches?
+    pass

@@ -273,3 +273,11 @@ def user_is_match_with(user1, user2):
     matches = get_matches_queryset(user1, previous=False)
     result = user2 in matches
     return result
+
+
+def list_participants(quiz_id):
+    matches = models.Match.objects.filter(quiz_id=quiz_id)
+    users_id = set()
+    for match in matches:
+        users_id.add(match.user_id)
+    return list(users_id)
