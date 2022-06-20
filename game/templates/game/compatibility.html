@@ -15,7 +15,7 @@
                 <th>Pytanie</th>
                 <th>{{ user1.username }}</th>
                 <th>
-                    {% if match.matched_user.is_active %}
+                    {% if user2.is_active %}
                         {{ user2.username }}
                     {% else %}
                         użytkownik usunięty
