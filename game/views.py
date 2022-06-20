@@ -197,7 +197,8 @@ class MessageWriteView(LoginRequiredMixin, View):
             ctx = {"user": user, "msg": msg, "domain": DOMAIN}
             html_message = render_to_string("email/new-message.html", ctx)
             plain_message = strip_tags(html_message)
-            send_mail_to_user.delay(subject, plain_message, html_message, to_email=to_user.email)
+            # send_mail_to_user.delay(subject, plain_message, html_message, to_email=to_user.email)
+            send_mail_to_user(subject, plain_message, html_message, to_email=to_user.email)
         return redirect("message-outbox")
 
 
