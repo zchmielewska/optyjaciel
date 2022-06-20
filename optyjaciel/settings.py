@@ -179,13 +179,5 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT") == "True"
 
 
-# Async tasks
-BROKER_TRANSPORT = "amqplib"
-BROKER_URL = os.getenv("CLOUDAMQP_URL")
-BROKER_POOL_LIMIT = 1
-CELERY_BROKER_URL = os.getenv("CLOUDAMQP_URL")
-CELERY_BROKER_POOL_LIMIT = 1
-CELERY_TASK_RESULT_EXPIRES = 60 * 60 * 5
-
 # Configure Django App for Heroku.
 django_heroku.settings(locals())
