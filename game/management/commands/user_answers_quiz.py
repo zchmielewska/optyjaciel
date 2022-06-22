@@ -2,6 +2,7 @@ import random
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from game import models
+from game.utils import transform
 
 
 class Command(BaseCommand):
@@ -17,3 +18,4 @@ class Command(BaseCommand):
         for i in range(10):
             quiz_question = quiz.quizquestion_set.all()[i]
             models.Answer.objects.create(user=user, quiz_question=quiz_question, answer=random.randint(1, 2))
+            transform.recalculate_and_save_matches(quiz)

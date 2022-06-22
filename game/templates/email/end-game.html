@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
 </head>
 <body>
-    <p>Twoim optyjacielem w rundzie {{ ... }} został(a) {{ ... }}.</p>
-    <p>Wasz wynik: <b>{{ ... }}</b></p>
-    <p>Sprawdź Waszą kompatybilność: {{ domain }}{% url "compatibility" message_id=msg.id%}</p>
-    <!--<int:quiz_id>/<int:user1_id>/<int:user2_id>-->
+    <p>Cześć <b>{{ participant.username }}!</b></p>
+    <p>Twoim optyjacielem w rundzie {{ quiz.year }}_{{ quiz.week }} został(a) <b>{{ matched_user.username }}</b>.</p>
+    <p>Wasz wynik: <b>{{ score }}</b></p>
+    <p>Wasza kompatybilność: {{ domain }}{% url "compatibility" quiz_id=quiz.id user1_id=participant.id user2_id=matched_user.id %}</p>
 </body>
 </html>
