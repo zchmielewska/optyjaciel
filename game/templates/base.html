@@ -14,6 +14,17 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cookie">
     <link rel="stylesheet"href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap">
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TRZVQS19DF"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-TRZVQS19DF');
+    </script>
+
     {% block head %}{% endblock %}
     <title>{% block title %}optyjaciel | optymalny przyjaciel{% endblock %}</title>
 </head>
