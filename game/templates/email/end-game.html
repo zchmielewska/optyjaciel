@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <p>Cześć <b>{{ participant.username }}!</b></p>
+    <p>Twoim optyjacielem w rundzie {{ quiz.year }}_{{ quiz.week }} został(a) <b>{{ matched_user.username }}</b>.</p>
+    <p>Wasz wynik: <b>{{ score }}</b></p>
+    <p>Wasza kompatybilność: {{ domain }}{% url "compatibility" quiz_id=quiz.id user1_id=participant.id user2_id=matched_user.id %}</p>
+</body>
+</html>
