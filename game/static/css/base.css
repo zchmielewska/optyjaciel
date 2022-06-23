@@ -131,6 +131,11 @@ body {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+
+.box img {
+    max-width: 100%;
+}
+
 /* match */
 .card {
     border: 1px dotted #003c61;
