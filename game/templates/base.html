@@ -30,20 +30,20 @@
 </head>
 <body>
     <div class="wrapper">
-        <div class="top-bar">
-            <div class="top-bar-container">
+        <header>
+            <div class="header-container">
                 {% if request.user.username %}
                     <strong><a href="{% url "profile" %}">{{ request.user.username }}</a></strong> | <a href="{% url "account:logout" %}">wyloguj się</a>
                 {% else %}
                     <a href="{% url "account:login" %}">zaloguj się</a>
                 {% endif %}
             </div>
-        </div>
+        </header>
 
         <div class="logo vertical-center"><a href="{% url "rules" %}">optyjaciel</a></div>
 
         <div class="container">
-            <div class="menu">
+            <nav>
                 <ul>
                     <li class="{% if path_name == "rules" %}checked{% endif %}"><a href="{% url "rules" %}">zasady gry</a></li>
                     <li class="{% if path_name == "game" %}checked{% endif %}"><a href="{% url "game" %}">aktualna runda</a></li>
@@ -63,17 +63,17 @@
 
                     <li class="{% if path_name == "suggest" %}checked{% endif %}"><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
                 </ul>
-            </div>
+            </nav>
 
-            <div class="content">{% block content %}{% endblock %}</div>
+            <main>{% block content %}{% endblock %}</main>
         </div>
         <div class="push"></div>
     </div>
-    <div class="footer">
+    <footer>
         <div class="footer-container">
             <span>© 2022 optyjaciel</span>
             <span><a href="{% url 'blog' %}" class="link">blog</a></span>
         </div>
-    </div>
+    </footer>
 </body>
 </html>

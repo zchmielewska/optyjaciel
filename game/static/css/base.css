@@ -5,6 +5,7 @@
 
 * { box-sizing: border-box; }
 a { color: inherit; text-decoration: none; }
+h1 { font-size: 1.8em; }
 
 html {
     height: 100%;
@@ -20,17 +21,17 @@ body {
 }
 
 /* structure */
-.top-bar {
+header {
     background-color: #003c61;
     color: #fff;
     line-height: 48px;
 }
 
-.top-bar a:hover {
+header a:hover {
     color: #F5B44C;
 }
 
-.top-bar-container {
+.header-container {
     max-width: 1560px;
     width: 90%;
     margin: 0 auto;
@@ -60,7 +61,7 @@ body {
     gap: 10px;
 }
 
-.menu {
+nav {
     background-color: #fff;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border-top: 2px solid rgba(245, 180,76, 1);
@@ -68,28 +69,28 @@ body {
     flex-shrink: 0;
 }
 
-.menu > ul {
+nav > ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
     width: 100%;
 }
 
-.menu > ul > li {
+nav > ul > li {
     border-bottom: 1px solid #eee;
 }
 
-.menu > ul > li > a {
+nav > ul > li > a {
     display: block;
     padding: 8px 16px;
 }
 
-.menu > ul > li > a:hover, .checked {
+nav > ul > li > a:hover, .checked {
     background-color: rgba(245, 180, 76, 1);
     color: #fff;
 }
 
-.content {
+main {
     flex-grow: 2;
     border-top: 2px solid rgba(245, 180,76, 1);
 }
@@ -100,11 +101,11 @@ body {
     margin-bottom: -48px;
 }
 
-.footer, .push {
+footer, .push {
     height: 48px;
 }
 
-.footer {
+footer {
     background-color: #d5d6da;
     font-size: 0.9em;
 }
@@ -153,6 +154,18 @@ body {
 .card-item2 {
     display: flex;
     flex-direction: column;
+}
+
+/* compatiblity */
+.compatibility-table {
+    width: 80%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+.compatibility-table th, .compatibility-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
 }
 
 /* buttons */
@@ -229,6 +242,10 @@ table {
     color: rgba(245, 180, 76, 1);
 }
 
+.orange-background {
+    background-color: rgba(245, 180,76, 0.3)
+}
+
 .blue {
     color: #003c61;
     font-weight: bold;
@@ -251,8 +268,15 @@ table {
 .long-text {
     line-height: 1.5em;
     color: #444;
-    text-align: justify;
     letter-spacing: 0.01em;
+}
+
+.small-screen {
+    display: none;
+}
+
+.big-screen {
+    display: block;
 }
 
 /* small screens */
@@ -261,7 +285,7 @@ table {
         flex-wrap: wrap;
     }
 
-    .menu {
+    nav {
         flex-basis: 100%;
         margin-top: 10px;
     }
@@ -269,4 +293,17 @@ table {
     .logo {
         display: none;
     }
+
+    .small-screen {
+        display: block;
+    }
+
+    .big-screen {
+        display: none;
+    }
+
+    .compatibility-table {
+        width: 100%;
+    }
+
 }
