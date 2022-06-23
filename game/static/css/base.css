@@ -215,10 +215,6 @@ label {
     justify-content: center;
 }
 
-.high-line {
-    line-height: 150%;
-}
-
 table {
     margin: 0 auto;
 }
@@ -247,7 +243,7 @@ table {
 }
 
 .long-text {
-    line-height: 1.25em;
+    line-height: 1.5em;
     color: #444;
     text-align: justify;
     letter-spacing: 0.01em;
