@@ -1,36 +1,64 @@
 {%  extends "base.html" %}
 
 {% load static %}
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/compatibility.css' %}">
-{% endblock %}
+
 {% block title %}optyjaciel | kompatybilność{% endblock %}
 
 {%  block content %}
     <div class="box">
-        <h2 style="font-size: 1.17em;">Kompatybilność w rundzie {{ quiz.year }}_{{ quiz.week }}</h2>
-        <table>
-            <tr>
-                <th>#</th>
-                <th>Pytanie</th>
-                <th>{{ user1.username }}</th>
-                <th>
-                    {% if user2.is_active %}
-                        {{ user2.username }}
-                    {% else %}
-                        użytkownik usunięty
-                    {% endif %}
-                </th>
-            </tr>
+        <span class="subtitle">Kompatybilność w rundzie {{ quiz.year }}_{{ quiz.week }}</span>
+        <br><br>
 
-            {% for element in elements %}
-            <tr {% if element.1 == element.2 %} class="good" {% endif %}>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ element.0 }}</td>
-                <td>{{ element.1 }}</td>
-                <td>{{ element.2 }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <div class="big-screen" style="overflow-x:auto;">
+            <table class="compatibility-table">
+                <tr>
+                    <th>#</th>
+                    <th>Pytanie</th>
+                    <th>{{ user1.username }}</th>
+                    <th>
+                        {% if user2.is_active %}
+                            {{ user2.username }}
+                        {% else %}
+                            użytkownik usunięty
+                        {% endif %}
+                    </th>
+                </tr>
+
+                {% for element in elements %}
+                <tr {% if element.1 == element.2 %} class="orange-background" {% endif %}>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ element.0 }}</td>
+                    <td>{{ element.1 }}</td>
+                    <td>{{ element.2 }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div class="small-screen" style="overflow-x:auto;">
+            <table class="compatibility-table">
+                {% for element in elements %}
+                <tr {% if element.1 == element.2 %} class="orange-background" {% endif %}>
+                    <td><b>#{{ forloop.counter }}</b></td>
+                    <td><b>{{ element.0 }}</b></td>
+                </tr>
+                <tr {% if element.1 == element.2 %} class="orange-background" {% endif %}>
+                    <td>{{ user1.username }}</td>
+                    <td>{{ element.1 }}</td>
+                </tr>
+                <tr {% if element.1 == element.2 %} class="orange-background" {% endif %}>
+                    <td>
+                        {% if user2.is_active %}
+                            {{ user2.username }}
+                        {% else %}
+                            użytkownik usunięty
+                        {% endif %}
+                    </td>
+                    <td>{{ element.2 }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
     </div>
 {% endblock %}
