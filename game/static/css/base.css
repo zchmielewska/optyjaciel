@@ -134,6 +134,7 @@ body {
 
 .box img {
     max-width: 100%;
+    height: auto;
 }
 
 /* match */
