@@ -238,6 +238,12 @@ table {
     margin: 0 auto;
 }
 
+blockquote {
+    background: #f9f9f9;
+    border-left: 8px solid #ccc;
+    padding: 0.2em 10px;
+}
+
 .orange {
     color: rgba(245, 180, 76, 1);
 }
