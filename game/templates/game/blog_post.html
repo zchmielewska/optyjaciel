@@ -7,9 +7,9 @@
 
 {%  block content %}
 
-    <div class="box">
+    <div class="box long-text">
         <h1>{{ post.title }}</h1>
-        <div>Created: {{ post.created|date:'Y-m-d' }}</div>
+        <div><i>{{ post.created|date:'Y-m-d' }}</i></div>
         <div>{{ post.body|safe }}</div>
     </div>
 
