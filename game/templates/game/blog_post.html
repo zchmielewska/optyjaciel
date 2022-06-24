@@ -11,6 +11,13 @@
         <h1>{{ post.title }}</h1>
         <div><i>{{ post.created|date:'Y-m-d' }}</i></div>
         <div>{{ post.body|safe }}</div>
+
+        <p><b>Czytaj także:</b></p>
+        <ul>
+            {% for random_post in random_posts %}
+                <li><a href="{% url 'post' random_post.slug %}" class="link">{{ random_post.title }}</a></li>
+            {% endfor %}
+        </ul>
     </div>
 
 {% endblock %}

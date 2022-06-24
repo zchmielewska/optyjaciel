@@ -9,6 +9,7 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.views import View
 from django.views.generic import FormView
+from random import sample
 
 from game import forms, models
 from game.utils import db_control, transform, utils
@@ -234,7 +235,16 @@ class BlogView(View):
 class BlogPostView(View):
     def get(self, request, slug):
         post = get_object_or_404(models.Post, slug=slug)
-        return render(request, "game/blog_post.html", {"post": post})
+
+        # Read also these posts
+        pks = models.Post.objects.exclude(id=post.id).values_list("pk", flat=True)
+        if len(pks) <= 3:
+            random_pks = pks
+        else:
+            random_pks = sample(list(pks), 3)
+        random_posts = models.Post.objects.filter(pk__in=random_pks)
+
+        return render(request, "game/blog_post.html", {"post": post, "random_posts": random_posts})
 
 
 class ProfileView(LoginRequiredMixin, View):
