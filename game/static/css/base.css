@@ -297,8 +297,14 @@ blockquote {
     font-weight: bold;
 }
 
-.link:hover {
+.classic-link {
+    color: blue;
+    text-decoration: underline;
+}
+
+.link:hover, .classic-link:hover {
     color: #F5B44C;
+    text-decoration: none;
 }
 
 .long-text {
