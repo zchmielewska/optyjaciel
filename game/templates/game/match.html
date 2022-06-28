@@ -17,10 +17,18 @@
             <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="button blue-button">kompatybilność</a>
             {% if previous_game and match.matched_user.is_active %}
                 <a href="{% url "message-write" match.matched_user.id %}" class="button blue-button">wiadomość</a>
+            {% else %}
+                <span class="button disabled-button">wiadomość</span>
             {% endif %}
         </div>
     {% else %}
-        <div class="card-item1"><p>Brak optyjaciela ze względu na nieparzystą liczbę graczy.</p></div>
+        <div class="card-item1">
+            <p>Brak optyjaciela ze względu na nieparzystą liczbę graczy.</p>
+        </div>
+        <div class="card-item2">
+            <span class="button disabled-button">kompatybilność</span>
+            <span class="button disabled-button">wiadomość</span>
+        </div>
     {% endif %}
     </div>
 </div>
