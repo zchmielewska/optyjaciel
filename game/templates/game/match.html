@@ -1,10 +1,18 @@
 <div class="card">
+    <div class="card-header">{{ match.quiz.year }}_{{ match.quiz.week }}</div>
+    <div class="card-items">
     {% if match.exists %}
         <div class="card-item1">
-            <p><b>Runda: </b>{{ match.quiz.year }}_{{ match.quiz.week }}</p>
-            <p><b>Użytkownik: </b>{{ match.matched_user.get_username }}</p>
-            <p><b>Wynik: </b>{{ match.score }} {{ match.points }}</p>
+            <p>
+                <span class="meta">Użytkownik:</span><br>
+                <span>{{ match.matched_user.get_username }}</span>
+            </p>
+            <p>
+                <span class="meta">Wynik:</span><br>
+                <span>{{ match.score }} {{ match.points }}</span>
+            </p>
         </div>
+
         <div class="card-item2">
             <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="button blue-button">kompatybilność</a>
             {% if previous_game and match.matched_user.is_active %}
@@ -12,9 +20,7 @@
             {% endif %}
         </div>
     {% else %}
-        <div class="card-item1">
-            <p><b>Runda: </b>{{ match.quiz.year }}_{{ match.quiz.week }}</p>
-            <p>Brak optyjaciela ze względu na nieparzystą liczbę graczy.</p>
-        </div>
+        <div class="card-item1"><p>Brak optyjaciela ze względu na nieparzystą liczbę graczy.</p></div>
     {% endif %}
+    </div>
 </div>
