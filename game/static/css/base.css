@@ -149,7 +149,6 @@ footer {
     flex-basis: 49%;
 }
 
-
 .card {
     border: 1px solid #eee;
     box-shadow: rgba(149, 157, 165, 0.2) 6px 6px 8px;
@@ -360,5 +359,9 @@ blockquote {
 
     .card-items {
         flex-direction: column;
+    }
+
+    .button {
+        border: 2px solid;
     }
 }
