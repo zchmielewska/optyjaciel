@@ -199,7 +199,7 @@ footer {
     padding: 8px;
     margin: 20px 4px 2px 4px;
     display: inline-block;
-    border: 2px solid;
+    border: 3px solid;
     font-size: 0.8em;
     font-weight: bold;
     text-align: center;
@@ -239,6 +239,13 @@ footer {
 
 .blue-button:hover {
     background-color: rgba(0, 60, 97, 0.2);
+}
+
+.disabled-button {
+    border-color: rgba(66, 66, 66, 0.75);
+    background-color: rgba(66, 66, 66, 0.2);
+    color: rgba(66, 66, 66, 0.75);
+    cursor: default;
 }
 
 /* forms */
