@@ -180,4 +180,4 @@ SECURE_SSL_REDIRECT = os.getenv("SECURE_SSL_REDIRECT") == "True"
 
 
 # Configure Django App for Heroku.
-django_heroku.settings(locals())
+django_heroku.settings(locals(), staticfiles=False)
