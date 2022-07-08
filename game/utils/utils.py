@@ -168,7 +168,6 @@ def send_emails_after_game():
                     "score": score,
                     "domain": DOMAIN,
                 }
-                pass
                 subject = f"optyjaciel | nowy optyjaciel w rundzie {quiz.year}_{quiz.week}"
                 html_message = render_to_string("email/end-game.html", ctx)
                 plain_message = strip_tags(html_message)
