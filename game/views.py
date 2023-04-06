@@ -266,3 +266,8 @@ class ProfileDeleteView(LoginRequiredMixin, View):
         user.is_active = False
         user.save()
         return logout_then_login(request)
+
+
+class AboutView(View):
+    def get(self, request):
+        return render(request, "game/about.html")
