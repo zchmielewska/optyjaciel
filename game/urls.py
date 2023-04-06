@@ -27,4 +27,5 @@ urlpatterns = [
     path("sitemap.xml", sitemap, {"sitemaps": sitemaps}, name="django.contrib.sietemaps.views.sitemap"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path("profile/delete/", views.ProfileDeleteView.as_view(), name="profile-delete"),
+    path("about/", views.AboutView.as_view(), name="about"),
 ]
