@@ -45,7 +45,7 @@ class SuggestionAdmin(admin.ModelAdmin):
 
 @admin.register(game.models.Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "created",)
+    list_display = ("id", "title", "created",)
     ordering = ("-created",)
     prepopulated_fields = {"slug": ("title",)}
 
