@@ -14,14 +14,8 @@
                 <tr>
                     <th>#</th>
                     <th>Pytanie</th>
-                    <th>{{ user1.username }}</th>
-                    <th>
-                        {% if user2.is_active %}
-                            {{ user2.username }}
-                        {% else %}
-                            użytkownik usunięty
-                        {% endif %}
-                    </th>
+                    <th>{{ user1.profile.nickname }}</th>
+                    <th>{{ user2.profile.nickname }}</th>
                 </tr>
 
                 {% for element in elements %}
@@ -43,17 +37,11 @@
                     <td><b>{{ element.0 }}</b></td>
                 </tr>
                 <tr {% if element.1 == element.2 %} class="orange-background" {% endif %}>
-                    <td>{{ user1.username }}</td>
+                    <td>{{ user1.profile.nickname }}</td>
                     <td>{{ element.1 }}</td>
                 </tr>
                 <tr {% if element.1 == element.2 %} class="orange-background" {% endif %}>
-                    <td>
-                        {% if user2.is_active %}
-                            {{ user2.username }}
-                        {% else %}
-                            użytkownik usunięty
-                        {% endif %}
-                    </td>
+                    <td>{{ user2.profile.nickname }}</td>
                     <td>{{ element.2 }}</td>
                 </tr>
                 {% endfor %}

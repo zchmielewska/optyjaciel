@@ -259,12 +259,12 @@ class ProfileDeleteView(LoginRequiredMixin, View):
 
     def post(self, request):
         user = request.user
-        user.username = user.id
         user.email = ""
-        password = User.objects.make_random_password()
-        user.set_password(password)
         user.is_active = False
         user.save()
+
+        user.profile.nickname = "[użytkownik usunięty]"
+        user.profile.save()
         return logout_then_login(request)
 
 

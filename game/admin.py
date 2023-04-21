@@ -33,8 +33,8 @@ class QuizQuestionAdmin(admin.ModelAdmin):
 
 @admin.register(game.models.Quiz)
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ("year", "week")
-    ordering = ("-year", "-week")
+    list_display = ("id", "year", "week")
+    ordering = ("-id",)
 
 
 @admin.register(game.models.Suggestion)
