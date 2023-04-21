@@ -34,3 +34,9 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError("Podane hasła różnią się.")
         return cd["password2"]
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if email == "":
+            raise forms.ValidationError("Adres e-mail nie może być pusty.")
+        return email
+

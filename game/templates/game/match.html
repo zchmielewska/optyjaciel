@@ -5,7 +5,7 @@
         <div class="card-item1">
             <p>
                 <span class="meta">Użytkownik:</span><br>
-                <span>{{ match.matched_user.get_username }}</span>
+                <span>{{ match.matched_user.profile.nickname }}</span>
             </p>
             <p>
                 <span class="meta">Wynik:</span><br>
@@ -14,9 +14,9 @@
         </div>
 
         <div class="card-item2">
-            <a href="{% url "compatibility" match.quiz.id match.user.id match.matched_user.id %}" class="button blue-button">kompatybilność</a>
+            <a href="{% url 'compatibility' match.quiz.id match.user.id match.matched_user.id %}" class="button blue-button">kompatybilność</a>
             {% if previous_game and match.matched_user.is_active %}
-                <a href="{% url "message-write" match.matched_user.id %}" class="button blue-button">wiadomość</a>
+                <a href="{% url 'message-write' match.matched_user.id %}" class="button blue-button">wiadomość</a>
             {% else %}
                 <span class="button disabled-button">wiadomość</span>
             {% endif %}
