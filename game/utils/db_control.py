@@ -1,69 +1,29 @@
 import random
-from django.contrib.auth.models import User
-from django.utils.timezone import now
-
+from django.utils import timezone
 from game import models
-from game.utils import utils
 
 
-def create_ten_questions():
-    """
-    Adds ten questions to the DB.
-    Quizes and questions should be managed manually by staff.
-    However, if the manual work hasn't been done, the app should not crash.
-    For the app to work independently (without human interaction), it needs at least 10 questions in the DB.
+def get_current_quiz():
+    """Retrieves quiz for the current day."""
+    today = timezone.now()
+    formatted_date = today.strftime('%Y%m%d')
+    quiz = get_quiz(date=formatted_date)
+    return quiz
 
-    :return: list with 10 question objects
-    """
-    data = [
-        {'question': 'Pora roku', 'option1': 'lato', 'option2': 'zima'},
-        {'question': 'Czas', 'option1': 'przeszłość', 'option2': 'przyszłość'},
-        {'question': 'Mój charakter', 'option1': 'ekstrawertyk', 'option2': 'introwertyk'},
-        {'question': 'Wakacje', 'option1': 'w górach', 'option2': 'nad morzem'},
-        {'question': 'Do pływania', 'option1': 'basen', 'option2': 'jezioro'},
-        {'question': 'Zwierzę domowe', 'option1': 'kot', 'option2': 'pies'},
-        {'question': 'Czas wolny', 'option1': 'impreza', 'option2': 'wieczór w domu'},
-        {'question': 'Przedmiot szkolny', 'option1': 'matematyka', 'option2': 'język polski'},
-        {'question': 'Superbohater', 'option1': 'batman', 'option2': 'superman'},
-        {'question': 'Dom magii', 'option1': 'Gryfindor', 'option2': 'Slytherin'}
-    ]
 
-    questions = []
-    for datum in data:
-        question = models.Question.objects.create(**datum)
-        questions.append(question)
+def get_quiz(date):
+    """Retrieves quiz for the given day. If the quiz doesn't exist yet, it gets created."""
+    quiz, created = models.Quiz.objects.get_or_create(date=date)
 
-    return questions
+    if created:
+        quiz = fill_with_questions(quiz)
+
+    return quiz
 
 
 def fill_with_questions(quiz):
-    """
-    Fills quiz with questions (if they are not present).
-    Tries to use as many questions that weren't used in other quizes as possible.
-    No impact if the quiz already has 10 questions.
-
-    :param quiz: quiz object to which questions will be added
-    :return: quiz object with filled questions
-    """
-    n_lacking_questions = 10 - quiz.questions.count()
-
-    # There must be at least 10 questions in db to create a quiz
-    n_questions = models.Question.objects.count()
-    if n_questions < 10:
-        create_ten_questions()
-
-    # Some questions might not have been yet used
-    unused = models.Question.objects.filter(quizquestion__isnull=True).distinct()
-    used = models.Question.objects.filter(quizquestion__isnull=False).distinct()
-    n_unused = len(unused)
-
-    # Quiz should have as many unused questions as possible
-    if n_unused >= n_lacking_questions:
-        questions = random.sample(list(unused), n_lacking_questions)
-    elif n_unused >= 1:
-        questions = list(unused) + random.sample(list(used), n_lacking_questions - n_unused)
-    else:
-        questions = random.sample(list(used), n_lacking_questions)
+    questions = models.Question.objects.all()
+    questions = random.sample(list(questions), 10)
 
     # Add questions to the quiz
     for i in range(10):
@@ -74,43 +34,6 @@ def fill_with_questions(quiz):
                 question=questions[i],
                 question_index=i+1,
             )
-    return quiz
-
-
-def get_quiz(year, week):
-    """
-    Retrieves quiz for the given week. If the quiz doesn't exist yet, it gets created.
-    Ensures that the quiz has 10 questions.
-
-    :param year: integer
-    :param week: integer
-    :return: quiz object
-    """
-    quizes = models.Quiz.objects.filter(year=year, week=week)
-    no_quizes = quizes.count()
-
-    if no_quizes > 1:
-        raise ValueError("There should be only one quiz per week.")
-    elif no_quizes == 1:
-        quiz = quizes.first()
-    elif no_quizes == 0:
-        quiz = models.Quiz.objects.create(year=year, week=week)
-
-    # Quiz must have 10 questions but staff could manually add less
-    if not quiz.questions.count() == 10:
-        fill_with_questions(quiz)
-
-    return quiz
-
-
-def get_current_quiz():
-    """
-    Retrieves quiz for the current week.
-
-    :return: quiz object
-    """
-    year, week, day = now().isocalendar()
-    quiz = get_quiz(year=year, week=week)
     return quiz
 
 
@@ -149,8 +72,9 @@ def get_text_answer(quiz_question, user):
 
 
 def remove_current_quiz(quizes):
-    year, week, day = now().isocalendar()
-    current_quiz = get_quiz(year=year, week=week)
+    today = timezone.now()
+    formatted_date = today.strftime('%Y%m%d')
+    current_quiz = get_quiz(date=formatted_date)
     if current_quiz in quizes:
         quizes.remove(current_quiz)
     return quizes
@@ -175,7 +99,7 @@ def list_quizes(user, previous=True):
     if previous:
         quizes = remove_current_quiz(quizes)
 
-    quizes.sort(key=lambda x: (x.year, x.week), reverse=True)
+    quizes.sort(key=lambda x: (x.date), reverse=True)
     return quizes
 
 

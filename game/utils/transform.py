@@ -26,7 +26,7 @@ def get_answers(quiz):
             df = pd.DataFrame(list(quiz_question_answers.values("user_id", "answer")))
         else:
             df = pd.DataFrame(list(quiz_question_answers.values("answer")))
-        df = df.rename(columns={"answer": "answer" + str(question_index)})
+        df = df.rename(columns={"answer": f"answer{question_index}"})
         answers_list.append(df)
 
     df = pd.concat(answers_list, axis=1)

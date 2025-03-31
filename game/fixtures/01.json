@@ -1,6 +1,0 @@
-[
-  {
-    "model": "game.quiz", "pk": 1,
-    "fields": {"year": 1990, "week": 1}
-  }
-]

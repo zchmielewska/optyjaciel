@@ -21,7 +21,6 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-TRZVQS19DF');
     </script>
 
@@ -45,36 +44,24 @@
         <div class="container">
             <nav>
                 <ul>
-                    <li class="{% if path_name == "rules" %}checked{% endif %}"><a href="{% url "rules" %}">zasady gry</a></li>
-                    <li class="{% if path_name == "game" %}checked{% endif %}"><a href="{% url "game" %}">aktualna runda</a></li>
-                    <li class="{% if path_name == "matches" %}checked{% endif %}"><a href="{% url "matches" %}">Twoi optyjaciele</a></li>
-
-                    {% if path_name == "message-inbox" or path_name == "message-outbox" or path_name == "message-write" or path_name == "message-read" %}
-                        <li class="checked">
-                    {% else %}
-                        <li>
-                    {% endif %}
+                    <li><a href="{% url "rules" %}">zasady gry</a></li>
+                    <li><a href="{% url "game" %}">aktualna runda</a></li>
+                    <li><a href="{% url "matches" %}">Twoi optyjaciele</a></li>
+                    <li>
                         {% if no_messages > 0 %}
-                            <a href="{% url "message-inbox" %}"><strong>wiadomości [{{ no_messages }}]</strong></a></li>
+                            <a href="{% url "message-inbox" %}"><strong>wiadomości [{{ no_messages }}]</strong></a>
                         {% else %}
                             <a href="{% url "message-inbox" %}">wiadomości</a>
                         {% endif %}
                     </li>
-
-                    <li class="{% if path_name == "suggest" %}checked{% endif %}"><a href="{% url "suggest" %}">zaproponuj pytanie</a></li>
                 </ul>
             </nav>
-
             <main>{% block content %}{% endblock %}</main>
         </div>
         <div class="push"></div>
     </div>
     <footer>
-        <div class="footer-container">
-            <span>© 2023 optyjaciel</span>
-            <span><a href="{% url 'blog' %}" class="link">blog</a></span>
-            <span><a href="{% url 'about' %}" class="link">o grze</a></span>
-        </div>
+        <div class="footer-container"><span>© 2025 optyjaciel</span></div>
     </footer>
 </body>
 </html>

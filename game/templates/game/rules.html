@@ -22,11 +22,12 @@
             W trakcie trwania rundy optyjaciele mogą się zmieniać, ponieważ do gry dołączają nowi gracze.
             Po zakończeniu rundy nowi uczestnicy nie moga już dołączyć, a optyjaciele są łączeni na stałe.
         </p>
-    </div>
 
-    <div class="box long-text">
         <span class="subtitle">Jak dobierani są optyjaciele?</span>
-        <img src="{% static 'img/diagram.webp' %}" alt="Przykładowe wyniki z rundy" width="320px" height="337px" style="float: right;">
+        <img src="{% static 'img/diagram.webp' %}"
+             alt="Przykładowe wyniki z rundy"
+             width="320px" height="337px"
+             style="float: right;">
         <p>Optyjaciele są łączeni w pary tak, aby uzyskać jak najwięcej punktów wśród wszystkich grających.
             Punkt jest przyznawany zawsze wtedy, gdy dwie osoby odpowiedzą tak samo na pytanie.</p>
 
@@ -41,16 +42,6 @@
         <p>Mimo że najwyższy wynik mają Alicja i Czarek (8 punktów) nie są oni optyjacielami,
             ponieważ wtedy Bartek zostałby połączony z Darią (4 punkty).
             A wynik całej grupy wyniósłby tylko 12 punktów.</p>
-    </div>
-
-    <div class="box long-text">
-        <span class="subtitle">Jakie jest prawdopodobieństwo uzyskania 10 punktów?</span>
-        <p>Prawdopodobieństwo odpowiedzi tak samo na jedno pytanie to 1 do 2.</p>
-
-        <p>W przypadku dwóch pytań, prawdopobieństwo odpowiedzi na obydwa tak samo wynosi 1 do 4.</p>
-
-        <p>Natomiast prawdopodobieństwo, że dwie osoby odpowiedziały tak samo na wszystkie 10 pytań wynosi 1 do 1024
-            (mniej niż jeden na tysiąc!).</p>
     </div>
 
 {% endblock %}

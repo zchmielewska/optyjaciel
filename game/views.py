@@ -11,12 +11,8 @@ from django.views import View
 from django.views.generic import FormView
 from random import sample
 
-from game import forms, models
+from game import models
 from game.utils import db_control, transform, utils
-from .tasks import send_mail_to_user
-
-
-DOMAIN = settings.DEFAULT_DOMAIN
 
 
 class RulesView(View):
@@ -26,31 +22,23 @@ class RulesView(View):
 
 
 class GameView(LoginRequiredMixin, View):
-    """
-    The game for the current week.
-    If the user hasn't played yet, returns the quiz for the current week.
-    If the user has already played, returns the current match.
-    """
+    """The game for the current day."""
     def get(self, request):
         user = request.user
-        quiz = db_control.get_current_quiz()
-        played = models.Match.objects.filter(quiz=quiz, user=user).count() > 0
 
-        if not played:
-            quiz_questions = quiz.quizquestion_set.order_by("question_index")
-            ctx = {
-                "quiz": quiz,
-                "quiz_questions": quiz_questions,
-            }
-            return render(request, "game/game_quiz.html", ctx)
-        else:
-            ctx = db_control.get_match_context(quiz, user)
-            ctx["previous_game"] = False
-            ctx["remaining_time_in_week"] = utils.get_remaining_time_in_week()
-            return render(request, "game/game_match.html", ctx)
+        quiz = db_control.get_current_quiz()
+        played = models.Match.objects.filter(quiz=quiz, user=user).exists()
+        quiz_questions = quiz.quizquestion_set.order_by("question_index")
+
+        ctx = {
+            "quiz": quiz,
+            "quiz_questions": quiz_questions,
+            "played": played,
+        }
+        return render(request, "game/quiz.html", ctx)
 
     def post(self, request):
-        post = QueryDict.dict(request.POST)
+        post = QueryDict.dict(request.POST) # TODO ponoć QueryDict zbędny
         quiz = models.Quiz.objects.get(id=post.get("quiz_id"))
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
         answers = [models.Answer(user=request.user, quiz_question_id=qq.id, answer=post.get(str(qq.id)))
@@ -58,13 +46,14 @@ class GameView(LoginRequiredMixin, View):
 
         with transaction.atomic():
             models.Answer.objects.bulk_create(answers)
-            transform.recalculate_and_save_matches(quiz)
+            transform.recalculate_and_save_matches(quiz)  # TODO niepotrzebne bo tylko ran dziennie będą wyniki
 
         return redirect("game")
 
 
 class CompatibilityView(LoginRequiredMixin, View):
     """Juxtaposition of answers of two users for the given quiz."""
+
     def get(self, request, quiz_id, user1_id, user2_id):
         quiz = get_object_or_404(models.Quiz, pk=quiz_id)
         user1 = get_object_or_404(User, pk=user1_id)
@@ -99,6 +88,7 @@ class CompatibilityView(LoginRequiredMixin, View):
 
 class MatchesView(LoginRequiredMixin, View):
     """Matches from all previous games."""
+
     def get(self, request):
         user = request.user
         quizes = db_control.list_quizes(user)
@@ -112,31 +102,6 @@ class MatchesView(LoginRequiredMixin, View):
             "previous_game": True
         }
         return render(request, "game/matches.html", ctx)
-
-
-class SuggestionView(LoginRequiredMixin, FormView):
-    """Form to send the suggestion for question."""
-    template_name = "game/suggest.html"
-    form_class = forms.SuggestionForm
-    success_url = "/"
-
-    def form_valid(self, form):
-        question = form.cleaned_data.get("question")
-        option1 = form.cleaned_data.get("option1")
-        option2 = form.cleaned_data.get("option2")
-
-        models.Suggestion.objects.create(
-            question=question,
-            option1=option1,
-            option2=option2,
-            user=self.request.user,
-        )
-        return redirect("thanks")
-
-
-class ThanksView(View):
-    def get(self, request):
-        return render(request, "game/thanks.html")
 
 
 class MessageInboxView(LoginRequiredMixin, View):
@@ -194,12 +159,12 @@ class MessageWriteView(LoginRequiredMixin, View):
             )
 
             # Inform user by e-mail
-            subject = f"optyjaciel | nowa wiadomość od {user.username}"
-            ctx = {"user": user, "msg": msg, "domain": DOMAIN}
-            html_message = render_to_string("email/new-message.html", ctx)
-            plain_message = strip_tags(html_message)
+            # subject = f"optyjaciel | nowa wiadomość od {user.username}"
+            # ctx = {"user": user, "msg": msg, "domain": DOMAIN}
+            # html_message = render_to_string("email/new-message.html", ctx)
+            # plain_message = strip_tags(html_message)
             # send_mail_to_user.delay(subject, plain_message, html_message, to_email=to_user.email)
-            send_mail_to_user(subject, plain_message, html_message, to_email=to_user.email)
+            # send_mail_to_user(subject, plain_message, html_message, to_email=to_user.email)
         return redirect("message-outbox")
 
 
@@ -266,8 +231,3 @@ class ProfileDeleteView(LoginRequiredMixin, View):
         user.profile.nickname = "[użytkownik usunięty]"
         user.profile.save()
         return logout_then_login(request)
-
-
-class AboutView(View):
-    def get(self, request):
-        return render(request, "game/about.html")

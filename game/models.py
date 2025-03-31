@@ -1,28 +1,19 @@
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.urls import reverse
 
 
 class Question(models.Model):
     question = models.CharField(max_length=256)
     option1 = models.CharField(max_length=256)
     option2 = models.CharField(max_length=256)
-
-    def __str__(self):
-        return f"{self.question}"
+    option3 = models.CharField(max_length=256)
+    option4 = models.CharField(max_length=256)
 
 
 class Quiz(models.Model):
-    year = models.PositiveIntegerField()
-    week = models.PositiveIntegerField()
+    date = models.CharField(max_length=8)
     questions = models.ManyToManyField(Question, through="QuizQuestion")
-
-    class Meta:
-        unique_together = ("year", "week")
-
-    def __str__(self):
-        return f"{self.year}_{self.week}"
 
 
 class QuizQuestion(models.Model):
@@ -30,20 +21,11 @@ class QuizQuestion(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     question_index = models.PositiveIntegerField()
 
-    class Meta:
-        unique_together = ("quiz", "question_index")
-
-    def __str__(self):
-        return f"{self.quiz.year}_{self.quiz.week}_{self.question_index} {self.question.question}"
-
 
 class Answer(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     quiz_question = models.ForeignKey(QuizQuestion, on_delete=models.CASCADE)
     answer = models.PositiveIntegerField()
-
-    class Meta:
-        unique_together = ("user", "quiz_question")
 
 
 class Match(models.Model):
@@ -51,17 +33,6 @@ class Match(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user")
     matched_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name="matched_user")
     matched_at = models.DateTimeField(auto_now_add=True)
-
-
-class Suggestion(models.Model):
-    question = models.CharField(max_length=256, verbose_name="pytanie")
-    option1 = models.CharField(max_length=256, verbose_name="Odpowiedź 1")
-    option2 = models.CharField(max_length=256, verbose_name="Odpowiedź 2")
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    suggested_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.question} ({self.option1}, {self.option2} od {self.user}"
 
 
 class Message(models.Model):
@@ -77,13 +48,4 @@ class Post(models.Model):
     title = models.CharField(max_length=250)
     body = models.TextField()
     slug = models.SlugField(max_length=250)
-    created = models.DateField()
-
-    class Meta:
-        ordering = ("-id", )
-
-    def __str__(self):
-        return self.title
-
-    def get_absolute_url(self):
-        return reverse("post", args=[self.slug])
+    created = models.DateTimeField(auto_now_add=True)
