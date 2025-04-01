@@ -1,11 +1,12 @@
 from django.shortcuts import render
-
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from account.forms import UserRegistrationForm
 from account.models import Profile
 
 
 class RegisterView(View):
+    @csrf_exempt
     def get(self, request):
         user_form = UserRegistrationForm()
         return render(request, "account/register.html", {"user_form": user_form})
