@@ -20,7 +20,7 @@ SECRET_KEY = 'django-insecure-qharp@wm8kimsup3@(+*=5o08j5thyxwv0-#k*5&$c9qo19d#$
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
-
+CSRF_TRUSTED_ORIGINS = ['https://optyjaciel-193bc87ca2eb.herokuapp.com/',]
 
 # Application definition
 
