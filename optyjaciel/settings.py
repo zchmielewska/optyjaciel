@@ -14,15 +14,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-qharp@wm8kimsup3@(+*=5o08j5thyxwv0-#k*5&$c9qo19d#$'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG') == "True"
 
 ALLOWED_HOSTS = ['*', 'optyjaciel-193bc87ca2eb.herokuapp.com']
-CSRF_TRUSTED_ORIGINS = [
-    'https://optyjaciel-193bc87ca2eb.herokuapp.com',
-]
+CSRF_TRUSTED_ORIGINS = ['https://optyjaciel-193bc87ca2eb.herokuapp.com',]
 
 # Application definition
 
