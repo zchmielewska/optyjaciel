@@ -1,4 +1,5 @@
 import random
+from django.contrib.auth.models import User
 from django.utils import timezone
 from game import models
 
@@ -96,8 +97,8 @@ def list_quizes(user, previous=True):
     quizes = list(set(all_quizes))  # only unique quizes
 
     # If previous is set, current game gets ignored
-    if previous:
-        quizes = remove_current_quiz(quizes)
+    # if previous:
+    #     quizes = remove_current_quiz(quizes)
 
     quizes.sort(key=lambda x: (x.date), reverse=True)
     return quizes
@@ -126,28 +127,32 @@ def get_match_context(quiz, user, nest=True):
     :param nest: boolean, should the context be included in an additional dictionary?
     :return: context for the match template
     """
-    match = models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+    # match = models.Match.objects.get(quiz=quiz, user=user)
+    try:
+        match = models.Match.objects.get(quiz=quiz, user=user)
+    except models.Match.DoesNotExist:
+        match = None
 
-    if not match.matched_user:
+    if match is None:
         inner_data = {
             "exists": False,
             "quiz": quiz
         }
-        context = {"match": inner_data} if nest else inner_data
+        context = {"match": inner_data}
     else:
         matched_user = match.matched_user
         score = calculate_score(quiz, user, matched_user)
-        points = utils.conjugate_points(score)
         inner_data = {
             "exists": True,
             "quiz": quiz,
             "user": user,
             "matched_user": matched_user,
             "score": score,
-            "points": points,
+            # "points": points,
         }
-        context = {"match": inner_data} if nest else inner_data
-    return context
+        context = {"match": inner_data}
+
+    return inner_data
 
 
 def get_matches_queryset(user, quizes=None, previous=True):
@@ -163,12 +168,12 @@ def get_matches_queryset(user, quizes=None, previous=True):
     if not quizes:
         quizes = list_quizes(user)
 
-    if previous:
-        quizes = remove_current_quiz(quizes)
+    # if previous:
+    #     quizes = remove_current_quiz(quizes)
 
     matched_users_ids = set()
     for quiz in quizes:
-        match = models.Match.objects.filter(quiz=quiz, user=user).order_by("-matched_at").first()
+        match = models.Match.objects.get(quiz=quiz, user=user)
         matched_users_ids.add(match.matched_user_id)
     matches = User.objects.filter(pk__in=matched_users_ids).filter(is_active=True)
     return matches

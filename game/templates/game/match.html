@@ -1,5 +1,5 @@
 <div class="card">
-    <div class="card-header">{{ match.quiz.year }}_{{ match.quiz.week }}</div>
+    <div class="card-header">{{ match.quiz.id}}</div>
     <div class="card-items">
     {% if match.exists %}
         <div class="card-item1">
@@ -9,7 +9,7 @@
             </p>
             <p>
                 <span class="meta">Wynik:</span><br>
-                <span>{{ match.score }} {{ match.points }}</span>
+                <span>{{ match.score }}</span>
             </p>
         </div>
 

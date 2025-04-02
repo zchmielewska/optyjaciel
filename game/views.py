@@ -11,7 +11,7 @@ from django.views import View
 from django.views.generic import FormView
 from random import sample
 
-from game import models
+from game import forms, models
 from game.utils import db_control, transform, utils
 
 
@@ -92,9 +92,11 @@ class MatchesView(LoginRequiredMixin, View):
     def get(self, request):
         user = request.user
         quizes = db_control.list_quizes(user)
+
         matches_context = []
         for quiz in quizes:
             match_context = db_control.get_match_context(quiz, user, nest=False)
+
             matches_context.append(match_context)
 
         ctx = {
@@ -135,10 +137,10 @@ class MessageWriteView(LoginRequiredMixin, View):
             matches = User.objects.filter(id=match.id)
             form = forms.MessageForm(initial={"to_user": match})
         form.fields["to_user"].queryset = matches
-        no_matches = matches.count()
+        num_matches = matches.count()
         ctx = {
             "form": form,
-            "no_matches": no_matches,
+            "no_matches": num_matches,
         }
         return render(request, "message/message_write.html", ctx)
 
