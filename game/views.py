@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout_then_login
@@ -8,11 +7,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.views import View
-from django.views.generic import FormView
 from random import sample
 
 from game import forms, models
-from game.utils import db_control, transform, utils
+from game.utils import db_control, transform
 
 
 class RulesView(View):
