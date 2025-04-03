@@ -4,8 +4,6 @@ from django.contrib.auth.views import logout_then_login
 from django.db import transaction
 from django.http import Http404, QueryDict
 from django.shortcuts import render, redirect, get_object_or_404
-from django.template.loader import render_to_string
-from django.utils.html import strip_tags
 from django.views import View
 from random import sample
 
