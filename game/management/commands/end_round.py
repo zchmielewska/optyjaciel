@@ -7,7 +7,7 @@ from game.utils import solver
 
 
 class Command(BaseCommand):
-    help = "Recalculates and saves matches for the latest quiz."
+    help = "Calculates and saves matches for the latest quiz."
 
     def handle(self, *args, **kwargs):
         quiz = Quiz.objects.order_by('-id').first()
@@ -23,6 +23,7 @@ class Command(BaseCommand):
 
         for index, row in match_table.iterrows():
             matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
-            Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
+            if not Match.objects.filter(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id).exists():
+                Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
 
         self.stdout.write(self.style.SUCCESS(f'Successfully created {len(match_table)} matches.'))
