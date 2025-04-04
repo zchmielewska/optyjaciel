@@ -1,15 +1,18 @@
 import pandas as pd
+from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 
 from game.models import Match, Quiz
+from game.utils.db_control import fill_with_questions
 from game.utils.transform import get_answers, answers_to_scores_matrix, match_matrix_to_match_table
 from game.utils import solver
 
 
 class Command(BaseCommand):
-    help = "Calculates and saves matches for the latest quiz."
+    help = "Calculates and saves matches for the latest quiz and creates a new quiz."
 
     def handle(self, *args, **kwargs):
+        # End last round
         quiz = Quiz.objects.order_by('-id').first()
         if not quiz:
             self.stderr.write(self.style.ERROR('No quizzes found.'))
@@ -27,3 +30,10 @@ class Command(BaseCommand):
                 Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
 
         self.stdout.write(self.style.SUCCESS(f'Successfully created {len(match_table)} matches.'))
+
+        # Start new round
+        date_str = quiz.date
+        date = datetime.strptime(date_str, "%Y%m%d")
+        date += timedelta(days=1)
+        new_quiz = Quiz.objects.create(date=date)
+        fill_with_questions(new_quiz)

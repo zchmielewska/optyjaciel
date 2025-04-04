@@ -6,20 +6,21 @@ from game import models
 
 def get_current_quiz():
     """Retrieves quiz for the current day."""
-    today = timezone.now()
-    formatted_date = today.strftime('%Y%m%d')
-    quiz = get_quiz(date=formatted_date)
+    # today = timezone.now()
+    # formatted_date = today.strftime('%Y%m%d')
+    # quiz = get_quiz(date=formatted_date)
+    quiz = models.Quiz.objects.order_by('-id').first()
     return quiz
 
 
-def get_quiz(date):
-    """Retrieves quiz for the given day. If the quiz doesn't exist yet, it gets created."""
-    quiz, created = models.Quiz.objects.get_or_create(date=date)
-
-    if created:
-        quiz = fill_with_questions(quiz)
-
-    return quiz
+# def get_quiz(date):
+#     """Retrieves quiz for the given day. If the quiz doesn't exist yet, it gets created."""
+#     quiz, created = models.Quiz.objects.get_or_create(date=date)
+#
+#     if created:
+#         quiz = fill_with_questions(quiz)
+#
+#     return quiz
 
 
 def fill_with_questions(quiz):
