@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = "Calculates and saves matches for the latest quiz and creates a new quiz."
 
     def handle(self, *args, **kwargs):
-        # # End last round
+        # End last round
         quiz = Quiz.objects.order_by('-id').first()
         if not quiz:
             self.stderr.write(self.style.ERROR('No quizzes found.'))

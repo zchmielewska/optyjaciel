@@ -66,16 +66,22 @@ def list_quizes(user, previous=True):
     :param user: user object
     :return: list of quiz objects
     """
-    # User doesn't have to participate in all quizes
-    answers = models.Answer.objects.filter(user=user)
-    quiz_questions = [answer.quiz_question for answer in answers]
-    all_quizes = [quiz_question.quiz for quiz_question in quiz_questions]
-    quizes = list(set(all_quizes))  # only unique quizes
+    # # User doesn't have to participate in all quizes
+    # answers = models.Answer.objects.filter(user=user)
+    # quiz_questions = [answer.quiz_question for answer in answers]
+    # all_quizes = [quiz_question.quiz for quiz_question in quiz_questions]
+    # quizes = list(set(all_quizes))  # only unique quizes
+    #
+    # # If previous is set, current game gets ignored
+    # # if previous:
+    # #     quizes = remove_current_quiz(quizes)
+    #
+    # quizes.sort(key=lambda x: (x.date), reverse=True)
+    #
+    # #  ----
 
-    # If previous is set, current game gets ignored
-    # if previous:
-    #     quizes = remove_current_quiz(quizes)
-
+    matches = models.Match.objects.filter(user=user)
+    quizes = [match.quiz for match in matches]
     quizes.sort(key=lambda x: (x.date), reverse=True)
     return quizes
 
