@@ -83,22 +83,16 @@ class CompatibilityView(LoginRequiredMixin, View):
 
 
 class MatchesView(LoginRequiredMixin, View):
-    """Matches from all previous games."""
-
     def get(self, request):
         user = request.user
         quizes = db_control.list_quizes(user)
 
         matches_context = []
         for quiz in quizes:
-            match_context = db_control.get_match_context(quiz, user, nest=False)
-
+            match_context = db_control.get_match_context(quiz, user)
             matches_context.append(match_context)
 
-        ctx = {
-            "matches": matches_context,
-            "previous_game": True
-        }
+        ctx = {"matches": matches_context,}
         return render(request, "game/matches.html", ctx)
 
 

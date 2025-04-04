@@ -5,22 +5,13 @@ from game import models
 
 
 def get_current_quiz():
-    """Retrieves quiz for the current day."""
-    # today = timezone.now()
-    # formatted_date = today.strftime('%Y%m%d')
-    # quiz = get_quiz(date=formatted_date)
     quiz = models.Quiz.objects.order_by('-id').first()
     return quiz
 
 
-# def get_quiz(date):
-#     """Retrieves quiz for the given day. If the quiz doesn't exist yet, it gets created."""
-#     quiz, created = models.Quiz.objects.get_or_create(date=date)
-#
-#     if created:
-#         quiz = fill_with_questions(quiz)
-#
-#     return quiz
+def get_quiz(date):
+    quiz = models.Quiz.objects.get(date=date)
+    return quiz
 
 
 def fill_with_questions(quiz):
@@ -40,14 +31,6 @@ def fill_with_questions(quiz):
 
 
 def calculate_score(quiz, user1, user2):
-    """
-    Calculates the number of questions for which two users answered in the same way.
-
-    :param quiz: quiz object
-    :param user1: first user object
-    :param user2: second user object
-    :return: integer in range 0-10
-    """
     quiz_questions = quiz.quizquestion_set.order_by("question_index")
     score = 0
     for quiz_question in quiz_questions:
@@ -60,14 +43,6 @@ def calculate_score(quiz, user1, user2):
 
 
 def get_text_answer(quiz_question, user):
-    """
-    Retrieves user's answer for the quiz question.
-    An answer is returned as a text (rather than number)
-
-    :param quiz_question: quiz question object
-    :param user: user object
-    :return: string
-    """
     answer_object = models.Answer.objects.get(user=user, quiz_question=quiz_question)
     answer = answer_object.answer
     return quiz_question.question.option1 if answer == 1 else quiz_question.question.option2
@@ -105,55 +80,24 @@ def list_quizes(user, previous=True):
     return quizes
 
 
-def get_match_context(quiz, user, nest=True):
-    """
-    Prepares context for the match template.
-
-    The nest flag is used so that the function can be used for two views:
-        - view for single match (for the current game),
-        - view for multiple matches (for the previous games) - used within a loop.
-
-    The context contains all variables used within the template:
-        - exists - does the match exist,
-        - quiz - for which quiz is the match,
-        - user - logged-in user,
-        - matched_user - user who is a match,
-        - score - number of points,
-        - points - conjugated word "points".
-
-    If there is no match (due to uneven number of participants), only 'exists' and 'quiz' are included in the context.
-
-    :param quiz: quiz object
-    :param user: user object
-    :param nest: boolean, should the context be included in an additional dictionary?
-    :return: context for the match template
-    """
-    # match = models.Match.objects.get(quiz=quiz, user=user)
-    try:
-        match = models.Match.objects.get(quiz=quiz, user=user)
-    except models.Match.DoesNotExist:
-        match = None
-
-    if match is None:
-        inner_data = {
+def get_match_context(quiz, user):
+    match = models.Match.objects.get(quiz=quiz, user=user)
+    if match.matched_user is None:   # Odd number of players
+        context = {
             "exists": False,
             "quiz": quiz
         }
-        context = {"match": inner_data}
     else:
         matched_user = match.matched_user
         score = calculate_score(quiz, user, matched_user)
-        inner_data = {
+        context = {
             "exists": True,
             "quiz": quiz,
             "user": user,
             "matched_user": matched_user,
             "score": score,
-            # "points": points,
         }
-        context = {"match": inner_data}
-
-    return inner_data
+    return context
 
 
 def get_matches_queryset(user, quizes=None, previous=True):
