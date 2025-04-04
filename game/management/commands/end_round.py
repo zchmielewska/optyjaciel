@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = "Calculates and saves matches for the latest quiz and creates a new quiz."
 
     def handle(self, *args, **kwargs):
-        # End last round
+        # # End last round
         quiz = Quiz.objects.order_by('-id').first()
         if not quiz:
             self.stderr.write(self.style.ERROR('No quizzes found.'))
@@ -32,8 +32,8 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(f'Successfully created {len(match_table)} matches.'))
 
         # Start new round
-        date_str = quiz.date
-        date = datetime.strptime(date_str, "%Y%m%d")
+        date = datetime.strptime(quiz.date, "%Y%m%d")
         date += timedelta(days=1)
-        new_quiz = Quiz.objects.create(date=date)
+        new_date = date.strftime("%Y%m%d")
+        new_quiz = Quiz.objects.create(date=new_date)
         fill_with_questions(new_quiz)
