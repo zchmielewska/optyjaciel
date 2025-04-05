@@ -23,7 +23,12 @@ class GameView(LoginRequiredMixin, View):
         user = request.user
 
         quiz = db_control.get_current_quiz()
-        played = models.Match.objects.filter(quiz=quiz, user=user).exists()
+
+        played = models.Answer.objects.filter(
+            user=user,
+            quiz_question__quiz=quiz
+        ).exists()
+        # played = models.Answer.objects.filter(quiz=quiz, user=user).exists()
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
 
         ctx = {
