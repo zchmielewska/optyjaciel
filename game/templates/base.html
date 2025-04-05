@@ -32,7 +32,7 @@
         <header>
             <div class="header-container">
                 {% if request.user.username %}
-                    <strong><a href="{% url "profile" %}">{{ request.user.username }} ({{ request.user.id }})</a></strong>
+                    <strong><a href="{% url "profile" %}">{{ request.user.username }}</a></strong>
                     | <a href="{% url 'account:logout' %}">wyloguj się</a>
                 {% else %}
                     <a href="{% url "account:login" %}">zaloguj się</a>
