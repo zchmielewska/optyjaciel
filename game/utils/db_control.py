@@ -125,7 +125,7 @@ def user_participated_in_quiz(user, quiz):
     :param quiz: quiz object
     :return: boolean
     """
-    quizes = list_quizes(user, previous=False)
+    quizes = list_quizes(user)
     return quiz in quizes
 
 
