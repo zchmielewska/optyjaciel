@@ -9,11 +9,6 @@ def get_current_quiz():
     return quiz
 
 
-def get_quiz(date):
-    quiz = models.Quiz.objects.get(date=date)
-    return quiz
-
-
 def fill_with_questions(quiz):
     questions = models.Question.objects.all()
     questions = random.sample(list(questions), 10)
@@ -57,15 +52,6 @@ def get_text_answer(quiz_question, user):
         return "Unknown answer"
 
 
-def remove_current_quiz(quizes):
-    today = timezone.now()
-    formatted_date = today.strftime('%Y%m%d')
-    current_quiz = get_quiz(date=formatted_date)
-    if current_quiz in quizes:
-        quizes.remove(current_quiz)
-    return quizes
-
-
 def list_quizes(user):
     matches = models.Match.objects.filter(user=user)
     quizes = [match.quiz for match in matches]
@@ -79,7 +65,7 @@ def get_match_context(quiz, user):
         context = {
             "exists": False,
             "quiz": quiz
-        }
+        }  
     else:
         matched_user = match.matched_user
         score = calculate_score(quiz, user, matched_user)
@@ -98,7 +84,7 @@ def get_matches_queryset(user, quizes=None, previous=True):
     Returns a queryset of matches from quizes.
     Includes only active users.
 
-    :param user: user object
+    :param user: user object 
     :param quizes: subset of quizes (all, if not specified)
     :param previous: exclude the current quiz
     :return: queryset of user objects
@@ -106,14 +92,11 @@ def get_matches_queryset(user, quizes=None, previous=True):
     if not quizes:
         quizes = list_quizes(user)
 
-    # if previous:
-    #     quizes = remove_current_quiz(quizes)
-
     matched_users_ids = set()
     for quiz in quizes:
         match = models.Match.objects.get(quiz=quiz, user=user)
         matched_users_ids.add(match.matched_user_id)
-    matches = User.objects.filter(pk__in=matched_users_ids).filter(is_active=True)
+    matches = User.objects.filter(pk__in=matched_users_ids).filter(is_active=True) 
     return matches
 
 
@@ -134,17 +117,9 @@ def user_is_match_with(user1, user2):
     Checks if two users are matches in any of the quizes.
 
     :param user1: user object
-    :param user2: user object
+    :param user2: user object 
     :return: boolean
     """
     matches = get_matches_queryset(user1, previous=False)
     result = user2 in matches
     return result
-
-
-def list_participants(quiz_id):
-    matches = models.Match.objects.filter(quiz_id=quiz_id)
-    users_id = set()
-    for match in matches:
-        users_id.add(match.user_id)
-    return list(users_id)

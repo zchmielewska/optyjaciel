@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
-from game.utils.utils import string_is_integer
 
 
 class UserRegistrationForm(forms.ModelForm):
@@ -16,7 +15,7 @@ class UserRegistrationForm(forms.ModelForm):
         """Usernames are changed to ids when the account is deleted.
         Users can't register with numbers so that they don't clash with ids."""
         username = self.cleaned_data.get("username")
-        if string_is_integer(username):
+        if username.isdigit():
             raise forms.ValidationError("Nazwa użytkownika nie może być liczbą.")
         return username
 
