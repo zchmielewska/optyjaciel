@@ -45,7 +45,16 @@ def calculate_score(quiz, user1, user2):
 def get_text_answer(quiz_question, user):
     answer_object = models.Answer.objects.get(user=user, quiz_question=quiz_question)
     answer = answer_object.answer
-    return quiz_question.question.option1 if answer == 1 else quiz_question.question.option2
+    if answer == 1:
+        return quiz_question.question.option1
+    elif answer == 2:
+        return quiz_question.question.option2
+    elif answer == 3:
+        return quiz_question.question.option3
+    elif answer == 4:
+        return quiz_question.question.option4
+    else:
+        return "Unknown answer"
 
 
 def remove_current_quiz(quizes):
