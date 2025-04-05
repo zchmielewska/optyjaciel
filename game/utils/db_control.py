@@ -57,29 +57,7 @@ def remove_current_quiz(quizes):
     return quizes
 
 
-def list_quizes(user, previous=True):
-    """
-    Returns a list of quiz objects in which the user has participated.
-    The list is ordered in reverse-chronological order (newest first).
-
-    :param previous: exclude the current quiz
-    :param user: user object
-    :return: list of quiz objects
-    """
-    # # User doesn't have to participate in all quizes
-    # answers = models.Answer.objects.filter(user=user)
-    # quiz_questions = [answer.quiz_question for answer in answers]
-    # all_quizes = [quiz_question.quiz for quiz_question in quiz_questions]
-    # quizes = list(set(all_quizes))  # only unique quizes
-    #
-    # # If previous is set, current game gets ignored
-    # # if previous:
-    # #     quizes = remove_current_quiz(quizes)
-    #
-    # quizes.sort(key=lambda x: (x.date), reverse=True)
-    #
-    # #  ----
-
+def list_quizes(user):
     matches = models.Match.objects.filter(user=user)
     quizes = [match.quiz for match in matches]
     quizes.sort(key=lambda x: (x.date), reverse=True)

@@ -42,7 +42,7 @@ class GameView(LoginRequiredMixin, View):
 
         with transaction.atomic():
             models.Answer.objects.bulk_create(answers)
-            transform.recalculate_and_save_matches(quiz)  # TODO niepotrzebne bo tylko ran dziennie będą wyniki
+            # transform.recalculate_and_save_matches(quiz)  # TODO niepotrzebne bo tylko ran dziennie będą wyniki
 
         return redirect("game")
 
@@ -92,7 +92,7 @@ class MatchesView(LoginRequiredMixin, View):
             match_context = db_control.get_match_context(quiz, user)
             matches_context.append(match_context)
 
-        ctx = {"matches": matches_context,}
+        ctx = {"matches": matches_context}
         return render(request, "game/matches.html", ctx)
 
 
