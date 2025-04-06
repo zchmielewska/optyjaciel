@@ -146,12 +146,10 @@ class MessageWriteView(LoginRequiredMixin, View):
         if form.is_valid():
             # Create new message
             to_user = form.cleaned_data.get("to_user")
-            title = form.cleaned_data.get("title")
             body = form.cleaned_data.get("body")
             msg = models.Message.objects.create(
                 from_user=self.request.user,
                 to_user=to_user,
-                title=title,
                 body=body,
             )
 

@@ -23,8 +23,7 @@
         <div class="table">
             {% for message in messages_out %}
                 <a class="table-row" href="{% url 'message-read' message.id %}">
-                    <div class="table-cell">{{ message.to_user.profile.nickname }}</div>
-                    <div class="table-cell">{{ message.title }}</div>
+                    <div class="table-cell">{{ message.to_user }}</div>
                     <div class="table-cell">{{ message.sent_at }}</div>
                 </a>
             {% empty %}

@@ -23,8 +23,7 @@
         <div class="table">
             {% for message in messages_in %}
                 <a class="table-row {% if message.new %} new-msg {% endif %}" href="{% url 'message-read' message.id %}">
-                    <div class="table-cell">{{ message.from_user.profile.nickname }}</div>
-                    <div class="table-cell">{{ message.title }}</div>
+                    <div class="table-cell">{{ message.from_user }}</div>
                     <div class="table-cell">{{ message.sent_at }}</div>
                 </a>
             {% empty %}
