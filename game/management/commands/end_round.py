@@ -14,22 +14,22 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # End last round
         quiz = Quiz.objects.order_by('-id').first()
-        if not quiz:
-            self.stderr.write(self.style.ERROR('No quizzes found.'))
-            return
 
-        self.stdout.write(self.style.NOTICE(f'Recalculating matches for latest quiz ID {quiz.id}...'))
         answers, users_id = get_answers(quiz)
         scores = answers_to_scores_matrix(answers)
         match_matrix = solver.match(scores)
         match_table = match_matrix_to_match_table(match_matrix, users_id)
 
         for index, row in match_table.iterrows():
-            matched_user_id = row["matched_user"] if not pd.isnull(row["matched_user"]) else None
-            if not Match.objects.filter(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id).exists():
-                Match.objects.create(quiz=quiz, user_id=row["user"], matched_user_id=matched_user_id)
+            matched_user_id = row["matched_user"]
+            user_id = row["user"]
 
-        self.stdout.write(self.style.SUCCESS(f'Successfully created {len(match_table)} matches.'))
+            # Odd number of players
+            if (matched_user_id == user_id) or pd.isnull(row["matched_user"]):
+                matched_user_id = None
+
+            if not Match.objects.filter(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id).exists():
+                Match.objects.create(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id)
 
         # Start new round
         date = datetime.strptime(quiz.date, "%Y%m%d")
