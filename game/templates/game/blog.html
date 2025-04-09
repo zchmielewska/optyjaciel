@@ -3,14 +3,12 @@
 {% load static %}
 
 {%  block content %}
-
     <div class="box">
-        <h1>Blog</h1>
+        <h1>Pamiętnik</h1>
         <ul>
             {% for post in posts %}
                 <li style="margin: 8px;"><a href="{% url "post" post.slug %}" class="link">{{ post.title }}</a></li>
             {% endfor %}
         </ul>
     </div>
-
 {% endblock %}
