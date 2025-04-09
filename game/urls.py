@@ -12,8 +12,8 @@ urlpatterns = [
     path("message/write/", views.MessageWriteView.as_view(), name="message-write"),
     path("message/write/<int:to_user_id>/", views.MessageWriteView.as_view(), name="message-write"),
     path("message/read/<int:message_id>/", views.MessageReadView.as_view(), name="message-read"),
-    path("blog/", views.BlogView.as_view(), name="blog"),
-    path("blog/<slug>", views.BlogPostView.as_view(), name="post"),
+    path("diary/", views.BlogView.as_view(), name="blog"),
+    path("diary/<slug>", views.BlogPostView.as_view(), name="post"),
     path("profile/", views.ProfileView.as_view(), name="profile"),
     path("profile/delete/", views.ProfileDeleteView.as_view(), name="profile-delete"),
 ]
