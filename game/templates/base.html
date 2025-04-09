@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
-<html lang="en">
+<html lang="pl-PL">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,9 +45,8 @@
         <div class="container">
             <nav>
                 <ul>
-                    <li><a href="{% url "rules" %}">zasady gry</a></li>
                     <li><a href="{% url "game" %}">aktualna runda</a></li>
-                    <li><a href="{% url "matches" %}">Twoi optyjaciele</a></li>
+                    <li><a href="{% url "matches" %}">optyjaciele</a></li>
                     <li>
                         {% if no_messages > 0 %}
                             <a href="{% url "message-inbox" %}"><strong>wiadomości [{{ no_messages }}]</strong></a>
@@ -55,6 +54,8 @@
                             <a href="{% url "message-inbox" %}">wiadomości</a>
                         {% endif %}
                     </li>
+                    <li><a href="{% url "rules" %}">zasady</a></li>
+                    <li><a href="{% url "blog" %}">pamiętnik</a></li>
                 </ul>
             </nav>
             <main>{% block content %}{% endblock %}</main>

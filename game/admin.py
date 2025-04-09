@@ -1,3 +1,7 @@
 from django.contrib import admin
+from game import models
 
-# Register your models here.
+
+@admin.register(models.Post)
+class CommentAdmin(admin.ModelAdmin):
+    list_display = ("title", "slug")
