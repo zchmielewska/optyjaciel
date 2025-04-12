@@ -14,7 +14,7 @@
         </div>
 
         <div class="card-item2">
-            <a href="{% url 'compatibility' match.quiz.id match.user.id match.matched_user.id %}" class="button blue-button">kompatybilność</a>
+            <a href="{% url 'compatibility' match.quiz.date match.user.username match.matched_user.username %}" class="button blue-button">kompatybilność</a>
             {% if match.matched_user.is_active %}
                 <a href="{% url 'message-write' match.matched_user.id %}" class="button blue-button">wiadomość</a>
             {% else %}

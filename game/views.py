@@ -55,10 +55,10 @@ class GameView(LoginRequiredMixin, View):
 class CompatibilityView(LoginRequiredMixin, View):
     """Juxtaposition of answers of two users for the given quiz."""
 
-    def get(self, request, quiz_id, user1_id, user2_id):
-        quiz = get_object_or_404(models.Quiz, pk=quiz_id)
-        user1 = get_object_or_404(User, pk=user1_id)
-        user2 = get_object_or_404(User, pk=user2_id)
+    def get(self, request, quiz_date, user1_username, user2_username):
+        quiz = get_object_or_404(models.Quiz, date=quiz_date)
+        user1 = get_object_or_404(User, username=user1_username)
+        user2 = get_object_or_404(User, username=user2_username)
 
         if not db_control.user_participated_in_quiz(user1, quiz):
             raise Http404("User hasn't participated in this quiz.")
@@ -186,25 +186,16 @@ class MessageReadView(LoginRequiredMixin, View):
         return render(request, "message/message_read.html", ctx)
 
 
-class BlogView(View):
+class DiaryView(View):
     def get(self, request):
         posts = models.Post.objects.all()
-        return render(request, "game/blog.html", {"posts": posts})
+        return render(request, "game/diary.html", {"posts": posts})
 
 
-class BlogPostView(View):
+class DiaryPostView(View):
     def get(self, request, slug):
         post = get_object_or_404(models.Post, slug=slug)
-
-        # Read also these posts
-        pks = models.Post.objects.exclude(id=post.id).values_list("pk", flat=True)
-        if len(pks) <= 3:
-            random_pks = pks
-        else:
-            random_pks = sample(list(pks), 3)
-        random_posts = models.Post.objects.filter(pk__in=random_pks)
-
-        return render(request, "game/blog_post.html", {"post": post, "random_posts": random_posts})
+        return render(request, "game/diary_post.html", {"post": post})
 
 
 class ProfileView(LoginRequiredMixin, View):
