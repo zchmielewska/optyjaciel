@@ -55,10 +55,10 @@ class GameView(LoginRequiredMixin, View):
 class CompatibilityView(LoginRequiredMixin, View):
     """Juxtaposition of answers of two users for the given quiz."""
 
-    def get(self, request, quiz_date, user1_username, user2_username):
+    def get(self, request, quiz_date, username1, username2):
         quiz = get_object_or_404(models.Quiz, date=quiz_date)
-        user1 = get_object_or_404(User, username=user1_username)
-        user2 = get_object_or_404(User, username=user2_username)
+        user1 = get_object_or_404(User, username=username1)
+        user2 = get_object_or_404(User, username=username2)
 
         if not db_control.user_participated_in_quiz(user1, quiz):
             raise Http404("User hasn't participated in this quiz.")
