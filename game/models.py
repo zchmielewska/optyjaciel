@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 
@@ -33,6 +34,7 @@ class Match(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user")
     matched_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, related_name="matched_user")
     matched_at = models.DateTimeField(auto_now_add=True)
+    score = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(10)], default=0)
 
 
 class Message(models.Model):

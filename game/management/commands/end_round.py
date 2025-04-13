@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 
 from game.models import Match, Quiz
-from game.utils.db_control import fill_with_questions
+from game.utils.db_control import calculate_score, fill_with_questions
 from game.utils.transform import get_answers, answers_to_scores_matrix, match_matrix_to_match_table
 from game.utils import solver
 
@@ -28,8 +28,13 @@ class Command(BaseCommand):
             if (matched_user_id == user_id) or pd.isnull(row["matched_user"]):
                 matched_user_id = None
 
+            # Create a Match
             if not Match.objects.filter(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id).exists():
-                Match.objects.create(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id)
+                if matched_user_id is not None:
+                    score = calculate_score(quiz, user_id, matched_user_id)
+                else:
+                    score = 0
+                Match.objects.create(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id, score=score)
 
         # Start new round
         date = datetime.strptime(quiz.date, "%Y%m%d")

@@ -67,19 +67,17 @@ def get_match_context(quiz, user):
             "quiz": quiz
         }  
     else:
-        matched_user = match.matched_user
-        score = calculate_score(quiz, user, matched_user)
         context = {
             "exists": True,
             "quiz": quiz,
             "user": user,
-            "matched_user": matched_user,
-            "score": score,
+            "matched_user": match.matched_user,
+            "score": match.score,
         }
     return context
 
 
-def get_matches_queryset(user, quizes=None, previous=True):
+def get_matches_queryset(user, quizes=None):
     """
     Returns a queryset of matches from quizes.
     Includes only active users.
@@ -120,6 +118,6 @@ def user_is_match_with(user1, user2):
     :param user2: user object 
     :return: boolean
     """
-    matches = get_matches_queryset(user1, previous=False)
+    matches = get_matches_queryset(user1)
     result = user2 in matches
     return result
