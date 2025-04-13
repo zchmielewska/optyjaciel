@@ -22,7 +22,7 @@
 
         <div class="table">
             {% for message in messages_in %}
-                <a class="table-row {% if message.new %} new-msg {% endif %}" href="{% url 'message-read' message.id %}">
+                <a class="table-row {% if message.new %} new-msg {% endif %}" href="{% url 'message-read' message.uuid %}">
                     <div class="table-cell">{{ message.from_user }}</div>
                     <div class="table-cell">{{ message.sent_at }}</div>
                 </a>
