@@ -165,8 +165,8 @@ class MessageWriteView(LoginRequiredMixin, View):
 
 class MessageReadView(LoginRequiredMixin, View):
     """Content of the message."""
-    def get(self, request, message_id):
-        message = get_object_or_404(models.Message, pk=message_id)
+    def get(self, request, message_uuid):
+        message = get_object_or_404(models.Message, uuid=message_uuid)
         if request.user == message.to_user:
             msg_type = "in"
         elif request.user == message.from_user:
