@@ -52,3 +52,6 @@ class Post(models.Model):
     body = models.TextField()
     slug = models.SlugField(max_length=250)
     created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-id", )
