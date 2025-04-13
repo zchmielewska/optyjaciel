@@ -120,12 +120,12 @@ class MessageWriteView(LoginRequiredMixin, View):
     If no to_user_id is provided, then the list of available recipients contains all previous matches.
     Otherwise, the list contains only one user implied by the id.
     """
-    def get(self, request, to_user_id=None):
-        if not to_user_id:
+    def get(self, request, to_username=None):
+        if not to_username:
             matches = db_control.get_matches_queryset(request.user)
             form = forms.MessageForm()
         else:
-            match = get_object_or_404(User, pk=to_user_id)
+            match = get_object_or_404(User, username=to_username)
             if not db_control.user_is_match_with(request.user, match):
                 raise Http404("User can only write to their matches.")
 

@@ -44,7 +44,7 @@ class Message(models.Model):
     sent_at = models.DateTimeField(auto_now_add=True)
     body = models.TextField()
     new = models.BooleanField(default=True)  # unread ?
-    uuid = models.UUIDField(default=None, null=True, unique=True, editable=False)
+    uuid = models.UUIDField(unique=True, editable=False)
 
 
 class Post(models.Model):
