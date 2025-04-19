@@ -2,6 +2,14 @@
 
 {% load static %}
 
+{% block meta_description %}
+    {% if post.meta_description %}
+        <meta name="description" content="{{ post.meta_description }}">
+    {% else %}
+        <meta name="description" content="Optyjaciel to internetowa gra towarzyska, w której możesz poznać nowych znajomych i przyjaciół. W grze zostaniesz dobrany w parę na podstawie Twoich zainteresowań i preferencji.">
+    {% endif %}
+{% endblock %}
+
 {% block head %}
     <link rel="canonical" href="https://www.optyjaciel.com/pamietnik/{{ post.slug }}">
 {% endblock %}
