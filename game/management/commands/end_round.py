@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime
 from django.core.management.base import BaseCommand
 
 from game.models import Match, Quiz
@@ -37,8 +37,6 @@ class Command(BaseCommand):
                 Match.objects.create(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id, score=score)
 
         # Start new round
-        date = datetime.strptime(quiz.date, "%Y%m%d")
-        date += timedelta(days=1)
-        new_date = date.strftime("%Y%m%d")
-        new_quiz = Quiz.objects.create(date=new_date)
+        current_date = datetime.now().strftime("%Y%m%d")
+        new_quiz = Quiz.objects.create(date=current_date)
         fill_with_questions(new_quiz)
