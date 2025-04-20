@@ -1,4 +1,3 @@
-import uuid
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -16,6 +15,7 @@ class Question(models.Model):
 class Quiz(models.Model):
     date = models.CharField(max_length=8)
     questions = models.ManyToManyField(Question, through="QuizQuestion")
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
 
 class QuizQuestion(models.Model):
@@ -43,7 +43,7 @@ class Message(models.Model):
     to_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="to_user")
     sent_at = models.DateTimeField(auto_now_add=True)
     body = models.TextField()
-    new = models.BooleanField(default=True)  # unread ?
+    new = models.BooleanField(default=True)
     uuid = models.UUIDField(unique=True, editable=False)
 
 
