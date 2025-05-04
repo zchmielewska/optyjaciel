@@ -22,6 +22,11 @@ def get_answers(quiz):
         question_index = i + 1
         quiz_question = quiz.quizquestion_set.get(question_index=question_index)
         quiz_question_answers = quiz_question.answer_set.order_by("user_id")
+
+        # Nobody answered the quiz
+        if not quiz_question_answers.exists():
+            return None, None
+
         if question_index == 1:
             df = pd.DataFrame(list(quiz_question_answers.values("user_id", "answer")))
         else:
