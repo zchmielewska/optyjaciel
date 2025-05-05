@@ -4,7 +4,7 @@ from game import models
 
 @admin.register(models.Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ("title", "slug")
+    list_display = ("title", "slug", "created")
     prepopulated_fields = {"slug": ("title",)}
 
 
