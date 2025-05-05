@@ -14,7 +14,7 @@
 
     <div class="box long-text">
         <h1>{{ post.title }}</h1>
-        <div>{{ post.created }}</div>
+        <div>{{ post.created|date:"Y-m-d" }}</div>
         <div>{{ post.body|safe }}</div>
     </div>
 

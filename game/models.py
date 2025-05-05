@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.utils import timezone
 
 
 class Question(models.Model):
@@ -51,7 +52,7 @@ class Post(models.Model):
     title = models.CharField(max_length=250)
     body = models.TextField()
     slug = models.SlugField(max_length=250)
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(default=timezone.now)
     meta_description = models.CharField(max_length=300)
 
     class Meta:
