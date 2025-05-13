@@ -12,7 +12,21 @@
         <h2 style="font-size: 1.17em;">Runda: {{ quiz.date }}</h2>
 
         {% if played %}
-            <p>Już zagrałe/aś. Teraz proszę poczekaj do końca dnia.</p>
+            <p>Już zagrałe/aś w tej rundzie. Proszę poczekaj do końca dnia. Twój optyjaciel pojawi się zaraz po północy.</p>
+
+            {# reklama #}
+            <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5965098763982165"
+                 crossorigin="anonymous"></script>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-5965098763982165"
+                 data-ad-slot="5633269893"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+
         {% else %}
             <form method="post">
             {% csrf_token %}

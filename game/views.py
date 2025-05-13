@@ -14,7 +14,7 @@ from game.utils import db_control, transform
 class RulesView(View):
     """The description of the game's rules."""
     def get(self, request):
-        return render(request, "game/rules.html")
+        return render(request, "game/main.html")
 
 
 class GameView(LoginRequiredMixin, View):
@@ -36,7 +36,7 @@ class GameView(LoginRequiredMixin, View):
             "quiz_questions": quiz_questions,
             "played": played,
         }
-        return render(request, "game/quiz.html", ctx)
+        return render(request, "game/game.html", ctx)
 
     def post(self, request):
         post = QueryDict.dict(request.POST) # TODO ponoć QueryDict zbędny
