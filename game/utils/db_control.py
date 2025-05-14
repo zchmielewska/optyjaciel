@@ -77,24 +77,21 @@ def get_match_context(quiz, user):
     return context
 
 
-def get_matches_queryset(user, quizes=None):
+def get_matches_queryset(user):
     """
-    Returns a queryset of matches from quizes.
-    Includes only active users.
+    Returns a queryset of matches from quizes. Includes only active users.
 
     :param user: user object 
-    :param quizes: subset of quizes (all, if not specified)
-    :param previous: exclude the current quiz
     :return: queryset of user objects
     """
-    if not quizes:
-        quizes = list_quizes(user)
-
+    quizes = list_quizes(user)
     matched_users_ids = set()
+
     for quiz in quizes:
         match = models.Match.objects.get(quiz=quiz, user=user)
         matched_users_ids.add(match.matched_user_id)
-    matches = User.objects.filter(pk__in=matched_users_ids).filter(is_active=True) 
+
+    matches = User.objects.filter(pk__in=matched_users_ids).filter(is_active=True)
     return matches
 
 
