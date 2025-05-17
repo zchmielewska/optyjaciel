@@ -1,31 +1,25 @@
 import datetime
-import logging
 import pandas as pd
 from datetime import datetime
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from django.core.mail import send_mail
 from django.core.management.base import BaseCommand
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from game.models import Match, Quiz
-from game.utils.db_control import calculate_score, fill_with_questions
+from game.utils.db_control import calculate_score, fill_with_questions, get_participants
 from game.utils.transform import get_answers, answers_to_scores_matrix, match_matrix_to_match_table
 from game.utils import solver
 
 
-logging.basicConfig(
-    filename="end_round.log",
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s'
-)
-
-
 def end_last_round():
-    logging.info("Starting the quiz matching process.")
-
     quiz = Quiz.objects.order_by('-id').first()
-    logging.info(f"Processing matches for Quiz ID {quiz.id}, Date: {quiz.date}")
-
     answers, users_id = get_answers(quiz)
+
     if answers is None:
-        logging.warning("No answers retrieved. Skipping this round.")
         return None
 
     scores = answers_to_scores_matrix(answers)
@@ -53,13 +47,53 @@ def start_new_round():
     current_date = datetime.now().strftime("%Y%m%d")
     new_quiz = Quiz.objects.create(date=current_date)
     fill_with_questions(new_quiz)
-    logging.info(f"Started new quiz round with ID {new_quiz.id} on {current_date}")
+
+
+def send_emails_after_game(quiz):
+    # List of participants ids
+    participants_id = get_participants(quiz)
+
+    # Send e-mails
+    for participant_id in participants_id:
+        participant = User.objects.get(id=participant_id)
+        match = Match.objects.get(quiz=quiz, user=participant)
+
+        if match.matched_user is None:
+            send_mail(
+                subject=f"optyjaciel | brak optyjaciela w rundzie {quiz.date}",
+                message="Niestety, w tej rundzie było nieparzyście osób i nie zostałeś sparowany/a.",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[participant.email, ],
+                fail_silently=True
+            )
+        else:
+            ctx = {
+                "quiz": quiz,
+                "participant": participant,
+                "matched_user": match.matched_user,
+                "score": match.score,
+                "domain": settings.DEFAULT_DOMAIN,
+            }
+            subject = f"optyjaciel | nowy optyjaciel w rundzie {quiz.date}"
+            html_message = render_to_string("email/end-game.html", ctx)
+            plain_message = strip_tags(html_message)
+
+            send_mail(
+                subject=subject,
+                message=plain_message,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[participant.email, ],
+                html_message=html_message,
+                fail_silently=True
+            )
+    return None
 
 
 class Command(BaseCommand):
     help = "Calculates and saves matches for the latest quiz and creates a new quiz."
 
     def handle(self, *args, **kwargs):
+        last_quiz = Quiz.objects.order_by('-id').first()
         end_last_round()
         start_new_round()
-
+        send_emails_after_game(last_quiz)
