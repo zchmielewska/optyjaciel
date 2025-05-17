@@ -22,29 +22,32 @@ class GameView(LoginRequiredMixin, View):
     """The game for the current day."""
     def get(self, request):
         user = request.user
-
-        quiz = db_control.get_current_quiz()
-
-        played = models.Answer.objects.filter(
-            user=user,
-            quiz_question__quiz=quiz
-        ).exists()
-        # played = models.Answer.objects.filter(quiz=quiz, user=user).exists()
+        quiz = models.Quiz.objects.order_by('-id').first()
+        played = models.Answer.objects.filter(user=user, quiz_question__quiz=quiz).exists()
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
+
+        user_answers = None
+        if played:
+            user_answers = []
+            for qq in quiz_questions:
+                user_answers.append(db_control.get_text_answer(qq, user))
 
         ctx = {
             "quiz": quiz,
             "quiz_questions": quiz_questions,
             "played": played,
-        }
+            "questions_and_answers": zip(quiz_questions, user_answers)}
         return render(request, "game/game.html", ctx)
 
     def post(self, request):
-        post = QueryDict.dict(request.POST) # TODO ponoć QueryDict zbędny
-        quiz = models.Quiz.objects.get(id=post.get("quiz_id"))
+        quiz_id = request.POST.get("quiz_id")
+        quiz = models.Quiz.objects.get(id=quiz_id)
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
-        answers = [models.Answer(user=request.user, quiz_question_id=qq.id, answer=post.get(str(qq.id)))
-                   for qq in quiz_questions]
+
+        answers = [
+            models.Answer(user=request.user, quiz_question_id=qq.id,answer=request.POST.get(str(qq.id)))
+            for qq in quiz_questions
+        ]
 
         with transaction.atomic():
             models.Answer.objects.bulk_create(answers)

@@ -4,11 +4,6 @@ from django.utils import timezone
 from game import models
 
 
-def get_current_quiz():
-    quiz = models.Quiz.objects.order_by('-id').first()
-    return quiz
-
-
 def fill_with_questions(quiz):
     questions = models.Question.objects.all()
     questions = random.sample(list(questions), 10)

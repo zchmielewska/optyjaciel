@@ -15,6 +15,13 @@
             <p>Już zagrałe/aś w tej rundzie.</p>
 
             <p>Proszę poczekaj do końca dnia. Twój optyjaciel pojawi się zaraz po północy.</p>
+            <hr>
+
+            <p>Twoje odpowiedzi:</p>
+
+            {% for question, answer in questions_and_answers %}
+                <p>{{ forloop.counter }}. <strong>{{ question.question.question }}</strong> {{ answer }}</p>
+            {% endfor %}
 
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5965098763982165"
                  crossorigin="anonymous"></script>
