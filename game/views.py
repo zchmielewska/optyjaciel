@@ -26,7 +26,7 @@ class GameView(LoginRequiredMixin, View):
         played = models.Answer.objects.filter(user=user, quiz_question__quiz=quiz).exists()
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
 
-        user_answers = None
+        user_answers = [None]
         if played:
             user_answers = []
             for qq in quiz_questions:
@@ -63,10 +63,10 @@ class CompatibilityView(LoginRequiredMixin, View):
         user1 = get_object_or_404(User, username=username1)
         user2 = get_object_or_404(User, username=username2)
 
-        if not db_control.user_participated_in_quiz(user1, quiz):
+        if not db_control.participated_in_quiz(user1, quiz):
             raise Http404("User hasn't participated in this quiz.")
 
-        if not db_control.user_participated_in_quiz(user2, quiz):
+        if not db_control.participated_in_quiz(user2, quiz):
             raise Http404("Matched user hasn't participated in this quiz.")
 
         if user1 != request.user:
@@ -129,7 +129,7 @@ class MessageWriteView(LoginRequiredMixin, View):
             form = forms.MessageForm()
         else:
             match = get_object_or_404(User, username=to_username)
-            if not db_control.user_is_match_with(request.user, match):
+            if not db_control.is_match_with(request.user, match):
                 raise Http404("User can only write to their matches.")
             matches = User.objects.filter(id=match.id)
             form = forms.MessageForm(initial={"to_user": match})
