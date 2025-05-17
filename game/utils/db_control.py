@@ -1,6 +1,5 @@
 import random
 from django.contrib.auth.models import User
-from django.utils import timezone
 from game import models
 
 
@@ -90,7 +89,7 @@ def get_matches_queryset(user):
     return matches
 
 
-def user_participated_in_quiz(user, quiz):
+def participated_in_quiz(user, quiz):
     """
     Checks if user has participated in a quiz.
 
@@ -102,14 +101,17 @@ def user_participated_in_quiz(user, quiz):
     return quiz in quizes
 
 
-def user_is_match_with(user1, user2):
-    """
-    Checks if two users are matches in any of the quizes.
-
-    :param user1: user object
-    :param user2: user object 
-    :return: boolean
-    """
+def is_match_with(user1, user2):
+    """Checks if two users are matches in any of the quizes."""
     matches = get_matches_queryset(user1)
     result = user2 in matches
     return result
+
+
+def get_participants(quiz):
+    """List of users who played in quiz"""
+    matches = models.Match.objects.filter(quiz=quiz)
+    users_id = set()
+    for match in matches:
+        users_id.add(match.user_id)
+    return list(users_id)
