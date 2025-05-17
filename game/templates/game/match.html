@@ -16,7 +16,7 @@
         <div class="card-item2">
             <a href="{% url 'compatibility' match.quiz.date match.user.username match.matched_user.username %}" class="button blue-button">kompatybilność</a>
             {% if match.matched_user.is_active %}
-                <a href="{% url 'message-write' match.matched_user.id %}" class="button blue-button">wiadomość</a>
+                <a href="{% url 'message-write' match.matched_user.username %}" class="button blue-button">wiadomość</a>
             {% else %}
                 <span class="button disabled-button">wiadomość</span>
             {% endif %}

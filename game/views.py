@@ -1,3 +1,4 @@
+import uuid
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import logout_then_login
@@ -47,7 +48,6 @@ class GameView(LoginRequiredMixin, View):
 
         with transaction.atomic():
             models.Answer.objects.bulk_create(answers)
-            # transform.recalculate_and_save_matches(quiz)  # TODO niepotrzebne bo tylko ran dziennie będą wyniki
 
         return redirect("game")
 
@@ -117,8 +117,8 @@ class MessageOutboxView(LoginRequiredMixin, View):
 class MessageWriteView(LoginRequiredMixin, View):
     """
     Form to write a message.
-    If no to_user_id is provided, then the list of available recipients contains all previous matches.
-    Otherwise, the list contains only one user implied by the id.
+    If no to_username is provided, then the list of available recipients contains all previous matches (message page).
+    Otherwise, the list contains only one user (match page).
     """
     def get(self, request, to_username=None):
         if not to_username:
@@ -128,9 +128,9 @@ class MessageWriteView(LoginRequiredMixin, View):
             match = get_object_or_404(User, username=to_username)
             if not db_control.user_is_match_with(request.user, match):
                 raise Http404("User can only write to their matches.")
-
             matches = User.objects.filter(id=match.id)
             form = forms.MessageForm(initial={"to_user": match})
+
         form.fields["to_user"].queryset = matches
         num_matches = matches.count()
         ctx = {
@@ -139,7 +139,7 @@ class MessageWriteView(LoginRequiredMixin, View):
         }
         return render(request, "message/message_write.html", ctx)
 
-    def post(self, request, to_user_id=None):
+    def post(self, request, to_username=None):
         user = request.user
         form = forms.MessageForm(request.POST)
 
@@ -151,6 +151,7 @@ class MessageWriteView(LoginRequiredMixin, View):
                 from_user=self.request.user,
                 to_user=to_user,
                 body=body,
+                uuid=uuid.uuid4()
             )
 
             # Inform user by e-mail
