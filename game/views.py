@@ -18,41 +18,86 @@ class RulesView(View):
         return render(request, "game/main.html")
 
 
-class GameView(LoginRequiredMixin, View):
-    """The game for the current day."""
+class GameView(View):
+    """
+    The game for the current day.
+
+    Paths:
+    1
+    3A --> 1
+    3B --> 2 --> 1
+    """
     def get(self, request):
+        """
+        Cases:
+        1.  Logged | played                           --> show answers
+        2.  Logged | not played | data in session     --> save answers and go to [1]
+        3A. Logged | not played | no data in session
+            or                                        --> show quiz
+        3B. Not logged
+        """
         user = request.user
         quiz = models.Quiz.objects.order_by('-id').first()
-        played = models.Answer.objects.filter(user=user, quiz_question__quiz=quiz).exists()
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
+        if user.is_authenticated:
+            played = models.Answer.objects.filter(user=user, quiz_question__quiz=quiz).exists()
+        else:
+            played = False
 
-        user_answers = [None]
-        if played:
-            user_answers = []
-            for qq in quiz_questions:
-                user_answers.append(db_control.get_text_answer(qq, user))
+        # Case 1
+        if user.is_authenticated and played:
+            user_answers = [db_control.get_text_answer(qq, user) for qq in quiz_questions]
+            ctx = {
+                "case": 1,
+                "quiz": quiz,
+                "questions_and_answers": zip(quiz_questions, user_answers)
+            }
+            return render(request, "game/game.html", ctx)
 
-        ctx = {
-            "quiz": quiz,
-            "quiz_questions": quiz_questions,
-            "played": played,
-            "questions_and_answers": zip(quiz_questions, user_answers)}
-        return render(request, "game/game.html", ctx)
+        # Case 2
+        elif user.is_authenticated and not played and "saved_answers" in request.session:
+            saved_answers = request.session.pop("saved_answers")
+            answers = [
+                models.Answer(user=user, quiz_question_id=qq.id, answer=saved_answers.get(str(qq.id)))
+                for qq in quiz_questions
+            ]
+            with transaction.atomic():
+                models.Answer.objects.bulk_create(answers)
+            return redirect("game")
+
+        # Case 3
+        else:
+            ctx = {
+                "case": 3,
+                "quiz": quiz,
+                "quiz_questions": quiz_questions,
+            }
+            return render(request, "game/game.html", ctx)
 
     def post(self, request):
+        # Data from the form
         quiz_id = request.POST.get("quiz_id")
         quiz = models.Quiz.objects.get(id=quiz_id)
         quiz_questions = quiz.quizquestion_set.order_by("question_index")
-
-        answers = [
-            models.Answer(user=request.user, quiz_question_id=qq.id,answer=request.POST.get(str(qq.id)))
+        answers_data = {
+            str(qq.id): request.POST.get(str(qq.id))
             for qq in quiz_questions
-        ]
+        }
 
-        with transaction.atomic():
-            models.Answer.objects.bulk_create(answers)
-
-        return redirect("game")
+        # Case 3A
+        if request.user.is_authenticated:
+            answers = [
+                models.Answer(user=request.user, quiz_question_id=qq.id, answer=answers_data[str(qq.id)])
+                for qq in quiz_questions
+            ]
+            with transaction.atomic():
+                models.Answer.objects.bulk_create(answers)
+            return redirect("game")
+        # Case 3B
+        else:
+            request.session["saved_answers"] = answers_data
+            request.session["quiz_id"] = quiz_id
+            return redirect("login")
 
 
 class CompatibilityView(LoginRequiredMixin, View):
