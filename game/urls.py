@@ -3,7 +3,7 @@ from game import views
 
 
 urlpatterns = [
-    path("", views.RulesView.as_view(), name="main"),
+    path("", views.GameView.as_view(), name="main"),
     path("zasady/", views.RulesView.as_view(), name="rules"),
     path("gra/", views.GameView.as_view(), name="game"),
     path("kompatybilnosc/<int:quiz_date>/<str:username1>/<str:username2>/", views.CompatibilityView.as_view(), name="compatibility"),

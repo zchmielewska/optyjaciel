@@ -1,12 +1,5 @@
-import game.models
 from django import forms
 from django.contrib.auth.models import User
-
-
-# class SuggestionForm(forms.ModelForm):
-#     class Meta:
-#         model = game.models.Suggestion
-#         exclude = ["user"]
 
 
 class RegisterForm(forms.Form):
