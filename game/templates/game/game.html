@@ -11,8 +11,9 @@
     <div class="box">
         <h2 style="font-size: 1.17em;">Runda: {{ quiz.date }}</h2>
 
-        {% if played %}
-            <p>Już zagrałe/aś w tej rundzie.</p>
+
+        {% if case == 1 %}
+             <p>Już zagrałe/aś w tej rundzie.</p>
 
             <p>Proszę poczekaj do końca dnia. Twój optyjaciel pojawi się zaraz po północy.</p>
             <hr>
@@ -23,6 +24,7 @@
                 <p>{{ forloop.counter }}. <strong>{{ question.question.question }}</strong> {{ answer }}</p>
             {% endfor %}
 
+            {# Reklama google #}
             <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5965098763982165"
                  crossorigin="anonymous"></script>
             <ins class="adsbygoogle"
@@ -34,8 +36,9 @@
             <script>
                  (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
+        {%  endif %}
 
-        {% else %}
+        {% if case == 3 %}
             <form method="post">
             {% csrf_token %}
             {% for quiz_question in quiz_questions %}
@@ -68,7 +71,6 @@
                 <button type="submit" class="button blue-button">Wyślij odpowiedzi</button>
             </div>
             </form>
-        {% endif %}
-
+        {%  endif %}
     </div>
 {%  endblock %}
