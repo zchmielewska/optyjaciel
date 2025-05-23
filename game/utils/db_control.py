@@ -1,11 +1,54 @@
 import random
 from django.contrib.auth.models import User
+from django.db.models import Min
 from game import models
 
 
+def choose_questions():
+    QUIZ_SIZE = 10
+
+    # 1. Retrieve all distinct categories
+    all_categories = list(models.Question.objects
+                          .order_by()
+                          .values_list('category', flat=True)
+                          .distinct())
+
+    # 2. Randomly choose QUIZ_SIZE categories
+    if len(all_categories) >= QUIZ_SIZE:
+        chosen_categories = random.sample(all_categories, QUIZ_SIZE)
+    else:
+        # If there are fewer categories than needed, include all and then
+        # randomly repeat until we reach QUIZ_SIZE
+        chosen_categories = all_categories.copy()
+        while len(chosen_categories) < QUIZ_SIZE:
+            chosen_categories.append(random.choice(all_categories))
+
+    selected_questions = []
+
+    # 3. For each chosen category, pick one least-used question
+    for category in chosen_categories:
+        category_qs = models.Question.objects.filter(category=category)
+
+        # Find the minimum times_selected in this category
+        min_times = category_qs.aggregate(min_ts=Min('times_selected'))['min_ts'] or 0
+
+        # Filter to questions with that minimum counter
+        least_used = category_qs.filter(times_selected=min_times)
+
+        # Randomly select one
+        pick = random.choice(list(least_used))
+        selected_questions.append(pick)
+
+    # 4. Increment times_selected for each selected question
+    for question in selected_questions:
+        question.times_selected += 1
+        question.save(update_fields=['times_selected'])
+
+    return selected_questions
+
+
 def fill_with_questions(quiz):
-    questions = models.Question.objects.all()
-    questions = random.sample(list(questions), 10)
+    questions = choose_questions()
 
     # Add questions to the quiz
     for i in range(10):

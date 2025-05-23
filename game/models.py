@@ -11,6 +11,8 @@ class Question(models.Model):
     option2 = models.CharField(max_length=256)
     option3 = models.CharField(max_length=256)
     option4 = models.CharField(max_length=256)
+    category = models.CharField(max_length=64, default="inne")
+    times_selected = models.PositiveIntegerField(default=0)
 
 
 class Quiz(models.Model):
