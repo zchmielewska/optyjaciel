@@ -14,6 +14,14 @@ class Question(models.Model):
     category = models.CharField(max_length=64, default="inne")
     times_selected = models.PositiveIntegerField(default=0)
 
+    def __repr__(self):
+        text = self.question[:47] + "..." if len(self.question) > 50 else self.question
+        return f"{text} ({self.id})"
+
+    def __str__(self):
+        text = self.question[:47] + "..." if len(self.question) > 50 else self.question
+        return f"{text} ({self.id})"
+
 
 class Quiz(models.Model):
     date = models.CharField(max_length=8)

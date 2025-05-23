@@ -1,6 +1,5 @@
-import datetime
-import pandas as pd
-from datetime import datetime
+"""IMPORTANT: Connected to Heroku Scheduler"""
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
@@ -9,46 +8,11 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 
 from game.models import Match, Quiz
-from game.utils.db_control import calculate_score, fill_with_questions, get_participants
-from game.utils.transform import get_answers, answers_to_scores_matrix, match_matrix_to_match_table
-from game.utils import solver
+from game.utils.db_control import get_participants
+from game.utils import round
 
 
-def end_last_round():
-    quiz = Quiz.objects.order_by('-id').first()
-    answers, users_id = get_answers(quiz)
-
-    if answers is None:
-        return None
-
-    scores = answers_to_scores_matrix(answers)
-    match_matrix = solver.match(scores)
-    match_table = match_matrix_to_match_table(match_matrix, users_id)
-
-    for index, row in match_table.iterrows():
-        matched_user_id = row["matched_user"]
-        user_id = row["user"]
-
-        # Odd number of players
-        if (matched_user_id == user_id) or pd.isnull(row["matched_user"]):
-            matched_user_id = None
-
-        # Create a Match
-        if not Match.objects.filter(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id).exists():
-            if matched_user_id is not None:
-                score = calculate_score(quiz, user_id, matched_user_id)
-            else:
-                score = 0
-            Match.objects.create(quiz=quiz, user_id=user_id, matched_user_id=matched_user_id, score=score)
-
-
-def start_new_round():
-    current_date = datetime.now().strftime("%Y%m%d")
-    new_quiz = Quiz.objects.create(date=current_date)
-    fill_with_questions(new_quiz)
-
-
-def send_emails_after_game(quiz):
+def send_emails_after_round(quiz):
     # List of participants ids
     participants_id = get_participants(quiz)
 
@@ -93,6 +57,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         last_quiz = Quiz.objects.order_by('-id').first()
-        end_last_round()
-        start_new_round()
-        send_emails_after_game(last_quiz)
+        round.create_matches_from_quiz(last_quiz)
+        round.start_new_round()
+        send_emails_after_round(last_quiz)
