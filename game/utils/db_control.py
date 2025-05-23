@@ -1,22 +1,5 @@
-import random
 from django.contrib.auth.models import User
 from game import models
-
-
-def fill_with_questions(quiz):
-    questions = models.Question.objects.all()
-    questions = random.sample(list(questions), 10)
-
-    # Add questions to the quiz
-    for i in range(10):
-        count = models.QuizQuestion.objects.filter(quiz=quiz, question_index=i+1).count()
-        if count == 0:
-            models.QuizQuestion.objects.create(
-                quiz=quiz,
-                question=questions[i],
-                question_index=i+1,
-            )
-    return quiz
 
 
 def calculate_score(quiz, user1, user2):
